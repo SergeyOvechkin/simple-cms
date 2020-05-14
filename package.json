@@ -1,0 +1,20 @@
+{
+  "name": "htmlix pages",
+  "version": "1.0.0",
+  "description": "single page cms for github by htmlix",
+  "main": "app.js",
+  "dependencies": {
+    "formidable": "^1.2.2",
+    "fs-extra": "^9.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "author": "Maksaev Mikhail",
+  "license": "ISC",
+  "bugs": {}
+}

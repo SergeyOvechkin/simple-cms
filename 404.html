@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+ <html lang="ru">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://sergeyovechkin.github.io/simple-cms/static/css/bootstrap.min.css">
+		 <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+		<link rel="stylesheet" href="https://sergeyovechkin.github.io/simple-cms/static/css/main.css">
+    </head>
+<body>
+<div class="container-fluid">
+<nav class="navbar navbar-expand-sm navbar-light bg-light" >
+							
+		<ul class="navbar-nav mr-auto" data-menu="array">
+												
+			 <li class="nav-item" data-menu_item="container">
+					<a  data-menu_item-title="text" data-menu_item-click="click" data-menu_item-class="class" data-menu_item-data="home"  class="nav-link" href="/">Home</a>
+			  </li>
+			  
+			   <li class="nav-item" data-menu_item="container">
+					<a data-menu_item-title="text" data-menu_item-click="click" data-menu_item-class="class" data-menu_item-data="contacts" class="nav-link" href="/contacts">Контакты</a>
+			   </li>
+							
+		</ul>			
+</nav>
+
+<div data-router_main="router" >
+
+<div data-home="container" style="margin-top: 20px;"  class="card" >
+  <div class="card-body">
+    <h2> Javascript Frontend Framework </h2>
+
+    <p> Htmlix - яваскрипт фреймворк основанный на data- свойствах html документа. </p>
+
+    <p>Особенности:</p>
+	<ul>
+		<li>объектно-ориенитрованный подход построения приложения, наличие структуры и иерархии компонентов,</li>
+		<li>наличие пользовательских событий для обновления интерфейса и передачи данных между компонентами,</li>
+		<li>создание приложения после отданной с сервера страници не отнимает время на загрузку компонентов и не требует серверного рендеринга,</li>
+		<li>возможность строить приложения используя роутер и html шаблоны,</li>
+		<li>типизация свойств, значительно сокращает количество используемых методов и уменьшает объем кода требуемого для написания и запоминания.</li>
+	</ul>
+	
+		<p>Примеры приложений: </p>
+		
+		
+	<ul>
+		<li><a href="https://sergeyovechkin.github.io/top-menu/htmlix-menu.html">Навигация для сайта</a></li>
+		<li><a href="https://sergeyovechkin.github.io/todo-mvc/">Todo mvs</a></li>
+		<li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
+
+	</ul>
+		
+  </div>
+</div>
+
+</div>  <!-- router_main -->
+
+
+</div><!-- container-fluid -->	
+
+	<script src="https://sergeyovechkin.github.io/simple-cms/static/js/htmlix.js"></script>
+	<script src="https://sergeyovechkin.github.io/simple-cms/static/js/front.js"></script>
+		<script src="https://sergeyovechkin.github.io/simple-cms/static/js/tagWraper.js"></script>
+</body>
+ </html>

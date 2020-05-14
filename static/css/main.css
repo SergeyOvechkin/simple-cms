@@ -1,0 +1,39 @@
+              
+			  
+			  [data-left_item_level_2="container"] {			  
+			             
+						  list-style-type: none;
+						  margin-bottom: 7px;
+						  border-bottom: 1px solid gray;
+						  	  
+			  }
+			  [data-left_item_level_2="container"] > a {
+					  color: green !important;
+					  
+	
+					
+			}
+			.active { color: red !important;}
+			
+			 pre {
+				background-color: #f6f8fa;			  
+			  }
+			  .js-comments {
+					color: #adb5bd;
+			  }
+			  .js-vars {
+				color: #dc3545;
+			  }
+			  .js-vars-2 {
+				color: #6f42c1;
+			  }
+			  .tag {
+				color: #28a745;
+			  }
+			  .data-attr{
+				color: #fd7e14;
+			  }
+			  .input-vars{
+				  color: #6f42c1;
+				  
+			  }

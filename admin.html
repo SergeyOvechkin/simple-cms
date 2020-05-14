@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+ <html lang="ru">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="./static/css/bootstrap.min.css">
+		<link rel="stylesheet" href="./static/css/main.css">
+    </head>
+<body>
+
+
+
+<div class="container-fluid">
+	    <div class="row">
+		
+		<!--	<div class="col-sm-12 col-md-3">
+
+			</div> -->
+			
+			
+			<div class="col-sm-10 col-md-12" >
+			
+		<!-- -------------------------curent operation container---------------------------------------------  -->
+		
+             <div data-current_operation="container" data-current_operation-data="editor"  >
+			 
+			 
+			 	    <nav class="navbar navbar-expand-sm navbar-light bg-light" style="margin-bottom: 20px;" >
+							
+						<ul class="navbar-nav mr-auto" >
+												
+							<li class="nav-item " >
+									<a   data-current_operation-page_btn="click" data-current_operation-page_btn_class="class" class="nav-link active" href="#">Страница</a>
+							</li>	
+							<li class="nav-item" >
+									<a  data-current_operation-category_btn="click"  data-current_operation-category_btn_class="class" class="nav-link" href="#">Категория</a>
+							</li>	
+							<li class="nav-item" >
+									<a  data-current_operation-section_btn="click" data-current_operation-section_btn_class="class"  class="nav-link" href="#">Раздел</a>
+							</li>
+							
+						</ul>			
+					</nav>
+					
+			 <div data-current_operation-variant="render-variant">
+			 
+		<!-- -------------------------Editor---------------------------------------------  -->
+		
+				<div class="body" data-editor="container" >
+				
+					<h3> Страница - page </h3>
+					<nav class="navbar navbar-expand-sm navbar-light bg-light" >						
+						<ul class="navbar-nav mr-auto" >
+												
+							<li data-editor-convent_btn_style="style" class="nav-item" >
+									<a  data-editor-convent_btn="click" data-editor-convent_btn_text="text"    class="nav-link" href="#">Смотреть html</a>
+							</li>						
+							<li data-editor-find_by_cat_btn_style="style" class="nav-item" >
+									<a  data-editor-find_by_cat_btn="click" data-editor-find_by_cat_btn_text="text"  class="nav-link" href="#">Искать по категории</a>
+							</li>							
+						</ul>			
+					</nav>	
+                    <!-- form -->					
+				   <form action="/create/post" method="post" enctype="multipart/form-data" name="create_post" style="margin-bottom: 20px;">
+				         <div class="form-group">
+							<label for="exampleFormControlSelect1">Категория</label>
+								<select data-editor-category="select" data-editor-category_click="click"  data-editor-group_categ="group" name="category" class="form-control" id="exampleFormControlSelect1">
+								
+									<!---selects_arr - virtuall array items------------------------->									
+									<option style="display: none;" data-select_item="template" data-select_item-name="text" data-select_item-value="select" value="category1">категория 1</option>
+									<!-------------------------->
+							    </select>
+							</div>
+					   <div class="form-group" data-editor-title_style="style">
+					      <label for="postTitle">Название</label>
+						  <input name="title" data-editor-title="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+					   </div>
+						<div data-editor-input_style="style">					   
+							<div class="form-group">						
+								<textarea name="text"  data-editor-input="inputvalue" class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>
+							</div>
+							<button data-editor-save_btn="click" type="submit" class="btn btn-primary">Сохранить</button>
+						</div> 
+				   </form>
+				   <!-- form -->
+				   
+				   <div data-editor-output_html="html" data-editor-output_style="style">				   
+				   
+			
+				   
+				   </div>
+				   <ul  data-editor-post_group="group" data-editor-post_group_style="style" style="display: none;">	
+				   
+							<!---find_arr - virtuall array items------------------------->						
+								<li data-find_item="template" data-find_item-data="/remove/post/" style="margin-bottom: 7px; border-bottom: 1px solid blue;"> 
+								     <button data-find_item-click="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
+								   <span data-find_item-title="text" >название поста</span>
+								  / id = <span data-find_item-id="text"> 3333 </span>								 
+								</li>
+							<!-------------------------->
+				    </ul>
+
+				</div>	<!-- -------------------------END Editor---------------------------------------------  -->   
+				
+			</div><!-- render variant -->	
+				
+			</div><!-- end current_operation -->	
+
+			</div>	 	
+		</div><!-- row -->
+	</div>
+
+
+<!--------------------------------- Category Editor ---------------------------------------->
+
+				<div class="body" data-category_editor="container" data-category_editor-style="style" style="display: none;">
+				
+					<h3> Категория </h3>
+					<nav class="navbar navbar-expand-sm navbar-light bg-light" >
+							
+						<ul class="navbar-nav mr-auto" >
+												
+							<li class="nav-item" >
+									<a  data-category_editor-find_categ_btn="click" data-category_editor-find_categ_btn_text="text"    class="nav-link" href="#">Смотреть все категории</a>
+							</li>								
+						</ul>			
+					</nav>	
+					
+					<form data-category_editor-form_style="style" action="/create/category" method="post" enctype="multipart/form-data" name="create_category" >
+						
+						  <div class="form-group">
+							   <label for="exampleFormControlSelect1">Выберите раздел</label>
+								<select data-category_editor-section="select" data-category_editor-group_sect="group" name="section" class="form-control" id="exampleFormControlSelect1">								
+									
+									<!---selects_arr - virtuall array items------------------------->								
+										<option style="display: none;" data-select_item="template" data-select_item-name="text" data-select_item-value="select" value="section1">Секция 1</option>
+									<!-------------------------->
+							    </select>
+							</div>
+
+					   <div class="form-group">
+					      <label for="postTitle">Название категории</label>
+						  <input name="title" data-category_editor-title="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+					   </div>
+					   <div class="form-group">
+					      <label for="postTitle">ID - латиницей без пробелов</label>
+						  <input name="id" data-category_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+					   </div>					   
+                       <button data-category_editor-submit="click" type="submit" class="btn btn-primary">Submit</button>
+				   </form>
+
+				   	<ul  data-category_editor-category_group="group" data-category_editor-category_group_style="style" style="display: none;">				   
+				   
+							<!---find_arr - virtuall array items------------------------->							
+								<li data-find_item="template" data-find_item-data="/remove/category/" style="margin-bottom: 7px; border-bottom: 1px solid blue;"> 
+								     <button data-find_item-click="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
+								   <span data-find_item-title="text" >название категории</span>
+								  / id = <span data-find_item-id="text"> 3333 </span>							 
+								</li>
+							<!-------------------------->
+				    </ul>
+					
+				</div>	
+							
+<!---------------------------------end Category Editor ---------------------------------------->				
+				
+				
+<!---------------------------------Section Editor ---------------------------------------->				
+				
+				<div class="body" data-section_editor="container" data-section_editor-style="style" style="display: none;">
+				
+					<h3> Раздел </h3>
+					
+					<nav class="navbar navbar-expand-sm navbar-light bg-light" >
+							
+						<ul class="navbar-nav mr-auto" >
+												
+							<li class="nav-item" >
+									<a  data-section_editor-find_sect_btn="click" data-section_editor-find_sect_btn_text="text"    class="nav-link" href="#">Смотреть все разделы</a>
+							</li>								
+						</ul>			
+					</nav>	
+					
+					<form data-section_editor-form_style="style" action="/create/section" method="post" enctype="multipart/form-data" name="create_section">
+
+					   <div class="form-group">
+					      <label for="postTitle">Название раздела</label>
+						  <input name="title" data-section_editor-title="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+					   </div>
+					   <div class="form-group">
+					      <label for="postTitle">ID - латиницей без пробелов</label>
+						  <input name="id" data-section_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+					   </div>					   
+                       <button data-section_editor-submit="click" type="submit" class="btn btn-primary">Submit</button>
+				   </form>
+				   
+				   	<ul  data-section_editor-section_group="group" data-section_editor-section_group_style="style" style="display: none;">				   
+				   
+							<!---find_arr - virtuall array items------------------------->							
+								<li data-find_item="template" data-find_item-data="/remove/category/" style="margin-bottom: 7px; border-bottom: 1px solid blue;"> 
+								     <button data-find_item-click="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
+								   <span data-find_item-title="text" >название категории</span>
+								  / id = <span data-find_item-id="text"> 3333 </span>							 
+								</li>
+							<!-------------------------->	
+								
+				      </ul>
+					
+				</div>	
+				
+ <!---------------------------------end Section Editor ---------------------------------------->		
+
+
+
+    <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+	<script src="./static/js/htmlix.js"></script>
+	<script src="./static/js/editor.js"></script>
+	<script src="./static/js/tagWraper.js"></script>
+</body>
+ </html>

@@ -1,0 +1,4 @@
+{
+  "title": "Создание контейнера",
+  "text": "Для того чтобы создать контейнер необходимо указать его название и определить тип = \"container\" в html теге. Создадим контейнер page:\r\n\r\n```html\r\n\r\n<div data-page=\"container\"> ..... </div>\r\n```\r\n\r\nДалее в описании приложения ( StateMap ) создать компонент контейнер указав его название и другие параметры:\r\n\r\n```javascript\r\n\r\nvar StateMap = {\r\n\r\n\t\tpage: {                  //название компонента\r\n\t\t\tcontainer: \"page\", \t//название контейнера\r\n\t\t\tprops: [],\t\t   //массив свойств\r\n\t\t\tmethods: {\t\t  //методы для свойств - обработчиков событий\r\n\t\t\t}\t\t\t\r\n\t\t}\r\n}\r\n\r\n//Теперь создадим экземпляр приложения :\r\nwindow.onload = function(){\r\n\r\n\tvar HM = new HTMLixState(StateMap); \r\n\t\t\r\n\tconsole.log(HM);\r\n}\r\n```\r\n\t"
+}

@@ -1,0 +1,94 @@
+
+
+<div style="margin-top: 20px;"  class="card" data-home="container">
+  <div class="card-body">
+    <h2> Javascript Frontend Framework </h2>
+
+    <p> Htmlix - яваскрипт фреймворк основанный на data- свойствах html документа. </p>
+
+    <p>Особенности:</p>
+	<ul>
+		<li>объектно-ориенитрованный подход построения приложения, наличие структуры и иерархии компонентов,</li>
+		<li>наличие пользовательских событий для обновления интерфейса и передачи данных между компонентами,</li>
+		<li>создание приложения после отданной с сервера страници не отнимает время на загрузку компонентов и не требует серверного рендеринга,</li>
+		<li>возможность строить приложения используя роутер и html шаблоны,</li>
+		<li>типизация свойств, сокращает количество используемых методов и уменьшает объем кода требуемого для написания и запоминания.</li>
+	</ul>
+	
+	<p>Примеры приложений:</p> 
+	<ul>
+		<li><a href="https://sergeyovechkin.github.io/tests/top-menu/index.html">Навигация для сайта</a></li>
+		<li><a href="https://sergeyovechkin.github.io/tests/todo/index.html">Todo mvc</a></li>
+		<li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>
+
+	</ul>
+		
+	
+  </div>
+</div>
+
+
+<div style="margin-top: 20px;" class="card" data-contacts="container">
+  <div class="card-body">
+         Вопросы и предложения можно отправлять на адрес: maksaev.mikhail@inbox.ru
+  </div>
+</div>
+
+
+
+<div data-sections="container" class="container-fluid" style="margin-top: 10px;">
+	    <div class="row">
+		
+			<div class="col-sm-12 col-md-3">
+				<section class="categories" >
+					<ul class="nav flex-column" data-left_menu="array">
+					
+						<li  class="nav-item" data-left_item_level_1="container">
+							<a  class="nav-link "  href="/api/category/:postId"
+							data-left_item_level_1-click="click"  							 
+							data-left_item_level_1-class="class" 
+							data-left_item_level_1-data="category" 
+							
+							>   <span data-left_item_level_1-title="text">
+							       пункт меню 1
+								</span>
+								<span data-left_item_level_1-simbol="text" style="color: red;">-</span>
+							</a>
+							<ul data-left_item_level_1-post_group="group" data-left_item_level_1-post_group_style="style" class="hover-non">
+							
+							<li style="display: none;" data-left_item_level_2="template">
+									<a href="#" 
+									data-left_item_level_2-click="click"
+									data-left_item_level_2-title="text"
+									data-left_item_level_2-class="class"
+									data-left_item_level_2-data="postId"
+									>Строка меню</a>
+							</li>
+				
+							
+							</ul>
+						</li>
+
+					</ul><!-- end categories="array" -->
+				</section>
+			</div>
+			
+			
+			<div class="col-sm-12 col-md-9" >
+			
+				<div class="body" data-page_single="container" >
+				
+					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Название страници</h1>
+	
+					<p data-page_single-description="html" style="margin-bottom: 15px;">
+								Описание страници
+					</p>			
+					
+				</div><!-- end page_single -->
+			</div>	<!-- end router_page -->  			
+			
+			
+			
+
+		</div><!-- row -->
+</div><!-- sections -->
