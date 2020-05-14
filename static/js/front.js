@@ -110,6 +110,8 @@ var StateMap = {
 				
 				var sectionId = this.emiter.prop;
 				
+			//	console.log(sectionId);
+				
 				var sections = this.rootLink.stateProperties.SECTIONS[sectionId].section_categories;
 				
 				var categ = {};

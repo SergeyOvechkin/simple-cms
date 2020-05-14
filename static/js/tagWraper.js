@@ -45,7 +45,8 @@
 				newText = newText.replace(/(\s)?(&lt;textarea)/g, "$1<span class='input-vars'>$2</span>");	
 				newText = newText.replace(/(\s)?(&lt;\/nav&gt;)/g, "$1<span class='tag'>$2</span>");
 				newText = newText.replace(/(\s)?(&lt;nav)/g, "$1<span class='tag'>$2</span>");	
-				newText = newText.replace(/(\s)(data-)(\S+)(=)/g, "$1$2<span class='data-attr'>$3</span>$4");
+				//newText = newText.replace(/(\s)(data-)(\S+)(=)/g, "$1$2<span class='data-attr'>$3</span>$4");
+				newText = newText.replace(/(\s)(data-)(\w+)(-)?(\w+)?(=)/g, "$1$2<span class='data-main-attr'>$3</span>$4<span class='data-attr'>$5</span>$6");
 				newText = newText.replace(/(\s)(&lt;!--)(.+)(--&gt;)/g, "$1<span class='js-comments'>$&</span>");
 				
 				return newText;	
