@@ -1,5 +1,5 @@
 
-<a href="https://sergeyovechkin.github.io/simple-cms//">Htmlix api в SPA формате</a> на фреймворке Htmlix
+<a href="https://sergeyovechkin.github.io/simple-cms//">Htmlix api в SPA формате</a> 
 
 simple cms for github 
 
