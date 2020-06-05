@@ -4,10 +4,8 @@
 simple cms for github 
 
 
-CMS для htmlix api
-
 Админка работает только на локальном сервере.
-Редактор теста работает в формате marcdown.
+Редактор теста работает в формате markdown.
 
 Для использования в качестве cms необходимо заменить переменную SITE_NAME="simple-cms" на свое название проекта на гитхаб
 в файлах app.js, /static/js/front.js, index.html, 404.html
