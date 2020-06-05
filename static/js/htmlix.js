@@ -69,7 +69,7 @@ HTMLixArray.prototype.getAll = function (map_Object) {
 HTMLixArray.prototype.order = function (newOrderArr) {
   this.rootLink.changeOrder(this.pathToComponent, newOrderArr);
 };
-function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRuncreatedContainer, newProps) {
+function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
   this.props = {};
@@ -106,11 +106,11 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
     }
   }
 
-  if (methods.createdContainer != undefined) {
-    this.createdContainer = methods.createdContainer.bind(this);
+  if (methods.onCreatedContainer != undefined) {
+    this.onCreatedContainer = methods.onCreatedContainer.bind(this);
 
-    if (isRuncreatedContainer == undefined || isRuncreatedContainer != false) {
-      this.createdContainer(); //console.log(this);
+    if (isRunonCreatedContainer == undefined || isRunonCreatedContainer != false) {
+      this.onCreatedContainer(); //console.log(this);
     }
   }
 }
@@ -308,7 +308,8 @@ function HTMLixRouter(state, routes) {
       }
 
       for (var key in this.routes[nameArrComp].routComponent) {
-        var key2 = this.routes[nameArrComp].routComponent[key];
+        //console.log(key);
+        var key2 = this.routes[nameArrComp].routComponent[key]; //console.log(key2);
 
         if (this.component[key2] == undefined) {
           var component = this.rootLink.state[key2];
@@ -427,6 +428,8 @@ function constructorProps(htmlLink, keyData1, keyData2, eventMethod, pathToConta
     return new PropVariant(htmlLink, propType, keyData2, pathToContainer, parentContainer, rootLink, newProps);
   } else if (propType == "group") {
     return new PropGroup(htmlLink, propType, keyData1, keyData2, pathToContainer, parentContainer, rootLink, newProps);
+  } else if (propType == "group-mix") {
+    return new PropGroupMix(htmlLink, propType, keyData1, keyData2, pathToContainer, parentContainer, rootLink, newProps);
   } else if (eventMethod != undefined && isEmiter(propType, rootLink) != false) {
     return new PropEventEmiter(htmlLink, propType, keyData2, eventMethod, pathToContainer, parentContainer, rootLink);
   } else if (eventMethod != undefined && isEvent(propType) != false) {
@@ -560,7 +563,7 @@ PropCommon.prototype.removeProp = function (value) {
     this.htmlLink.dataset[this.parent.name + this.rootLink.parent.capitalizeFirstLetter(this.propName)] = "";
     return;
   } else if (this.isAttr(this.type) != false) {
-    this.htmlLink.setAttribute(this.isAttr(this.type), "");
+    this.htmlLink.removeAttribute(this.isAttr(this.type));
     return;
   }
 };
@@ -801,7 +804,7 @@ PropGroup.prototype.setProp = function (value) {
       this.createInGroup(value, location);
     }
   } else {
-    console.log("не получается создать " + value + "в группе компонента" + this.pathToCоmponent);
+    console.log("не получается создать " + value + "в группе компонента" + this.pathToComponent);
   }
 
   return;
@@ -834,15 +837,16 @@ PropGroup.prototype.removeFromGroup = function (groupID) {
 };
 
 PropGroup.prototype.clearGroup = function () {
-  if (this.groupChild.length <= 0) return;
+  var count = this.groupChild.length;
+  if (count <= 0) return;
   var indexes = [];
 
-  for (var i = 0; i < this.groupChild.length; i++) {
+  for (var i = 0; i < count; i++) {
     indexes.push(this.groupChild[i].index);
   }
 
   this.rootLink.removeByIndexes(this.groupChild[0].pathToCоmponent, indexes, true);
-  this.groupChild = [];
+  this.groupChild.length = 0;
 };
 
 PropGroup.prototype.getGroupsArray = function () {
@@ -864,7 +868,7 @@ PropGroup.prototype.getGroupsArray = function () {
 
 PropGroup.prototype.reuseGroup = function (arrayWithObjects) {
   if (this.groupArray == null && this.getGroupsArray() == null) {
-    console.log("error для использования метода .reuseGroup свойство должно иметь поле this.groupArray");
+    console.log("error для использования метода .reuseGroup свойство должно иметь поле this.groupArray !=null");
     return;
   }
 
@@ -897,11 +901,12 @@ PropGroup.prototype.reuseGroup = function (arrayWithObjects) {
 };
 
 PropGroup.prototype.createInGroup = function (props, insertLocation) {
-  if (this.groupArray == null && this.getGroupsArray() == null) {
-    console.log("error для использования метода createInGroup свойство должно иметь поле this.groupArray");
+  if (this.groupArray == null && this.getGroupsArray() == null && props.componentName == undefined) {
+    console.log("error для использования метода createInGroup свойство должно иметь поле this.groupArray !=null");
     return;
   }
 
+  if (this.groupArray == null || this.groupArray == undefined) this.groupArray = this.rootLink.state[props.componentName];
   var container = this.groupArray.add(props);
   this.addToGroup(container, insertLocation);
 };
@@ -917,6 +922,7 @@ PropGroup.prototype.createNewGroup = function (groupArr, componentName) {
     }
 
     this.groupArray = this.rootLink.state[componentName];
+    if (!this.groupArray) console.log("error не создан компонент " + componentName);
 
     for (var i = 0; i < groupArr.length; i++) {
       this.createInGroup(groupArr[i]);
@@ -942,6 +948,29 @@ PropGroup.prototype.addToGroup = function (container, insertLocation) {
     for (var i = insertLocation; i < this.groupChild.length; i++) {
       this.groupChild[i].groupId = i;
     }
+  }
+};
+
+PropGroup.prototype.order = function (newOrderArr) {
+  var htmlLink = this.htmlLink;
+
+  if (newOrderArr.length != this.groupChild.length) {
+    console.log("в массиве newOrderArr, должно быть столько же элементов сколько и в массиве this.groupChild");
+    return;
+  }
+
+  var newData = [];
+
+  for (var i = 0; i < newOrderArr.length; i++) {
+    newData.push(this.groupChild[newOrderArr[i]]);
+  }
+
+  this.groupChild = newData;
+  htmlLink.innerHTML = "";
+
+  for (var k = 0; k < this.groupChild.length; k++) {
+    htmlLink.appendChild(this.groupChild[k].htmlLink);
+    this.groupChild[k].groupId = k;
   }
 };
 
@@ -981,7 +1010,7 @@ PropGroup.prototype.initGroup = function (containerName, propName) {
             //console.log('/////////////////');
 
             container.groupId = this.groupChild.length - 1;
-            if (container.createdContainer != undefined) container.createdContainer();
+            if (container.onCreatedContainer != undefined) container.onCreatedContainer();
           } else if (objToFind[key5] == "template") {
             this.groupArray = this.rootLink.state[nameVirtualArray];
             groupItems[i].setAttribute('style', "");
@@ -1001,6 +1030,125 @@ PropGroup.prototype.initGroup = function (containerName, propName) {
 
     if (groupItems.length > countItems) console.log("warn - элементов в свойстве " + propName + " контейнера " + containerName + " index - " + this.parentContainer.index + " создано меньше чем обьявлено в теге, проверьте корректность написания ключей ");
   }
+};
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function PropGroupMix(htmlLink, propType, keyData1, propName, pathToComponent, parentComponent, rootLink, newProps) {
+  PropSubtype.call(this, htmlLink, propType, propName, pathToComponent, parentComponent, rootLink);
+  this.groupChild = [];
+
+  if (newProps == undefined || newProps[propName] == undefined || _typeof(newProps[propName]) != "object" || newProps[propName].componentName == undefined) {
+    this.initGroup(keyData1, propName);
+  } else {
+    this.removeAllChild();
+  }
+}
+
+PropGroupMix.prototype = Object.create(PropSubtype.prototype);
+Object.defineProperty(PropGroup.prototype, 'constructor', {
+  value: PropGroupMix,
+  enumerable: false,
+  // false, чтобы данное свойство не появлялось в цикле for in
+  writable: true
+});
+
+PropGroupMix.prototype.getProp = function (value) {
+  if (value == undefined) {
+    var array_r = [];
+
+    for (var i = 0; i < this.groupChild.length; i++) {
+      var item = this.groupChild[i].getAllProps();
+      item.componentName = this.groupChild[i].pathToCоmponent;
+      array_r.push(item);
+    }
+
+    return array_r;
+  } else {
+    if (typeof value == "number") {
+      return this.groupChild[value];
+    } else if (_typeof(value) == "object") {
+      var array_r = [];
+
+      for (var i = 0; i < this.groupChild.length; i++) {
+        var item = this.groupChild[i].getAllProps(value);
+        if (value.componentName != undefined) item.componentName = this.groupChild[i].pathToCоmponent;
+        array_r.push(item);
+      }
+
+      return array_r;
+    }
+  }
+};
+
+PropGroupMix.prototype.setProp = function (value) {
+  if (Array.isArray(value)) {
+    this.clearGroup();
+
+    for (var i = 0; i < value.length; i++) {
+      if (value[i].location != undefined) {
+        var location = value[i].location;
+        delete value[i].location;
+      }
+
+      this.createInGroup(value[i], location);
+    }
+  } else if (_typeof(value) == "object") {
+    if (value.location != undefined) {
+      var location = value.location;
+      delete value.location;
+    }
+
+    this.createInGroup(value, location);
+  } else {
+    console.log("не получается создать " + value + "в группе компонента" + this.pathToCоmponent);
+  }
+
+  return;
+};
+
+PropGroupMix.prototype.order = function (newOrderArr) {
+  PropGroup.prototype.order.call(this, newOrderArr);
+};
+
+PropGroupMix.prototype.removeProp = function (value) {
+  PropGroup.prototype.removeProp.call(this, value);
+};
+
+PropGroupMix.prototype.initGroup = function (containerName, propName) {
+  PropGroup.prototype.initGroup.call(this, containerName, propName);
+  if (this.groupArray != undefined) delete this.groupArray;
+};
+
+PropGroupMix.prototype.addToGroup = function (container, insertLocation) {
+  PropGroup.prototype.addToGroup.call(this, container, insertLocation);
+  if (this.groupArray != undefined) delete this.groupArray;
+};
+
+PropGroupMix.prototype.removeFromGroup = function (groupID) {
+  PropGroup.prototype.removeFromGroup.call(this, groupID);
+};
+
+PropGroupMix.prototype.createInGroup = function (props, insertLocation) {
+  if (props.componentName == undefined) {
+    console.log("error для использования метода createInGroup в параметре должно присутствовать поле props.componentName");
+    return;
+  }
+
+  var vArr = this.rootLink.state[props.componentName];
+  if (vArr == undefined) console.log("error не создан виртуальный массив " + props.componentName);
+  var container = vArr.add(props);
+  this.addToGroup(container, insertLocation);
+};
+
+PropGroupMix.prototype.clearGroup = function () {
+  var count = this.groupChild.length;
+  if (count <= 0) return;
+
+  for (var i = 0; i < count; i++) {
+    this.groupChild[0].remove(true);
+  }
+
+  this.groupChild.length = 0;
 };
 function PropEventEmiter(htmlLink, propType, propName, eventMethod, pathToComponent, parentComponent, rootLink) {
   PropSubtype.call(this, htmlLink, propType, propName, pathToComponent, parentComponent, rootLink); // console.log(this);
@@ -1104,6 +1252,10 @@ PropStandartEvent.prototype.enableEvent = function (value) {
   } else {
     console.log("обработчика с таким событием не найдено");
   }
+};
+
+PropStandartEvent.prototype.emitEvent = function (eventName) {
+  this.events[eventName]();
 };
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1407,9 +1559,8 @@ function HTMLixState(StateMap) {
     } else {
       console.log("erorr - неправильно указан тип для контейнера либо массива " + key);
     }
-  }
+  } // console.log("source-map");		
 
-  console.log("source-map");
 }
 
 HTMLixState.prototype.containerInit = function (node, StateMap, key) {
@@ -1423,7 +1574,7 @@ HTMLixState.prototype.containerInit = function (node, StateMap, key) {
 HTMLixState.prototype.arrayInit = function (node, StateMap, key) {
   if (this.state[key] != undefined) return;
   if (node == null) node = document.querySelector('[data-' + key + ']');
-  if (node == null || node == undefined) console.log("error в html разметке не найден контейнер " + key);
+  if (node == null || node == undefined) console.log("error в html разметке не найден массив " + key);
   var lengthChildren = node.children.length;
   if (StateMap[key].container == undefined) console.log("error- забыли указать контейнер для массива " + key);
   var containerHTML = node.querySelectorAll('[data-' + StateMap[key].container + ']');
@@ -1667,13 +1818,14 @@ HTMLixState.prototype.clearContainerProps = function (stateNameProp, index, widt
     } else if (widthChild != undefined && widthChild == true && container.props[key].renderChild != undefined && container.props[key].renderChild.renderType == "container-inner") {
       container.props[key].renderChild.remove(true);
     } else if (widthChild != undefined && widthChild == true && container.props[key].groupChild != undefined && container.props[key].groupChild.length > 0) {
-      var indexesArr = [];
-
-      for (var it = 0; it < container.props[key].groupChild.length; it++) {
-        indexesArr.push(container.props[key].groupChild[it].index);
+      container.props[key].clearGroup();
+      /*
+            var indexesArr = [];						
+      for(var it =0; it < container.props[key].groupChild.length; it++){
+      indexesArr.push(container.props[key].groupChild[it].index);
       }
-
-      this.removeByIndexes(container.props[key].groupChild[0].pathToCоmponent, indexesArr, true);
+      this.removeByIndexes(container.props[key].groupChild[0].pathToCоmponent,  indexesArr, true);
+      */
     }
   }
 };

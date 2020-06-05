@@ -5,6 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="./static/css/bootstrap.min.css">
 		<link rel="stylesheet" href="./static/css/main.css">
+		<style type="text/css">
+				[data-find_item="container"]{
+						
+						margin-bottom: 7px; 
+						background-color: #f8f9fa;
+						padding-top: 3px;
+						padding-bottom: 3px;
+						list-style-type: none;
+				
+				} 
+		</style>
     </head>
 <body>
 
@@ -64,7 +75,7 @@
 				   <form action="/create/post" method="post" enctype="multipart/form-data" name="create_post" style="margin-bottom: 20px;">
 				         <div class="form-group">
 							<label for="exampleFormControlSelect1">Категория</label>
-								<select data-editor-category="select" data-editor-category_click="click"  data-editor-group_categ="group" name="category" class="form-control" id="exampleFormControlSelect1">
+								<select data-editor-category="select" data-editor-category_click_style="style" data-editor-category_click="click"  data-editor-group_categ="group" name="category" class="form-control" id="exampleFormControlSelect1">
 								
 									<!---selects_arr - virtuall array items------------------------->									
 									<option style="display: none;" data-select_item="template" data-select_item-name="text" data-select_item-value="select" value="category1">категория 1</option>
@@ -92,8 +103,9 @@
 				   <ul  data-editor-post_group="group" data-editor-post_group_style="style" style="display: none;">	
 				   
 							<!---find_arr - virtuall array items------------------------->						
-								<li data-find_item="template" data-find_item-data="/remove/post/" style="margin-bottom: 7px; border-bottom: 1px solid blue;"> 
-								     <button data-find_item-click="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
+								<li data-find_item="template" data-find_item-data_type_item="/post/" > 							    
+									<button data-find_item-remove="click" type="button" class="btn btn-dark btn-sm" > удалить </button>						 
+									 <button data-find_item-update="click" type="button" class="btn btn-success btn-sm" > обновить </button>
 								   <span data-find_item-title="text" >название поста</span>
 								  / id = <span data-find_item-id="text"> 3333 </span>								 
 								</li>
@@ -130,7 +142,7 @@
 						
 						  <div class="form-group">
 							   <label for="exampleFormControlSelect1">Выберите раздел</label>
-								<select data-category_editor-section="select" data-category_editor-group_sect="group" name="section" class="form-control" id="exampleFormControlSelect1">								
+								<select data-category_editor-section_style="disabled" data-category_editor-section="select" data-category_editor-group_sect="group" name="section" class="form-control" id="exampleFormControlSelect1">								
 									
 									<!---selects_arr - virtuall array items------------------------->								
 										<option style="display: none;" data-select_item="template" data-select_item-name="text" data-select_item-value="select" value="section1">Секция 1</option>
@@ -144,7 +156,7 @@
 					   </div>
 					   <div class="form-group">
 					      <label for="postTitle">ID - латиницей без пробелов</label>
-						  <input name="id" data-category_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+						  <input name="id" data-category_editor-id_style="disabled" data-category_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
 					   </div>					   
                        <button data-category_editor-submit="click" type="submit" class="btn btn-primary">Submit</button>
 				   </form>
@@ -152,8 +164,9 @@
 				   	<ul  data-category_editor-category_group="group" data-category_editor-category_group_style="style" style="display: none;">				   
 				   
 							<!---find_arr - virtuall array items------------------------->							
-								<li data-find_item="template" data-find_item-data="/remove/category/" style="margin-bottom: 7px; border-bottom: 1px solid blue;"> 
-								     <button data-find_item-click="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
+								<li data-find_item="template" data-find_item-data_type_item="/category/" > 
+								     <button data-find_item-remove="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
+									  <button data-find_item-update="click" type="button" class="btn btn-success btn-sm" > обновить </button>
 								   <span data-find_item-title="text" >название категории</span>
 								  / id = <span data-find_item-id="text"> 3333 </span>							 
 								</li>
@@ -189,7 +202,7 @@
 					   </div>
 					   <div class="form-group">
 					      <label for="postTitle">ID - латиницей без пробелов</label>
-						  <input name="id" data-section_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+						  <input name="id" data-section_editor-id_style="disabled" data-section_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
 					   </div>					   
                        <button data-section_editor-submit="click" type="submit" class="btn btn-primary">Submit</button>
 				   </form>
@@ -197,8 +210,9 @@
 				   	<ul  data-section_editor-section_group="group" data-section_editor-section_group_style="style" style="display: none;">				   
 				   
 							<!---find_arr - virtuall array items------------------------->							
-								<li data-find_item="template" data-find_item-data="/remove/category/" style="margin-bottom: 7px; border-bottom: 1px solid blue;"> 
-								     <button data-find_item-click="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
+								<li data-find_item="template" data-find_item-data_type_item="/section/" > 
+								     <button data-find_item-remove="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
+									  <button data-find_item-update="click" type="button" class="btn btn-success btn-sm" > обновить </button>
 								   <span data-find_item-title="text" >название категории</span>
 								  / id = <span data-find_item-id="text"> 3333 </span>							 
 								</li>

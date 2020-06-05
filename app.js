@@ -13,11 +13,17 @@ const server = http.createServer((req, res) => {
 	
    var parsUrl  = path.parse(req.url);	
 	
-  if (req.url === '/create/post' && req.method.toLowerCase() === 'post') {
+  if (req.url.split("/")[1] == "create" && req.url.split("/")[2] == "post" && req.method.toLowerCase() === 'post') {
+	  
+	 var post_id = req.url.split("/")[3];
+	 
+	 console.log(req.url.split("/")[3]);
     // parse a file upload
     const form = formidable({ multiples: true });
 	
-	const POST_ID = Math.floor(Math.random() * 100000);
+	var POST_ID = Math.floor(Math.random() * 100000);
+	
+	if(post_id != undefined && post_id != "")POST_ID = post_id;
     
     form.parse(req, (err, fields, files) => {
 		
@@ -38,18 +44,17 @@ const server = http.createServer((req, res) => {
         }  
 		
 		try {
-			var date = new Date().getTime();
-			desc =  fs.readFileSync("./dbase/category_id.txt");
-			desc = JSON.parse(desc);
-			if(desc[CATEGORY_ID] == undefined)desc[CATEGORY_ID] = [];				
-			desc[CATEGORY_ID].push({  post_id: POST_ID, title: fields.title, date: date });
 			
-			var posts_id =  fs.readFileSync("./dbase/posts_id.txt");
-			posts_id = JSON.parse(posts_id);
-			posts_id[POST_ID] = {title: fields.title, date: date };
-			
-			fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(desc) );
-			fs.writeFileSync("./dbase/posts_id.txt",  JSON.stringify(posts_id) );
+			if(post_id == undefined || post_id == ""){
+				
+				var date = new Date().getTime();
+				desc =  fs.readFileSync("./dbase/category_id.txt");
+				desc = JSON.parse(desc);		
+				if(desc[CATEGORY_ID] == undefined)desc[CATEGORY_ID] = [];				
+				desc[CATEGORY_ID].push({  post_id: POST_ID, title: fields.title, date: date });	
+				
+				fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(desc) );
+			}
 
 		}
 		catch(err){
@@ -86,6 +91,8 @@ const server = http.createServer((req, res) => {
 					var category_title = fields.title;
 					var category_section = fields.section
 					
+					//console.log(fields);
+					
 					//создаем объект с настройками данной категории
 					var category = {
 						
@@ -98,14 +105,21 @@ const server = http.createServer((req, res) => {
 			           //добавляем новую категорию в объект со всеми категориями
 						var CATEGORIES =  fs.readFileSync("./dbase/CATEGORIES.txt");
 						CATEGORIES = JSON.parse(CATEGORIES);
+						
+						var update = false;
+						
+						if(CATEGORIES[category_id] != undefined)update = true;
+						//console.log(category_id);
+						//console.log(CATEGORIES[category_id]);
 						CATEGORIES[category_id] = category;
 						
 						//добавляем категорию в секцию 
-						var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.txt");
-						SECTIONS = JSON.parse(SECTIONS);
-						SECTIONS[category_section].section_categories.push(category_id);
-						fs.writeFileSync("./dbase/SECTIONS.txt",  JSON.stringify(SECTIONS) );
-	
+						if(!update){
+							var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.txt");
+							SECTIONS = JSON.parse(SECTIONS);
+							SECTIONS[category_section].section_categories.push(category_id);
+							fs.writeFileSync("./dbase/SECTIONS.txt",  JSON.stringify(SECTIONS) );
+						}
 					}
 					catch(err){
 						sendError(err, req, res, "не удалось создать категорию");
@@ -152,7 +166,18 @@ const server = http.createServer((req, res) => {
 			
 						var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.txt");
 						SECTIONS = JSON.parse(SECTIONS);
-						SECTIONS[section_id] = section;
+						var update = false;
+						
+						if(SECTIONS[section_id] != undefined)update = true;
+						if(update){
+							
+							SECTIONS[section_id].section_title = section_title;
+							
+						}else{
+							
+							SECTIONS[section_id] = section;
+						}
+						
 						//fs.writeFileSync("./dbase/SECTIONS.txt",  JSON.stringify(SECTIONS) );
 	
 					}
@@ -238,6 +263,27 @@ const server = http.createServer((req, res) => {
 							
 		
 		 
+  } else if ( parsUrl.dir.split("/")[1] == "update" && parsUrl.dir.split("/")[2] == "post" ){	
+
+         var category_id =   req.url.split("/")[3]; 
+		var post_id =   req.url.split("/")[4];
+		var path_to_file = "dbase/categories/"+category_id+"/"+post_id+".txt";
+		
+					try {
+			           //добавляем новую категорию в объект со всеми категориями
+						var post =  fs.readFileSync(path_to_file);							
+						post = JSON.parse(post);
+						
+					}
+					catch(err){
+						sendError(err, req, res, "ошибка обновления файла");
+						return;
+						
+					}
+         			res.writeHead(200, { 'content-type': 'application/json' });
+					res.end(JSON.stringify({post: post}) );
+       
+		 
   }
   else if ( parsUrl.dir.split("/")[1] == "remove" && parsUrl.dir.split("/")[2] == "post" ){	
 
@@ -277,7 +323,7 @@ const server = http.createServer((req, res) => {
 					res.end(JSON.stringify({mess: "файл "+post_id+ " удален"}) );
        });	
 		 
-  }
+  }  
     else if ( parsUrl.dir.split("/")[1] == "remove" && parsUrl.dir.split("/")[2] == "category" ){	
 
          var category_id =   req.url.split("/")[3]; 

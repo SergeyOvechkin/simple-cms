@@ -49,9 +49,25 @@ var StateMap = {
 		container: "category_editor",
 				props: ["style","title", "id", "submit", "section", "group_sect", ["listen_load_sect", "emiter-load-sections", ""],
 				"find_categ_btn_text", "find_categ_btn", "form_style",
-				"category_group", "category_group_style"],
+				"category_group", "category_group_style",  ["listen_update_category", "emiter-update-category", ""], "section_style", "id_style"],
 		methods: {
+			listen_update_category: function(){
+				
+				
+				this.parent.props.find_categ_btn.events["click"]();
+				this.parent.props.title.setProp(this.emiter.prop.name);
+				this.parent.props.id.setProp(this.emiter.prop.id);
+				this.parent.props.section_style.setProp("disabled");
+				this.parent.props.id_style.setProp("disabled");
+			},
 			find_categ_btn: function(){
+				
+				this.parent.props.title.setProp("");
+				this.parent.props.id.setProp("");
+				this.parent.props.section_style.removeProp();
+				this.parent.props.id_style.removeProp();
+			
+
 				
 				var props = this.parent.props;
 					
@@ -65,7 +81,7 @@ var StateMap = {
 					var catOld = this.rootLink.stateProperties.CATEGORIES;
 					for(var key in catOld){
 
-						catArr2.push({id: catOld[key].id, title: catOld[key].name, data: "/remove/category/", });
+						catArr2.push({id: catOld[key].id, title: catOld[key].name, data: "/category/", });
 					}
 					this.prop =1;
 
@@ -122,6 +138,13 @@ var StateMap = {
 				var oldForm = document.forms["create_category"];
 			    var formData  = new FormData(oldForm);
 				
+				if(!formData.has("id") || !formData.has("section")){
+					
+					formData.append("id", id);
+					formData.append("section", section);
+				}
+				
+				
 				var HM = this.rootLink;
 				
 				function callb(json){
@@ -145,8 +168,11 @@ var StateMap = {
 					props.id.setProp("");
 					
 				}
-				
-				this.rootLink.stateMethods.send_POST("/create/category", formData, callb);
+
+					
+					this.rootLink.stateMethods.send_POST("/create/category", formData, callb);
+					
+							
 				
 			},		
 		}
@@ -155,9 +181,21 @@ var StateMap = {
 	section_editor: {
 		container: "section_editor",
 				props: ["style","title", "id", "submit", "section_group", "section_group_style",
-				"find_sect_btn_text", "find_sect_btn", "form_style"],
+				"find_sect_btn_text", "find_sect_btn", "form_style" , ["listen_update_section", "emiter-update-section", ""], "id_style"],
 		methods: {
+			listen_update_section: function(){
+				
+				console.log(this.emiter.prop);
+				this.parent.props.find_sect_btn.events["click"]();
+				this.parent.props.title.setProp(this.emiter.prop.section_title);
+				this.parent.props.id.setProp(this.emiter.prop.section_id);
+				this.parent.props.id_style.setProp("disabled");
+				
+			},
 			find_sect_btn: function(){
+				this.parent.props.title.setProp("");
+				this.parent.props.id.setProp("");
+				this.parent.props.id_style.removeProp();
 				
 				var props = this.parent.props;
 					
@@ -171,7 +209,7 @@ var StateMap = {
 					
 					for(var key in sectOLd){
 
-						sectArr.push({id: sectOLd[key].section_id, title: sectOLd[key].section_title, data: "/remove/section/", });
+						sectArr.push({id: sectOLd[key].section_id, title: sectOLd[key].section_title, data: "/section/", });
 					}
 					this.prop =1;
 					
@@ -209,6 +247,11 @@ var StateMap = {
 				
 				var oldForm = document.forms["create_section"];
 			    var formData  = new FormData(oldForm);
+				if(!formData.has("id")){
+					
+					formData.append("id", id);
+		
+				}
 				var HM = this.rootLink;
 				
 				function callb(json){
@@ -232,6 +275,10 @@ var StateMap = {
 					
 				}
 				this.rootLink.stateMethods.send_POST("/create/section", formData, callb);
+				
+				this.parent.props.title.setProp("");
+				this.parent.props.id.setProp("");
+				this.parent.props.id_style.removeProp();
 
 			},		
 		}
@@ -242,7 +289,8 @@ var StateMap = {
 		props: ["convent_btn", "convent_btn_text", "convent_btn_style", "save_btn", "title", "input", "output_html",
 		"category", "category_click", "group_categ", ["listen_load_cat", "emiter-load-categories", ""],
 		"input_style", "output_style", "find_by_cat_btn", "title_style", "find_by_cat_btn_text", "find_by_cat_btn_style",
-		"post_group", "post_group_style", ["listen_find_posts", "emiter-find-posts", ""]],
+		"post_group", "post_group_style", ["listen_find_posts", "emiter-find-posts", ""], ["listen_update_post", "emiter-update-post", ""],
+		"category_click_style"],
 		methods: {
 			
 			listen_load_cat: function(){
@@ -275,7 +323,7 @@ var StateMap = {
 						var postsArr = [];
 						
 						for(var i=0; i<data.length; i++){
-							postsArr.push({ id: data[i].post_id, title: data[i].title, data: "/remove/post/"+category+"/"  })
+							postsArr.push({ id: data[i].post_id, title: data[i].title, data: "/post/"+category+"/"  })
 						}
 						
 						post_group.setProp(postsArr);
@@ -284,12 +332,27 @@ var StateMap = {
 				
 				
 			},
+			listen_update_post: function(){
+				
+				this.parent.props.find_by_cat_btn.events["click"]();
+				this.parent.props.title.setProp(this.emiter.prop.title);
+				this.parent.props.input.setProp(this.emiter.prop.text);				
+				this.parent.props.save_btn.prop = this.emiter.prop.id;
+				this.parent.props.category_click_style.setProp("display: none;");
+				
+			},
 			category_click: function(){
 				
 				    this.rootLink.eventProps["emiter-find-posts"].emit();
 				
 			},
 			find_by_cat_btn: function(){
+				
+				this.parent.props.title.setProp("");
+				this.parent.props.input.setProp("");	
+				this.parent.props.save_btn.prop = null;
+				this.parent.props.category_click_style.setProp("");
+				
 				
 				var props = this.parent.props;
 				
@@ -351,6 +414,7 @@ var StateMap = {
 			},
 			save_btn: function(){
 				
+				
 				event.preventDefault();
 				
 				var props = this.parent.props;
@@ -390,7 +454,16 @@ var StateMap = {
 					props.input.setProp("");
 					
 				}
-				 this.rootLink.stateMethods.send_POST("/create/post", formData, callb);
+				if(this.prop != null){
+					this.rootLink.stateMethods.send_POST("/create/post/"+this.prop, formData, callb);
+					this.prop = null;
+					this.parent.props.category_click_style.setProp("");
+					
+				}else{
+					
+					 this.rootLink.stateMethods.send_POST("/create/post", formData, callb);
+				}
+				
 
 				
 			}
@@ -412,17 +485,17 @@ var StateMap = {
 		find_arr: { //массив с найдеными постами, категориями и секциями в поиске
 			
 			container: "find_item",
-			props: ["click","title", "id", "data"],
+			props: ["remove", "update", "title", "id", "data"],
 			methods: {
 				
-				click: function(){
+				remove: function(){
 					
 					var id = this.parent.props.id.getProp();
 					var url1 = this.parent.props.data.getProp();
 				
 					var context = this;
 
-					 var url = url1+id;
+					 var url = "/remove"+url1+id;
 				
 					this.rootLink.stateMethods.fetchItems(url).then(data=>{	
 				
@@ -447,11 +520,46 @@ var StateMap = {
 				}); 
 					
 					
-				}
+				},
+				update: function(){
 				
-			}
-			
+					var id = this.parent.props.id.getProp();
+					var url1 = this.parent.props.data.getProp();				
+					var context = this;
+					var url = "/update"+url1+id;
+					
+					if(url1.search("/post/") == 0){
+						
+						
+						this.rootLink.stateMethods.fetchItems(url).then(data=>{	
+				
+							if(data.err == undefined){
+												
+								data.post.id = id;              
+								context.rootLink.eventProps["emiter-update-post"].setEventProp(data.post);
+							
+							}else{
+						
+								console.log(data.err);
+							}
+						}); 					
+				
+					}else if(url1 == "/category/"){
+							
+						             
+							this.rootLink.eventProps["emiter-update-category"].setEventProp(this.rootLink.stateProperties.CATEGORIES[id]);
+							
+					}else if(url1 == "/section/"){
+							
+							          
+							this.rootLink.eventProps["emiter-update-section"].setEventProp(this.rootLink.stateProperties.SECTIONS[id]);
+							
+					}
+				
+				}			
 		}
+		
+	   },
 		
 	},
 	eventEmiters: {
@@ -460,6 +568,9 @@ var StateMap = {
 		["emiter-load-sections"]:{ prop: ""},
 		["emiter-class-btn"]: {prop: ""},
 		["emiter-find-posts"]: {prop: ""},
+		["emiter-update-post"]: {prop: ''},
+		["emiter-update-category"]: {prop: ''},
+		["emiter-update-section"]: {prop: ''},
 		
 	},
 	stateMethods: {
