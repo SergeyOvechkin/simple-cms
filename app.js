@@ -54,6 +54,17 @@ const server = http.createServer((req, res) => {
 				desc[CATEGORY_ID].push({  post_id: POST_ID, title: fields.title, date: date });	
 				
 				fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(desc) );
+			}else{
+				
+				desc =  fs.readFileSync("./dbase/category_id.txt");
+				desc = JSON.parse(desc);
+				desc[CATEGORY_ID].forEach((el)=>{
+					
+					if(el.post_id == post_id)el.title = fields.title;
+					
+				});
+				fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(desc) );
+				
 			}
 
 		}
