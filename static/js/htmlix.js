@@ -314,7 +314,7 @@ function HTMLixRouter(state, routes) {
         if (this.component[key2] == undefined) {
           var component = this.rootLink.state[key2];
           this.component[key2] = component;
-          if (component == undefined) console.log("router error - не удается найти компонент " + key2 + " в описании приложения, проверьте правильность написания ключей в параметре routes для HTMLixRouter"); //console.log(key);
+         
         }
 
         if (this.htmlLink[key] == undefined || this.htmlLink[key] == null) this.htmlLink[key] = document.querySelector("[data-" + key + "]"); //console.log(this.htmlLink[key]);

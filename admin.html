@@ -33,24 +33,23 @@
 			
 		<!-- -------------------------curent operation container---------------------------------------------  -->
 		
-             <div data-current_operation="container" data-current_operation-data="editor"  >
+             <div data-current_operation="container"   >
 			 
 			 
 			 	    <nav class="navbar navbar-expand-sm navbar-light bg-light" style="margin-bottom: 20px;" >
 							
-						<ul class="navbar-nav mr-auto" >
-												
+						<ul class="navbar-nav mr-auto" >											
 							<li class="nav-item " >
-									<a   data-current_operation-page_btn="click" data-current_operation-page_btn_class="class" class="nav-link active" href="#">Страница</a>
+									<a  data-current_operation-page_btn="click" class="nav-link active" href="#">Страница</a>
 							</li>	
 							<li class="nav-item" >
-									<a  data-current_operation-category_btn="click"  data-current_operation-category_btn_class="class" class="nav-link" href="#">Категория</a>
+									<a  data-current_operation-category_btn="click"   class="nav-link" href="#">Категория</a>
 							</li>	
 							<li class="nav-item" >
-									<a  data-current_operation-section_btn="click" data-current_operation-section_btn_class="class"  class="nav-link" href="#">Раздел</a>
-							</li>
-							
-						</ul>			
+									<a  data-current_operation-section_btn="click"   class="nav-link" href="#">Раздел</a>
+							</li>						
+						</ul>
+						
 					</nav>
 					
 			 <div data-current_operation-variant="render-variant">
@@ -64,10 +63,10 @@
 						<ul class="navbar-nav mr-auto" >
 												
 							<li data-editor-convent_btn_style="style" class="nav-item" >
-									<a  data-editor-convent_btn="click" data-editor-convent_btn_text="text"    class="nav-link" href="#">Смотреть html</a>
+									<a  data-editor-convent_btn="click" class="nav-link" href="#">Смотреть html</a>
 							</li>						
 							<li data-editor-find_by_cat_btn_style="style" class="nav-item" >
-									<a  data-editor-find_by_cat_btn="click" data-editor-find_by_cat_btn_text="text"  class="nav-link" href="#">Искать по категории</a>
+									<a  data-editor-find_by_cat_btn="click"  class="nav-link" href="#">Искать по категории</a>
 							</li>							
 						</ul>			
 					</nav>	
@@ -75,9 +74,9 @@
 				   <form action="/create/post" method="post" enctype="multipart/form-data" name="create_post" style="margin-bottom: 20px;">
 				         <div class="form-group">
 							<label for="exampleFormControlSelect1">Категория</label>
-								<select data-editor-category="select" data-editor-category_click_style="style" data-editor-category_click="click"  data-editor-group_categ="group" name="category" class="form-control" id="exampleFormControlSelect1">
+								<select data-editor-category_click="click"  name="category" class="form-control" id="exampleFormControlSelect1">
 								
-									<!---selects_arr - virtuall array items------------------------->									
+									<!---selects_arr - virtuall array items список категорий------------------------->									
 									<option style="display: none;" data-select_item="template" data-select_item-name="text" data-select_item-value="select" value="category1">категория 1</option>
 									<!-------------------------->
 							    </select>
@@ -97,12 +96,12 @@
 				   
 				   <div data-editor-output_html="html" data-editor-output_style="style">				   
 				   
-			
+			             <!----------предварительная html разметка--------------->
 				   
 				   </div>
 				   <ul  data-editor-post_group="group" data-editor-post_group_style="style" style="display: none;">	
 				   
-							<!---find_arr - virtuall array items------------------------->						
+							<!---find_arr - virtuall array items  список найденных постов по категории------------------------->						
 								<li data-find_item="template" data-find_item-data_type_item="/post/" > 							    
 									<button data-find_item-remove="click" type="button" class="btn btn-dark btn-sm" > удалить </button>						 
 									 <button data-find_item-update="click" type="button" class="btn btn-success btn-sm" > обновить </button>
@@ -125,15 +124,15 @@
 
 <!--------------------------------- Category Editor ---------------------------------------->
 
-				<div class="body" data-category_editor="container" data-category_editor-style="style" style="display: none;">
+				<div class="body" data-category_editor="container" style="display: none;">
 				
 					<h3> Категория </h3>
-					<nav class="navbar navbar-expand-sm navbar-light bg-light" >
+					<nav class="navbar navbar-expand-sm navbar-light bg-light" style="margin-bottom: 7px;" >
 							
 						<ul class="navbar-nav mr-auto" >
 												
 							<li class="nav-item" >
-									<a  data-category_editor-find_categ_btn="click" data-category_editor-find_categ_btn_text="text"    class="nav-link" href="#">Смотреть все категории</a>
+								<a  data-category_editor-find_categ_btn="click" class="nav-link" href="#">Смотреть все категории</a>
 							</li>								
 						</ul>			
 					</nav>	
@@ -142,9 +141,9 @@
 						
 						  <div class="form-group">
 							   <label for="exampleFormControlSelect1">Выберите раздел</label>
-								<select data-category_editor-section_style="disabled" data-category_editor-section="select" data-category_editor-group_sect="group" name="section" class="form-control" id="exampleFormControlSelect1">								
+								<select data-category_editor-group_sect="group" name="section" class="form-control" id="exampleFormControlSelect1">								
 									
-									<!---selects_arr - virtuall array items------------------------->								
+									<!---selects_arr - virtuall array items список разделов------------------------->								
 										<option style="display: none;" data-select_item="template" data-select_item-name="text" data-select_item-value="select" value="section1">Секция 1</option>
 									<!-------------------------->
 							    </select>
@@ -156,14 +155,14 @@
 					   </div>
 					   <div class="form-group">
 					      <label for="postTitle">ID - латиницей без пробелов</label>
-						  <input name="id" data-category_editor-id_style="disabled" data-category_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+						  <input name="id" data-category_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
 					   </div>					   
                        <button data-category_editor-submit="click" type="submit" class="btn btn-primary">Submit</button>
 				   </form>
 
-				   	<ul  data-category_editor-category_group="group" data-category_editor-category_group_style="style" style="display: none;">				   
+				   	<ul  data-category_editor-category_group="group" style="display: none;">				   
 				   
-							<!---find_arr - virtuall array items------------------------->							
+							<!---find_arr - virtuall array items список всех категории для обновления либо удаления------------------------->							
 								<li data-find_item="template" data-find_item-data_type_item="/category/" > 
 								     <button data-find_item-remove="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
 									  <button data-find_item-update="click" type="button" class="btn btn-success btn-sm" > обновить </button>
@@ -180,16 +179,16 @@
 				
 <!---------------------------------Section Editor ---------------------------------------->				
 				
-				<div class="body" data-section_editor="container" data-section_editor-style="style" style="display: none;">
+				<div class="body" data-section_editor="container"  style="display: none;">
 				
 					<h3> Раздел </h3>
 					
-					<nav class="navbar navbar-expand-sm navbar-light bg-light" >
+					<nav class="navbar navbar-expand-sm navbar-light bg-light" style="margin-bottom: 7px;">
 							
 						<ul class="navbar-nav mr-auto" >
 												
 							<li class="nav-item" >
-									<a  data-section_editor-find_sect_btn="click" data-section_editor-find_sect_btn_text="text"    class="nav-link" href="#">Смотреть все разделы</a>
+									<a  data-section_editor-find_sect_btn="click" class="nav-link" href="#">Смотреть все разделы</a>
 							</li>								
 						</ul>			
 					</nav>	
@@ -202,14 +201,14 @@
 					   </div>
 					   <div class="form-group">
 					      <label for="postTitle">ID - латиницей без пробелов</label>
-						  <input name="id" data-section_editor-id_style="disabled" data-section_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
+						  <input name="id"  data-section_editor-id="inputvalue" class="form-control" type="text" placeholder="Default input" id="postTitle">
 					   </div>					   
                        <button data-section_editor-submit="click" type="submit" class="btn btn-primary">Submit</button>
 				   </form>
 				   
-				   	<ul  data-section_editor-section_group="group" data-section_editor-section_group_style="style" style="display: none;">				   
+				   	<ul  data-section_editor-section_group="group"  style="display: none;">				   
 				   
-							<!---find_arr - virtuall array items------------------------->							
+							<!---find_arr - virtuall array items список всех разделов для обновления либо удаления------------------------->							
 								<li data-find_item="template" data-find_item-data_type_item="/section/" > 
 								     <button data-find_item-remove="click" type="button" class="btn btn-dark btn-sm" > удалить </button>
 									  <button data-find_item-update="click" type="button" class="btn btn-success btn-sm" > обновить </button>

@@ -1,14 +1,17 @@
 
 const SITE_NAME = "simple-cms"; // имя репозитория на гитхаб
 
-var converter = new showdown.Converter();
+var converter = new showdown.Converter(); //конертация markdown формата
 
 var StateMap = {
-
+    
+	/*
+	  menu - компонент меню для переключения разделов сайта
+	*/
 	menu:{
 		arrayProps: [["listen_load_section", "emiter-load-section", ""], ["listen_change_section_in_arr", "emiter-change-section", ""]],
 		arrayMethods: {
-			
+			///обновляем список разделов меню присланных с сервера при первой загрузке
 			listen_load_section: function(){
 				
 				
@@ -25,6 +28,7 @@ var StateMap = {
 				this.component().reuseAll(sectionNew);
 				
 			},
+			///меняем url и отображаемый компонент при наступлении события, которое мы вызываем при клике по секции в меню либо при первой загрузке страници
 			listen_change_section_in_arr: function(){
 				
 				var sect_id = this.emiter.prop;
@@ -42,7 +46,8 @@ var StateMap = {
 		props: [ "click", "class", "data", "title", ["listen_change_section_in_cont", "emiter-change-section", ""]],
 		methods: {
 			
-
+            //вызываем событие emiter-change-section которое слушаем в мсвойстве массива 
+			//и событие emiter-load-categories для обновления списка левого меню в компоненте left_menu 
 			click: function(){
 				event.preventDefault();
 				
@@ -59,6 +64,7 @@ var StateMap = {
 				}
 
 			},
+			//слушаем событие смены раздела для снятия и добавления активного класса на соответствующих кнопках
 			listen_change_section_in_cont: function(){
 				
 			
@@ -80,12 +86,17 @@ var StateMap = {
 		}
 		
 	},
+	/*
+	  page_single - компонент отображает текущий пост.
+	
+	*/
 	page_single: {
 		
 		container: "page_single",
 		props: ["description", "title", ["listen_load_page", "emiter-load-page", ""]],
 		methods: {
 			
+			//слушает событие загрузки поста с сервера которое мы вызываем в компоненте left_menu_level_2 и методе onLoadAll при первой загрузке,  и отображает пост
 			listen_load_page: function(){
 				
 				var post = this.emiter.getEventProp();
@@ -96,16 +107,21 @@ var StateMap = {
 				
 				this.parent.props.description.setProp(text);
 				
-				 colorTagsAndComents(); //tagWraper.js
+				 colorTagsAndComents(); //tagWraper.js 
 				
 			}			
 		}		
 	},
+	/*
+		left_menu - компонент левое меню для переключения отображаемых постов
+	*/
 	left_menu: {
 		
 		arrayProps: [ ["listen_load_cat", "emiter-load-categories", ""] ],
 		arrayMethods: {
 			
+			//вызываем при первой загрузке в методе onLoadAll либо клике по секции в компоненте menu
+			//при смене секции формируем соответствующий список меню с категориями и названиями постов
 			listen_load_cat: function(){
 				
 				var sectionId = this.emiter.prop;
@@ -148,7 +164,7 @@ var StateMap = {
 		container: "left_item_level_1",
 		props: ["click", "title", "class", "data", "post_group", "post_group_style", "simbol"],
 		methods: {
-			
+			//при клике по категории списка меню скрываем либо отбражаем дочерний список постов
 			click: function(){
 				
 				event.preventDefault();
@@ -174,7 +190,8 @@ var StateMap = {
 				
 				//console.log(this);
 			},
-			createdContainer(){
+			//метод вызываетсся при создании контейнера
+			oncCreatedContainer(){
 				
 				if(this.props.post_group.groupArray == undefined){
 					
@@ -189,12 +206,16 @@ var StateMap = {
 	},
 	virtualArrayComponents: {
 		
+		/*
+		 left_menu_level_2 - компонент - виртуальный массив для отображения списка постов в левом меню
+		*/
 		left_menu_level_2: {
 		
-			container: "left_item_level_2",
+			container: "left_item_level_2", 
 			props: ["click", "title", "class", "data"],
 			methods: {
-				
+				//метод меняет текущий роут, а также отправляет запрос с поиском соотв. поста на сервер, после загрузки поста вызывает событие emiter-load-page
+				//которое слушает компонент page_single 
 				click: function(){
 				
 						var post_id = this.parent.props.data.getProp();
@@ -219,6 +240,7 @@ var StateMap = {
 			}			
 		}
 	},
+	//компонент для отображения страниц с постами и левого меню
 	sections: {
 			container: "sections",
 			props: [],
@@ -228,6 +250,7 @@ var StateMap = {
 			}
 			
 	},
+	//компонент для отображения домашней страници
 	home: {
 			container: "home",
 			props: [],
@@ -237,6 +260,7 @@ var StateMap = {
 			}
 			
 	},
+	//компонент для отображения страници контактов
 	contacts: {
 			container: "contacts",
 			props: [],
@@ -248,7 +272,7 @@ var StateMap = {
 		},
 stateMethods: {
 	
-	
+	//получает данные с сервера методом get
 	fetchAll: async function(url){
 			
 			var resp = await fetch(url);
@@ -264,7 +288,8 @@ stateMethods: {
 			
 			return json;		
 		},
-		onLoadAll: function(){ //метод событие вызывается после загрузки и создания всех коомпонентов
+		//метод - событие, вызывается после дозагрузки шаблонов и создания соответствующих компонентов
+		onLoadAll: function(){ 
 			
 			var currentUrl = window.location.pathname;
 			var urlArr = currentUrl.split("/");
@@ -307,7 +332,7 @@ stateMethods: {
 		CATEGORIES: "",
 		SECTIONS: "",
 		category_id: "",
-		posts_id: "",
+		//posts_id: "",
 		POST: "",
 	},
     eventEmiters: {
@@ -383,6 +408,7 @@ function addSectionToRoutes(routes, sections){
 	}
 		
 }
+// т. к. сервер не поддерживает php и node.js создаем страницу на клиенте, сперва загрузив все необходимые данные с сервера.
 window.onload = function(){
 	
 
