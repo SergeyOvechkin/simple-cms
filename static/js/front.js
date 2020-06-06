@@ -125,7 +125,7 @@ var StateMap = {
 			listen_load_cat: function(){
 				
 				var sectionId = this.emiter.prop;
-				
+				if(sectionId == undefined || sectionId == "" || sectionId == "home")return;
 			//	console.log(sectionId);
 				
 				var sections = this.rootLink.stateProperties.SECTIONS[sectionId].section_categories;
