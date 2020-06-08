@@ -1,11 +1,11 @@
 
-<a href="https://sergeyovechkin.github.io/simple-cms//">Htmlix api в SPA формате</a> 
+<a href="https://sergeyovechkin.github.io/simple-cms//">Htmlix api в SPA формате</a> - пример работающего сайта на simple-cms
 
  <h2> Simple-cms </h2>
   
  <p>Использование в качестве cms на github</p>
  <ul>
-    <li><a href="https://github.com/SergeyOvechkin/simple-cms">simple-cms</a> - поддерживает создание, редактирование и удаление постов, категорий и разделов.</li>
+    <li>simple-cms - поддерживает создание, редактирование и удаление постов, категорий и разделов.</li>
 	<li>Фронтенд для данного api написан на htmlix, админка работает только на локальном сервере, т.к. написана для создания страниц на github (gh-pages).</li>
     <li>Для использования в качестве CMS необходимо скачать данный репозиторий, заменить переменную SITE_NAME="simple-cms" на свое название проекта на гитхаб
 		в файлах app.js, /static/js/front.js, index.html, 404.html.</li>
