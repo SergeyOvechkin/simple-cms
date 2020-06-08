@@ -6,6 +6,11 @@ const formidable = require('formidable');
 const fs_extra = require('fs-extra');
 const fs = require("fs");
 const path = require("path");
+
+var regexpCategory_id =/\s*var\s+category_id_js\s+=\s+/;
+var regexpCATEGORIES =/\s*var\s+CATEGORIES_JS\s+=\s+/;
+var regexpSECTIONS =/\s*var\s+SECTIONS_JS\s+=\s+/;
+
  
 const server = http.createServer((req, res) => {
 
@@ -42,29 +47,39 @@ const server = http.createServer((req, res) => {
 				}  
         }  		
 		try {
+				var desc = fs.readFileSync("./dbase/category_id.js", "utf8");			
+				
+				desc = desc.replace(regexpCategory_id, "");
+				desc = JSON.parse(desc);
 			
 			if(post_id == undefined || post_id == ""){ //если новый пост добавляем его в категорию
 				
 				var date = new Date().getTime();
-				desc =  fs.readFileSync("./dbase/category_id.txt");
-				desc = JSON.parse(desc);		
+				//desc =  fs.readFileSync("./dbase/category_id.txt");
+				//desc = JSON.parse(desc);
+							
 				if(desc[CATEGORY_ID] == undefined)desc[CATEGORY_ID] = [];				
 				desc[CATEGORY_ID].push({  post_id: POST_ID, title: fields.title, date: date });	
 				
-				fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(desc) );
+				//fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(desc) );
+				
+
 				
 			}else{//если обновляем пост обновляем его название в категории
 				
-				desc =  fs.readFileSync("./dbase/category_id.txt");
-				desc = JSON.parse(desc);
+				//desc =  fs.readFileSync("./dbase/category_id.txt");
+				//desc = JSON.parse(desc);
 				desc[CATEGORY_ID].forEach((el)=>{
 					
 					if(el.post_id == post_id)el.title = fields.title;
 					
 				});
-				fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(desc) );
+				//fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(desc) );
 				
 			}
+			var text = " var category_id_js = "+ JSON.stringify(desc);
+				
+			fs.writeFileSync("./dbase/category_id.js", text);
 			delete fields.category;
 			
 			fs.writeFileSync(name, JSON.stringify( fields, null, 2) ); ///записываем пост в файл
@@ -109,7 +124,9 @@ const server = http.createServer((req, res) => {
 					
 					try {
 			           //добавляем новую категорию в объект со всеми категориями
-						var CATEGORIES =  fs.readFileSync("./dbase/CATEGORIES.txt");
+						var CATEGORIES =  fs.readFileSync("./dbase/CATEGORIES.js", "utf8");
+						
+						CATEGORIES = CATEGORIES.replace(regexpCATEGORIES, "");						
 						CATEGORIES = JSON.parse(CATEGORIES);
 						
 						var update = false;
@@ -119,12 +136,14 @@ const server = http.createServer((req, res) => {
 						
 						//добавляем категорию в секцию 
 						if(!update){
-							var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.txt");
+							var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.js", "utf8");
+							SECTIONS = SECTIONS.replace(regexpSECTIONS, "");							
 							SECTIONS = JSON.parse(SECTIONS);
 							SECTIONS[category_section].section_categories.push(category_id);
-							fs.writeFileSync("./dbase/SECTIONS.txt",  JSON.stringify(SECTIONS) );
+							
+							fs.writeFileSync("./dbase/SECTIONS.js",  "var SECTIONS_JS = "+JSON.stringify(SECTIONS) );
 						}
-						fs.writeFileSync("./dbase/CATEGORIES.txt", JSON.stringify(CATEGORIES));
+						fs.writeFileSync("./dbase/CATEGORIES.js", "var CATEGORIES_JS = "+JSON.stringify(CATEGORIES));
 					}
 					catch(err){
 						sendError(err, req, res, "не удалось создать категорию_2");
@@ -159,7 +178,8 @@ const server = http.createServer((req, res) => {
 					
 					try {
 			
-						var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.txt");
+						var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.js", "utf8");
+						SECTIONS = SECTIONS.replace(regexpSECTIONS, "");
 						SECTIONS = JSON.parse(SECTIONS);
 						
 						var update = false;						
@@ -174,7 +194,7 @@ const server = http.createServer((req, res) => {
 							SECTIONS[section_id] = section;
 						}
 						
-						fs.writeFileSync("./dbase/SECTIONS.txt",  JSON.stringify(SECTIONS) );
+						fs.writeFileSync("./dbase/SECTIONS.js",  "var SECTIONS_JS = "+JSON.stringify(SECTIONS) );
 	
 					}
 					catch(err){
@@ -230,8 +250,9 @@ const server = http.createServer((req, res) => {
  
 				try {
 			           //добавляем новую категорию в объект со всеми категориями
-						var categoryAll =  fs.readFileSync("./dbase/category_id.txt");
-							
+						var categoryAll =  fs.readFileSync("./dbase/category_id.js", "utf8");
+						
+						categoryAll = categoryAll.replace(regexpCategory_id, "");	
 						categoryAll = JSON.parse(categoryAll);
 						
 						postsArray = categoryAll[category_id];
@@ -277,7 +298,8 @@ const server = http.createServer((req, res) => {
 		var path_to_file = "dbase/categories/"+category_id+"/"+post_id+".txt";
 		
 					try {
-						var categoryAll =  fs.readFileSync("./dbase/category_id.txt");							
+						var categoryAll =  fs.readFileSync("./dbase/category_id.js", "utf8");
+						categoryAll = categoryAll.replace(regexpCategory_id, "");
 						categoryAll = JSON.parse(categoryAll);
 						
 						var postsArray = categoryAll[category_id];
@@ -288,7 +310,7 @@ const server = http.createServer((req, res) => {
 							if(postsArray[i].post_id == post_id)indexInCat = i;
 						}
 						if(indexInCat != null)categoryAll[category_id].splice(indexInCat, 1);
-						fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(categoryAll) );
+						fs.writeFileSync("./dbase/category_id.js",  " var category_id_js = "+JSON.stringify(categoryAll) );
 						fs.unlinkSync(path_to_file);//удаляем пост
 					}
 					catch(err){
@@ -307,18 +329,21 @@ const server = http.createServer((req, res) => {
 			var path_to_folder = "./dbase/categories/"+category_id;
 		
 					try {
-						var categoryAll =  fs.readFileSync("./dbase/category_id.txt");							
+						var categoryAll =  fs.readFileSync("./dbase/category_id.js", "utf8");
+						categoryAll = categoryAll.replace(regexpCategory_id, "");
 						categoryAll = JSON.parse(categoryAll);						
 						delete categoryAll[category_id];//удаляем категорию из файла category_id.txt
 						
 						
-					    var CATEGORIES =  fs.readFileSync("./dbase/CATEGORIES.txt");							
+					    var CATEGORIES =  fs.readFileSync("./dbase/CATEGORIES.js", "utf8");
+						CATEGORIES = CATEGORIES.replace(regexpCATEGORIES, "");						
 						CATEGORIES = JSON.parse(CATEGORIES);
 					
 						if(CATEGORIES[category_id] == undefined)throw "не получеется найти категорию "+category_id;						
 						delete CATEGORIES[category_id];// удаляем категорию из файла CATEGORIES.txt
 						
-					    var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.txt");							
+					    var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.js", "utf8");	
+						SECTIONS = SECTIONS.replace(regexpSECTIONS, "");						
 						SECTIONS = JSON.parse(SECTIONS);
 						
 						for(var key in SECTIONS){
@@ -333,9 +358,9 @@ const server = http.createServer((req, res) => {
 						}	
 						
 						
-						fs.writeFileSync("./dbase/category_id.txt",  JSON.stringify(categoryAll) );
-                        fs.writeFileSync("./dbase/CATEGORIES.txt",  JSON.stringify(CATEGORIES) );						
-						fs.writeFileSync("./dbase/SECTIONS.txt",  JSON.stringify(SECTIONS) );							
+						fs.writeFileSync("./dbase/category_id.js",  "var category_id_js = "+JSON.stringify(categoryAll) );
+                        fs.writeFileSync("./dbase/CATEGORIES.js",  "var CATEGORIES_JS = "+JSON.stringify(CATEGORIES) );						
+						fs.writeFileSync("./dbase/SECTIONS.js",  "var SECTIONS_JS = "+JSON.stringify(SECTIONS) );							
 
 					}
 					catch(err){
@@ -365,11 +390,12 @@ const server = http.createServer((req, res) => {
 					try {
 
 
-					    var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.txt");							
+					    var SECTIONS =  fs.readFileSync("./dbase/SECTIONS.js", "utf8");	
+						SECTIONS = SECTIONS.replace(regexpSECTIONS, "");
 						SECTIONS = JSON.parse(SECTIONS);
 						if(SECTIONS[section_id] == undefined) throw "не получеется найти секцию "+section_id;
 						delete SECTIONS[section_id];					
-						fs.writeFileSync("./dbase/SECTIONS.txt",  JSON.stringify(SECTIONS) );							
+						fs.writeFileSync("./dbase/SECTIONS.js",  "var SECTIONS_JS = "+JSON.stringify(SECTIONS) );							
 
 					}
 					catch(err){

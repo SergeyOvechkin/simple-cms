@@ -1,5 +1,7 @@
 var converter = new showdown.Converter(); //markdown форматирование
-  
+var regexpCategory_id =/\s*var\s+category_id_js\s+=\s+/;
+var regexpCATEGORIES =/\s*var\s+CATEGORIES_JS\s+=\s+/;
+var regexpSECTIONS =/\s*var\s+SECTIONS_JS\s+=\s+/;  
     
 
 var StateMap = {
@@ -186,10 +188,11 @@ var StateMap = {
 					console.log(json);					
 
 					
-				    HM.stateMethods.fetchItems("/dbase/CATEGORIES.txt").then(json=>{
-		
-								HM.stateProperties.CATEGORIES = json;
-								HM.eventProps["emiter-load-categories"].setEventProp(json); 
+				    HM.stateMethods.fetchItems("/dbase/CATEGORIES.js", "text").then(resp_text=>{
+								
+                               
+								HM.stateProperties.CATEGORIES = JSON.parse( resp_text.replace(regexpCATEGORIES, "") );
+								HM.eventProps["emiter-load-categories"].setEventProp(HM.stateProperties.CATEGORIES); 
 		
 					});
 					if(json.err){
@@ -315,11 +318,11 @@ var StateMap = {
 				function callb(json){
 					
 					console.log(json);	
-				    HM.stateMethods.fetchItems("/dbase/SECTIONS.txt").then(json=>{
+				    HM.stateMethods.fetchItems("/dbase/SECTIONS.js", "text").then(resp_text=>{
 						
 						
-						HM.stateProperties.SECTIONS = json;
-						HM.eventProps["emiter-load-sections"].setEventProp(json); 
+						HM.stateProperties.SECTIONS = JSON.parse( resp_text.replace(regexpSECTIONS, "") );
+						HM.eventProps["emiter-load-sections"].setEventProp(HM.stateProperties.SECTIONS); 
 		
 					}); 
 
@@ -591,18 +594,22 @@ var StateMap = {
 					var context = this;
 
 					 var url = "/remove"+url1+id;
+					 var HM = this.rootLink;
 				
 					this.rootLink.stateMethods.fetchItems(url).then(data=>{	
 				
 					if(data.err == undefined){
 						
 						context.parent.groupParent.removeFromGroup(context.parent.groupId);
-						
-						if(url1 == "/remove/category/"){
-							delete context.rootLink.stateProperties.CATEGORIES[id];
+						console.log(url1);
+						if(url1 == "/category/"){						
+ 							
+						    delete context.rootLink.stateProperties.CATEGORIES[id];
 							context.rootLink.eventProps["emiter-load-categories"].setEventProp(context.rootLink.stateProperties.CATEGORIES); 
+				
 						}
-						if(url1 == "/remove/section/"){
+						
+						if(url1 == "/section/"){
 							delete context.rootLink.stateProperties.SECTIONS[id];
 							context.rootLink.eventProps["emiter-load-sections"].setEventProp(context.rootLink.stateProperties.SECTIONS);
 						}
@@ -671,12 +678,20 @@ var StateMap = {
 	stateMethods: {
 		
         //получет данные с сервера методом get 
-		fetchItems: async function(url){
+		fetchItems: async function(url, format){
 			
 			var resp = await fetch(url);			
 			try{
+				var json = "";			
 				
-				var json = await resp.json();
+				if(format != undefined && format == "text"){
+					
+					 json = await resp.text();
+					
+				}else{
+					
+					 json = await resp.json();
+				}
             }			
 			catch(err){				
 				console.log(err);				
@@ -734,33 +749,21 @@ var StateMap = {
 	},
 	stateProperties: {
 		
-		CATEGORIES: {},
-		SECTIONS: {},
+		CATEGORIES: CATEGORIES_JS,
+		SECTIONS: SECTIONS_JS,
 		
 	}
-
-	
 }
 
 window.onload = function(){
 	
 	
 	var HM = new HTMLixState(StateMap);
-	
-	HM.stateMethods.fetchItems("/dbase/CATEGORIES.txt").then(json=>{
-		
-		HM.stateProperties.CATEGORIES = json;
-		HM.eventProps["emiter-load-categories"].setEventProp(json); 
-		
-	});
-
-	
-    HM.stateMethods.fetchItems("/dbase/SECTIONS.txt").then(json=>{
-		
-		HM.stateProperties.SECTIONS = json;
-		HM.eventProps["emiter-load-sections"].setEventProp(json); 
-		
-	}); 
+	HM.eventProps["emiter-load-categories"].setEventProp(HM.stateProperties.CATEGORIES);
+	HM.eventProps["emiter-load-sections"].setEventProp(HM.stateProperties.SECTIONS);
 		
 	console.log(HM);
+	//console.log(CATEGORIES_JS);
+	//console.log(SECTIONS_JS);
+	//console.log(category_id_js);
 }

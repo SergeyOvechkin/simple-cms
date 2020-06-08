@@ -416,41 +416,36 @@ window.onload = function(){
 	
 	var urlArr = currentUrl.split("/");
 
-	var SERVER_DATA = {};
-	
+	var SERVER_DATA = {
+		CATEGORIES: CATEGORIES_JS,
+		category_id: category_id_js,
+		SECTIONS: SECTIONS_JS,
+		POST: {title: "title", text: "click on page..."},	
+	};
 	var HM = "";
 
 	async function add1(){		
 
-		let resp1 = await fetch("/"+SITE_NAME+"/dbase/CATEGORIES.txt");
-		let resp2 = await fetch("/"+SITE_NAME+"/dbase/category_id.txt");
-		let resp3 = await fetch("/"+SITE_NAME+"/dbase/SECTIONS.txt");
-		
 		var resp4 = {title: "title", text: "click on page..."};
 		
 		if(urlArr[2] == "post"){
 		    resp4 = await fetch("/"+SITE_NAME+"/dbase/categories/"+urlArr[3]+"/"+urlArr[4]+".txt");
 			resp4 = await resp4.json();
 		}	
-
-		return {cat_all: await	resp1.json(), cat_id: await	resp2.json(), sections: await resp3.json(), post: resp4 };
-	}
-	
+		return resp4
+	}	
 	add1().then(obj => {
-		
-		SERVER_DATA.CATEGORIES = obj.cat_all;
-		SERVER_DATA.category_id = obj.cat_id;
-		SERVER_DATA.SECTIONS = obj.sections;
-		SERVER_DATA.POST = obj.post;
+
+		SERVER_DATA.POST = obj;
 		
 		addSectionToRoutes(routes, SERVER_DATA.SECTIONS);
-		
-		
+			
 		HM = HTMLixRouter(StateMap, routes);
 		
 		HM.stateProperties = SERVER_DATA;
 
 		console.log(HM);
+		
 	});
 	
 

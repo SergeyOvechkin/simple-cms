@@ -1,1 +1,0 @@
-{"api":{"section_id":"api","section_title":"api","section_categories":["terms","create_components","app_structure","data_types","methods","additional_settings"]},"lessons":{"section_id":"lessons","section_title":"Уроки","section_categories":["create_app"]}}
