@@ -4,7 +4,8 @@
 			             
 						  list-style-type: none;
 						  margin-bottom: 7px;
-						  border-bottom: 1px solid gray;
+						 
+						  border-bottom: 1px dotted gray; 
 						  	  
 			  }
 			  [data-left_item_level_2="container"] > a {
