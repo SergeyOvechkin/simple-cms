@@ -1,7 +1,10 @@
 
-<a href="https://sergeyovechkin.github.io/simple-cms//">Htmlix api в SPA формате</a> - пример работающего сайта на simple-cms
+
 
  <h2> Simple-cms </h2>
+ 
+  <a href="https://sergeyovechkin.github.io/simple-cms//">Htmlix api в SPA формате</a> - пример работающего сайта на simple-cms
+  
   
  <p>Использование в качестве cms на github</p>
  <ul>
