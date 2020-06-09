@@ -2,9 +2,9 @@
 const SITE_NAME = "simple-cms"; // имя репозитория на гитхаб
 const HOME_PAGE_NAME = "Home";
 const CONTACTS_PAGE_NAME = "Контакты";
-var NAV_TYPE = "left-menu"; //top-menu
 
-var converter = new showdown.Converter(); //конертация markdown формата
+var NAV_TYPE = "left-menu"; //top-menu
+var converter = new showdown.Converter(); //конвертация markdown формата
 
 var StateMap = {
     
@@ -15,12 +15,14 @@ var StateMap = {
 		selector: "ul:first-of-type",
 		arrayProps: ["click_left_menu", "click_top_menu", ["listen_load_section", "emiter-load-section", ""], ["listen_change_section_in_arr", "emiter-change-section", ""]],
 		arrayMethods: {
+			//включает тип навигации left-menu
 			click_left_menu: function(){
 				
 				this.rootLink.stateProperties.NAVIGATION_TYPE = "left-menu";
 				this.rootLink.eventProps["emiter-navigation-type"].setEventProp(this.rootLink.stateProperties.NAVIGATION_TYPE);
 				this.rootLink.eventProps["emiter-change-section"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);
 			},
+			///включает тип навигации top-menu
 			click_top_menu: function(){
 				
 				if(window.innerWidth < 600)return;
@@ -43,7 +45,8 @@ var StateMap = {
 				this.component().reuseAll(sectionNew);
 				
 			},
-			///меняем url и отображаемый компонент при наступлении события, которое мы вызываем при клике по секции в меню либо при первой загрузке страници
+			///меняем url и отображаемый компонент при наступлении события, которое мы вызываем при клике по секции в меню либо при первой загрузке страници 
+			///либо по пункту меню 3 уровня для top-menu навигации
 			listen_change_section_in_arr: function(){
 				
 				var sect_id = this.emiter.prop;
@@ -66,36 +69,23 @@ var StateMap = {
 			["listen_load_cat", "emiter-load-categories", ""]
 			],
 		methods: {
+			//наведение курсора на секцию при для top-menu навигации
+			//удаляем класс чтобы отобразить дочерний список
 			hover_on: function(){
 				var sectionId = this.parent.props.data.getProp();
 				if( sectionId == "home" || sectionId == "contacts")return;
 				this.parent.props.group_ul_class.removeProp("hover-non");
 				
 			},
+			//удаление курсора с секции при для top-menu навигации
+			//добавляем класс чтобы скрыть дочерний список
 			hover_out: function(){
 				var sectionId = this.parent.props.data.getProp();
 				if( sectionId == "home" || sectionId == "contacts")return;
 				this.parent.props.group_ul_class.setProp("hover-non");
 				
 			},
-			listen_navigation_type: function(){
-				
-				var nav_type = this.emiter.prop;
-				var props= this.parent.props;
-				
-				if(nav_type == "left-menu"){
-									
-					props.hover_on.disableEvent("mouseover");
-					props.hover_out.disableEvent("mouseout");
-					
-				}else{
-					
-					props.hover_on.enableEvent("mouseover");
-					props.hover_out.enableEvent("mouseout");
-				}
-				
-			},				
-            //вызываем событие emiter-change-section которое слушаем в мсвойстве массива 
+            //вызываем событие emiter-change-section которое слушаем в свойстве массива 
 			//и событие emiter-load-categories для обновления списка левого меню в компоненте left_menu 
 			click: function(){
 				event.preventDefault();
@@ -113,6 +103,24 @@ var StateMap = {
 					this.rootLink.eventProps["emiter-load-categories"].setEventProp(sect_id);
 				}
 			},
+            ///слушаем изменение типа навигации и включаем либо выключаем соответствующие обработчики стандартных событий			
+			listen_navigation_type: function(){
+				
+				var nav_type = this.emiter.prop;
+				var props= this.parent.props;
+				
+				if(nav_type == "left-menu"){
+									
+					props.hover_on.disableEvent("mouseover");
+					props.hover_out.disableEvent("mouseout");
+					
+				}else{
+					
+					props.hover_on.enableEvent("mouseover");
+					props.hover_out.enableEvent("mouseout");
+				}
+				
+			},				
 			//слушаем событие смены раздела для снятия и добавления активного класса на соответствующих кнопках
 			listen_change_section_in_cont: function(){
 			
@@ -124,7 +132,13 @@ var StateMap = {
 					this.parent.props.class.removeProp("active");
 				}
 			},
+			//слушаем событие загрузки категоий чтобы создать список для секций меню top-menu 
+			///которое мы вызываем при первой загрузке сайта
+			
 			listen_load_cat: function(){
+				    
+					///если список уже создан выходим из функции, чтобы не создавать его повторно
+				    if(this.prop != null)return;
 				
 					var sectionId = this.parent.props.data.getProp();
 					if(sectionId == undefined || sectionId == "" || sectionId == "home" || sectionId == "contacts")return;
@@ -133,6 +147,8 @@ var StateMap = {
 			
 				    //console.log(array);	
 			        this.parent.props.group_items.setProp({componentName: "menu_level_2", group: group_array});
+					
+					this.prop = 1;
 			},			
 		}		
 	},
@@ -164,7 +180,7 @@ var StateMap = {
 	},
 	virtualArrayComponents: {
 			/*
-		menu_level_2 - компонент левое меню для переключения отображаемых постов
+		menu_level_2 - компонент  меню - уровень 2
 	*/
 	menu_level_2: {
 		
@@ -175,6 +191,9 @@ var StateMap = {
 		["listen_navigation_type", "emiter-navigation-type", ""],
 		],
 		methods: {
+			
+			//слушаем событие переключения типа навигации (top-menu или left-menu) и отключаем, либо включаем необходимые обработчики стандартных событий,
+			//а также скрываем либо отображаем значек + или - на втором уровне навигации в левом меню
 			listen_navigation_type: function(){
 				
 				var nav_type = this.emiter.prop;
@@ -197,17 +216,19 @@ var StateMap = {
 				
 				
 			},
+			//удаляем класс чтобы отобразить дочернюю группу в режиме top-menu
 			hover_on: function(){
 					
 					this.parent.props.post_group_class.removeProp("hover-non");
 				
 			},
+			//добавляем класс чтобы скрыть дочернюю группу в режиме top-menu
 			hover_out: function(){
 				
 				this.parent.props.post_group_class.setProp("hover-non");
 				
 			},
-			//при клике по категории списка меню скрываем либо отбражаем дочерний список постов
+			//при клике по категории списка меню скрываем либо отбражаем дочерний список постов в режиме left-menu
 			click: function(){
 				
 				event.preventDefault();
@@ -250,7 +271,7 @@ var StateMap = {
 
 		},		
 		/*
-		 left_menu_level_2 - компонент - виртуальный массив для отображения списка постов в левом меню
+		 menu_level_3 - компонент - виртуальный массив для отображения списка постов в меню
 		*/
 		menu_level_3: {
 		
@@ -269,18 +290,20 @@ var StateMap = {
 						var historyURL = "/"+SITE_NAME+"/post/"+category_id+"/"+post_id;
 		    	     	
 					    // console.log(this);
+						//в режиме top меню также переключает секцию, чтобы сменить класс у активной секции
 						if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu"){
 							
 							this.rootLink.stateProperties.CURRENT_SECTION = this.parent.groupParent.parent.groupParent.parent.props.data.getProp();
 							this.rootLink.eventProps["emiter-change-section"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);	
 							 this.rootLink.router.setRout(historyURL);
+							 
+						}else{
+							
+							this.rootLink.router.setRout(historyURL);
 						}
-						this.rootLink.router.setRout(historyURL);
-				       //
-						
+
 						//console.log(this.rootLink.state["left_menu"].getAll({title: "", simbol: "", post_group: {title: "", data: ""}   }));
-						
-						
+											
 						this.rootLink.stateMethods.fetchAll(path).then((json)=>{  
 						
 						     this.rootLink.eventProps["emiter-load-page"].setEventProp(json);  
@@ -299,6 +322,7 @@ var StateMap = {
 			
 			],
 			methods: {
+				///слушаем событие изменения типа навигации и скрываем либо отображаем левую секцию
 				listen_navigation_type: function(){
 					
 						var nav_type = this.emiter.prop;
@@ -317,11 +341,14 @@ var StateMap = {
 					
 					
 				},
+				//слушем событие смены категорий и создаем соответствующий список в левом меню.
+				//метод работает только когда тип навигации = left-menu 
 				listen_load_cat: function(){
 				    if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
 					var sectionId = this.emiter.prop;
-					if(sectionId == undefined || sectionId == "" || sectionId == "home")return;
-							
+					if(sectionId == undefined || sectionId == "" || sectionId == "home" || sectionId == "contacts")return;
+					
+                    //формируем массив для создания списка					
 					var group_array = this.rootLink.stateMethods.createItemLevel_2_data.call(this, sectionId);
 			
 				    //console.log(array);	
@@ -353,12 +380,13 @@ var StateMap = {
 		},
 stateMethods: {
 	
+	//метод формирует массив с объектами для списка меню второго и терьего уровня, примнимает в качестве аргумента id секции для которой создается список
 	createItemLevel_2_data: function(sectionId){
 					
 				var sections = this.rootLink.stateProperties.SECTIONS[sectionId].section_categories;
 				
 				var categ = {};
-				
+				//создаем объект с категориями выбранной секции
 				for(var y=0; y < sections.length; y++){
 					
 					categ[ sections[y] ] = this.rootLink.stateProperties.CATEGORIES[ sections[y] ];
@@ -370,13 +398,13 @@ stateMethods: {
     		    var array = [];
 				
 				for(var key in categ){
-					
+					//создаем объект со свойствами для второго уровня меню
 					var level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [], simbol: "-", post_group_style: "display: ''"};
 					
 					if(cat_id[categ[ key ].id] != undefined){
 						
 						for(var k=0; k < cat_id[categ[ key ].id].length; k++){
-						
+						    ///создаем объект со свойствами для третьего уровня меню
 							level_2.post_group.push({title: cat_id[categ[ key ].id][k].title, data: cat_id[categ[key].id][k].post_id });
 						}
 					}
@@ -404,6 +432,8 @@ stateMethods: {
 			return json;		
 		},
 		//метод - событие, вызывается после дозагрузки шаблонов и создания соответствующих компонентов
+		///сдесь в зависимости от url переключаем события чтобы создать необходимое представление и отобразить нужные компоненты 
+		
 		onLoadAll: function(){ 
 			
 			var currentUrl = window.location.pathname;
@@ -414,6 +444,8 @@ stateMethods: {
 		
 				if(urlArr[2] == this.stateProperties.SECTIONS[urlArr[2] ] != undefined)section = urlArr[2];
 				if(urlArr[2] == "contacts")section = "contacts";
+				
+				//если отображается пост то ищем нужную секцию чтобы отобразить для нее навигацию в левом меню
 				if(urlArr[2] == "post"){
 			
 					for(var key in this.stateProperties.SECTIONS){
@@ -425,21 +457,20 @@ stateMethods: {
 					}
 				}
 			}
+			    //вызываем событие создание секций меню (пункты первого уровня)
 				this.eventProps["emiter-load-section"].setEventProp(this.stateProperties.SECTIONS);
 				
-				if(section != "contacts" && section != "home"){
-			
-					this.eventProps["emiter-load-categories"].setEventProp(section);
-			
-				}else if(this.stateProperties.NAVIGATION_TYPE == "top-menu"){
-					
-					this.eventProps["emiter-load-categories"].setEventProp(section);
-				}
+				//вызываем событие для создания категорй меню(пункты меню 2-го уровня и 3-го)					
+				this.eventProps["emiter-load-categories"].setEventProp(section);
+				
+				//вызываем событие для изменения секции  
 				this.stateProperties.CURRENT_SECTION = section;
 				this.eventProps["emiter-change-section"].setEventProp(section);	
 				
+				///вызываем события изменения типа навигации
 				this.eventProps["emiter-navigation-type"].setEventProp(this.stateProperties.NAVIGATION_TYPE);
 				
+				///вызываем событие отображени поста 
 				if(urlArr[2] == "post"){
 					this.router.setRout("/"+SITE_NAME+"/post/"+urlArr[3]+"/"+urlArr[4]);
 					
@@ -458,15 +489,15 @@ stateMethods: {
 	},
     eventEmiters: {
 		
-		["emiter-load-categories"]: {prop: ""},
-		["emiter-load-page"]: {prop: ""},
-		["emiter-load-section"] : {prop: ""},
-		["emiter-change-section"] : {prop: ""},
-		["emiter-navigation-type"] : {prop: ""},
+		["emiter-load-categories"]: {prop: ""}, //событие для создания второго и  третьго уровня меню
+		["emiter-load-page"]: {prop: ""}, //событие дя отображения загруженого с сервера поста
+		["emiter-load-section"] : {prop: ""}, //событие для создания секций меню (1-го уровня)
+		["emiter-change-section"] : {prop: ""}, //событие для смены секции меню 
+		["emiter-navigation-type"] : {prop: ""}, //событие для смены типа навигации
 		
 	}	
 }
-
+///перечень всех возможных роутов для данного приложения
 var routes = {
 	
 	 ["/"]:  {  first: [ "home", "menu"],
@@ -512,6 +543,7 @@ var routes = {
 	        }			
 
 }
+//добавляет созданные в админке секции к роутам
 function addSectionToRoutes(routes, sections){
 	
 	for(var key in sections){
