@@ -1,5 +1,8 @@
 
 const SITE_NAME = "simple-cms"; // имя репозитория на гитхаб
+const HOME_PAGE_NAME = "Home";
+const CONTACTS_PAGE_NAME = "Контакты";
+var NAV_TYPE = "left-menu"; //top-menu
 
 var converter = new showdown.Converter(); //конертация markdown формата
 
@@ -9,21 +12,33 @@ var StateMap = {
 	  menu - компонент меню для переключения разделов сайта
 	*/
 	menu:{
-		arrayProps: [["listen_load_section", "emiter-load-section", ""], ["listen_change_section_in_arr", "emiter-change-section", ""]],
+		selector: "ul:first-of-type",
+		arrayProps: ["click_left_menu", "click_top_menu", ["listen_load_section", "emiter-load-section", ""], ["listen_change_section_in_arr", "emiter-change-section", ""]],
 		arrayMethods: {
+			click_left_menu: function(){
+				
+				this.rootLink.stateProperties.NAVIGATION_TYPE = "left-menu";
+				this.rootLink.eventProps["emiter-navigation-type"].setEventProp(this.rootLink.stateProperties.NAVIGATION_TYPE);
+				this.rootLink.eventProps["emiter-change-section"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);
+			},
+			click_top_menu: function(){
+				
+				if(window.innerWidth < 600)return;
+				this.rootLink.stateProperties.NAVIGATION_TYPE = "top-menu";
+				this.rootLink.eventProps["emiter-navigation-type"].setEventProp(this.rootLink.stateProperties.NAVIGATION_TYPE);
+			},
 			///обновляем список разделов меню присланных с сервера при первой загрузке
 			listen_load_section: function(){
-				
-				
+								
 				var sections = this.emiter.getEventProp();
 				
-				var sectionNew = [{title: "Home", data: "home"}];
+				var sectionNew = [{title: HOME_PAGE_NAME, data: "home"}];
 				
 				for(var key in sections){
 					
 					sectionNew.push({title: sections[key].section_title, data: sections[key].section_id});
 				}
-				sectionNew.push({title: "Контакты", data: "contacts"});
+				sectionNew.push({title: CONTACTS_PAGE_NAME, data: "contacts"});
 				
 				this.component().reuseAll(sectionNew);
 				
@@ -43,32 +58,64 @@ var StateMap = {
 			}
 		},			
 		container: "menu_item",
-		props: [ "click", "class", "data", "title", ["listen_change_section_in_cont", "emiter-change-section", ""]],
+		props: [ 
+			"click", "class", "data", "title",
+            ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["listen_navigation_type", "emiter-navigation-type", ""],			
+			["group_items", "group", "ul:first-of-type"], ["group_ul_class", "class", "ul:first-of-type"], 
+			["listen_change_section_in_cont", "emiter-change-section", ""], 
+			["listen_load_cat", "emiter-load-categories", ""]
+			],
 		methods: {
-			
+			hover_on: function(){
+				var sectionId = this.parent.props.data.getProp();
+				if( sectionId == "home" || sectionId == "contacts")return;
+				this.parent.props.group_ul_class.removeProp("hover-non");
+				
+			},
+			hover_out: function(){
+				var sectionId = this.parent.props.data.getProp();
+				if( sectionId == "home" || sectionId == "contacts")return;
+				this.parent.props.group_ul_class.setProp("hover-non");
+				
+			},
+			listen_navigation_type: function(){
+				
+				var nav_type = this.emiter.prop;
+				var props= this.parent.props;
+				
+				if(nav_type == "left-menu"){
+									
+					props.hover_on.disableEvent("mouseover");
+					props.hover_out.disableEvent("mouseout");
+					
+				}else{
+					
+					props.hover_on.enableEvent("mouseover");
+					props.hover_out.enableEvent("mouseout");
+				}
+				
+			},				
             //вызываем событие emiter-change-section которое слушаем в мсвойстве массива 
 			//и событие emiter-load-categories для обновления списка левого меню в компоненте left_menu 
 			click: function(){
 				event.preventDefault();
 				
 				var sect_id = this.parent.props.data.getProp();
+				
+				this.rootLink.stateProperties.CURRENT_SECTION = sect_id;
 				this.rootLink.eventProps["emiter-change-section"].setEventProp(sect_id);
-				
-				
+								
 				if(sect_id == "home" || sect_id == "contacts"){
 										
 					return;
 				}else{					
-					
+					if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
 					this.rootLink.eventProps["emiter-load-categories"].setEventProp(sect_id);
 				}
-
 			},
 			//слушаем событие смены раздела для снятия и добавления активного класса на соответствующих кнопках
 			listen_change_section_in_cont: function(){
-				
 			
-				
 				if(this.parent.props.data.getProp() == this.emiter.prop){
 					
 					this.parent.props.class.setProp("active");
@@ -76,15 +123,18 @@ var StateMap = {
 				}else{
 					this.parent.props.class.removeProp("active");
 				}
-
-
+			},
+			listen_load_cat: function(){
 				
-
-			}
-
+					var sectionId = this.parent.props.data.getProp();
+					if(sectionId == undefined || sectionId == "" || sectionId == "home" || sectionId == "contacts")return;
+							
+					var group_array = this.rootLink.stateMethods.createItemLevel_2_data.call(this, sectionId);
 			
-		}
-		
+				    //console.log(array);	
+			        this.parent.props.group_items.setProp({componentName: "menu_level_2", group: group_array});
+			},			
+		}		
 	},
 	/*
 	  page_single - компонент отображает текущий пост.
@@ -112,62 +162,57 @@ var StateMap = {
 			}			
 		}		
 	},
-	/*
-		left_menu - компонент левое меню для переключения отображаемых постов
+	virtualArrayComponents: {
+			/*
+		menu_level_2 - компонент левое меню для переключения отображаемых постов
 	*/
-	left_menu: {
+	menu_level_2: {
 		
-		arrayProps: [ ["listen_load_cat", "emiter-load-categories", ""] ],
-		arrayMethods: {
-			
-			//вызываем при первой загрузке в методе onLoadAll либо клике по секции в компоненте menu
-			//при смене секции формируем соответствующий список меню с категориями и названиями постов
-			listen_load_cat: function(){
+		container: "item_level_2",
+		props: ["click", "title", "class", "data", "post_group", "post_group_style", "simbol",
+		 ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["post_group_class", "class", "[data-item_level_2-post_group='group']"],
+		["simbol_style", "style", '[data-item_level_2-simbol="text"]' ],
+		["listen_navigation_type", "emiter-navigation-type", ""],
+		],
+		methods: {
+			listen_navigation_type: function(){
 				
-				var sectionId = this.emiter.prop;
-				if(sectionId == undefined || sectionId == "" || sectionId == "home")return;
-			//	console.log(sectionId);
+				var nav_type = this.emiter.prop;
+				var props= this.parent.props;
 				
-				var sections = this.rootLink.stateProperties.SECTIONS[sectionId].section_categories;
-				
-				var categ = {};
-				
-				for(var y=0; y < sections.length; y++){
+				if(nav_type == "left-menu"){
 					
-					categ[ sections[y] ] = this.rootLink.stateProperties.CATEGORIES[ sections[y] ]
+					props.simbol_style.setProp("");
+					//props.click.enableEvent("click");
+					props.hover_out.disableEvent("mouseout");
+					props.hover_on.disableEvent("mouseover");
 					
+				}else{
+					
+					props.simbol_style.setProp("display: none;");
+					//props.click.disableEvent("click");
+					props.hover_out.enableEvent("mouseout");
+					props.hover_on.enableEvent("mouseover");
 				}
 				
 				
-				var cat_id = this.rootLink.stateProperties.category_id;	
-
-    		    var array = [];
+			},
+			hover_on: function(){
+					
+					this.parent.props.post_group_class.removeProp("hover-non");
 				
-				for(var key in categ){
-					
-					var level_1 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [], simbol: "-", post_group_style: "display: ''"};
-					
-					if(cat_id[categ[ key ].id] != undefined){
-						
-						for(var k=0; k < cat_id[categ[ key ].id].length; k++){
-						
-							level_1.post_group.push({title: cat_id[categ[ key ].id][k].title, data: cat_id[categ[key].id][k].post_id });
-						}
-					}
-				   array.push(level_1);
-
-			     }		
-				    //console.log(array);	
-			        this.parent.reuseAll(array);
-		      },
-		},
-		container: "left_item_level_1",
-		props: ["click", "title", "class", "data", "post_group", "post_group_style", "simbol"],
-		methods: {
+			},
+			hover_out: function(){
+				
+				this.parent.props.post_group_class.setProp("hover-non");
+				
+			},
 			//при клике по категории списка меню скрываем либо отбражаем дочерний список постов
 			click: function(){
 				
 				event.preventDefault();
+				
+				if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
 				
 				if(this.prop == null){
 					
@@ -193,25 +238,23 @@ var StateMap = {
 			//метод вызываетсся при создании контейнера
 			oncCreatedContainer(){
 				
-				if(this.props.post_group.groupArray == undefined){
+					if(this.props.post_group.groupArray == undefined){
 					
 
 					
 					//this.props.post_group.groupArray = this.rootLink.state["left_menu_level_2"];
-				}
+					}
 				
+				}
 			}
-		}
 
-	},
-	virtualArrayComponents: {
-		
+		},		
 		/*
 		 left_menu_level_2 - компонент - виртуальный массив для отображения списка постов в левом меню
 		*/
-		left_menu_level_2: {
+		menu_level_3: {
 		
-			container: "left_item_level_2", 
+			container: "item_level_3", 
 			props: ["click", "title", "class", "data"],
 			methods: {
 				//метод меняет текущий роут, а также отправляет запрос с поиском соотв. поста на сервер, после загрузки поста вызывает событие emiter-load-page
@@ -224,8 +267,14 @@ var StateMap = {
 						var path = "/"+SITE_NAME+"/dbase/categories/"+category_id+"/"+post_id+".txt";
 						
 						var historyURL = "/"+SITE_NAME+"/post/"+category_id+"/"+post_id;
-		    	     				
-				        this.rootLink.router.setRout(historyURL);
+		    	     	
+					    // console.log(this);
+						if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu"){
+							
+							this.rootLink.stateProperties.CURRENT_SECTION = this.parent.groupParent.parent.groupParent.parent.props.data.getProp();
+							this.rootLink.eventProps["emiter-change-section"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);	
+						}
+				       // this.rootLink.router.setRout(historyURL);
 						
 						//console.log(this.rootLink.state["left_menu"].getAll({title: "", simbol: "", post_group: {title: "", data: ""}   }));
 						
@@ -243,10 +292,40 @@ var StateMap = {
 	//компонент для отображения страниц с постами и левого меню
 	sections: {
 			container: "sections",
-			props: [],
+			props: ["group_items", "right_coll_class", "left_coll_style", ["listen_load_cat", "emiter-load-categories", ""],
+			["listen_navigation_type", "emiter-navigation-type", ""],
+			
+			],
 			methods: {
+				listen_navigation_type: function(){
+					
+						var nav_type = this.emiter.prop;
+						var props= this.parent.props;
 				
-				
+						if(nav_type == "left-menu"){
+					
+							props.left_coll_style.setProp("");
+							props.right_coll_class.setProp(["col-sm-12", "col-md-9"]);
+					
+						}else{
+					
+							props.left_coll_style.setProp("display: none;");
+							props.right_coll_class.setProp(["col-sm-12", "col-md-12"]);
+						}
+					
+					
+				},
+				listen_load_cat: function(){
+				    if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
+					var sectionId = this.emiter.prop;
+					if(sectionId == undefined || sectionId == "" || sectionId == "home")return;
+							
+					var group_array = this.rootLink.stateMethods.createItemLevel_2_data.call(this, sectionId);
+			
+				    //console.log(array);	
+			        this.parent.props.group_items.setProp({componentName: "menu_level_2", group: group_array});
+				},
+								
 			}
 			
 	},
@@ -272,6 +351,40 @@ var StateMap = {
 		},
 stateMethods: {
 	
+	createItemLevel_2_data: function(sectionId){
+					
+				var sections = this.rootLink.stateProperties.SECTIONS[sectionId].section_categories;
+				
+				var categ = {};
+				
+				for(var y=0; y < sections.length; y++){
+					
+					categ[ sections[y] ] = this.rootLink.stateProperties.CATEGORIES[ sections[y] ];
+					
+				}
+							
+				var cat_id = this.rootLink.stateProperties.category_id;	
+
+    		    var array = [];
+				
+				for(var key in categ){
+					
+					var level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [], simbol: "-", post_group_style: "display: ''"};
+					
+					if(cat_id[categ[ key ].id] != undefined){
+						
+						for(var k=0; k < cat_id[categ[ key ].id].length; k++){
+						
+							level_2.post_group.push({title: cat_id[categ[ key ].id][k].title, data: cat_id[categ[key].id][k].post_id });
+						}
+					}
+				   array.push(level_2);
+
+			     }
+               
+             return array;			   
+		
+	},	
 	//получает данные с сервера методом get
 	fetchAll: async function(url){
 			
@@ -316,8 +429,14 @@ stateMethods: {
 			
 					this.eventProps["emiter-load-categories"].setEventProp(section);
 			
+				}else if(this.stateProperties.NAVIGATION_TYPE == "top-menu"){
+					
+					this.eventProps["emiter-load-categories"].setEventProp(section);
 				}
+				this.stateProperties.CURRENT_SECTION = section;
 				this.eventProps["emiter-change-section"].setEventProp(section);	
+				
+				this.eventProps["emiter-navigation-type"].setEventProp(this.stateProperties.NAVIGATION_TYPE);
 				
 				if(urlArr[2] == "post"){
 					this.router.setRout("/"+SITE_NAME+"/post/"+urlArr[3]+"/"+urlArr[4]);
@@ -341,6 +460,7 @@ stateMethods: {
 		["emiter-load-page"]: {prop: ""},
 		["emiter-load-section"] : {prop: ""},
 		["emiter-change-section"] : {prop: ""},
+		["emiter-navigation-type"] : {prop: ""},
 		
 	}	
 }
@@ -420,7 +540,9 @@ window.onload = function(){
 		CATEGORIES: CATEGORIES_JS,
 		category_id: category_id_js,
 		SECTIONS: SECTIONS_JS,
-		POST: {title: "title", text: "click on page..."},	
+		POST: {title: "title", text: "click on page..."},
+		NAVIGATION_TYPE: NAV_TYPE,
+		CURRENT_SECTION: "",
 	};
 	var HM = "";
 

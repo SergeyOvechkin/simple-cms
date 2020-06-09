@@ -1,19 +1,109 @@
-              
+/* верхнее меню */  
+
+  [data-menu="array"], [data-menu="array"] ul {
+  margin: 0px;
+  padding: 0px; }
+  [data-menu="array"] li, [data-menu="array"] ul li {
+    list-style-type: none; }
+    [data-menu="array"] li a, [data-menu="array"] ul li a {
+      /* color: #007bff;
+      font-size: 20px;
+      line-height: 22px;
+      font-family: "Segoe UI", "Helvetica Neue"; */
+      white-space: nowrap;
+      text-decoration: none; }
+	  [data-item_level_3="container"] > a {
+					  color: green ; 
+					  
+					
+	}
+    [data-menu="array"] li a:hover, [data-menu="array"] ul li a:hover {
+      text-decoration: none;
+      color: red; }
+
+[data-menu="array"] .hover-non, [data-menu="array"] .menu-toggler {
+  display: none; }
+
+/*[data-menu="array"] {
+  display: flex;
+  background-color: white;
+  border: 1px solid #a7e88b !important;
+  margin: 20px 5px 0px 5px;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  z-index: 11; }*/
+  [data-menu="array"] [data-menu_item="container"] {
+    padding: 5px 10px 5px 10px;
+    position: relative; }
+    [data-menu="array"] [data-menu_item="container"] > ul {
+      position: absolute;
+      left: 0px;
+      top: 103%;
+      background-color: white;
+      z-index: 10;
+      border: 1px solid #f8f9fa !important; }
+    [data-menu="array"] [data-menu_item="container"] > ul:before {
+      content: "";
+      width: 100%;
+      height: 16px;
+      position: absolute;
+      top: -8px;
+      left: 0px; }
+  [data-menu="array"] [data-item_level_2="container"] {
+    position: relative;
+   /* padding: 5px 5px 5px 5px;*/ }
+    [data-menu="array"] [data-item_level_2="container"] > ul {
+      position: absolute;
+      left: 101%;
+      top: 0px;
+      border: 1px solid #f8f9fa !important;
+      background-color: white; }
+	  [data-menu="array"] [data-item_level_2="container"] [data-item_level_3="container"]{
+			border: none;
+			
+	  }
+	 [data-menu="array"] [data-item_level_2="container"] [data-item_level_3="container"] > a{
+			
+			color: gray;
+	  }
+	  [data-menu="array"] [data-item_level_2="container"] [data-item_level_3="container"] > a:hover{
+			
+			color: red;
+	  }
+
+    [data-menu="array"] [data-item_level_2="container"] > ul:before {
+      content: "";
+      width: 15px;
+      height: 100%;
+      position: absolute;
+      top: 0px;
+      left: -7px; }
+  [data-menu="array"] [data-item_level_3="container"] {
+   padding: 7px 5px 7px 5px;
+    positiont: relative; }
+	
+
+
+
+
+   /*      левое меню     */          
 			  
-			  [data-left_item_level_2="container"] {			  
+			  [data-item_level_3="container"] {			  
 			             
 						  list-style-type: none;
-						  margin-bottom: 7px;
+						 /* margin-bottom: 7px; */
 						 
 						  border-bottom: 1px dotted gray; 
 						  	  
 			  }
-			  [data-left_item_level_2="container"] > a {
-					  color: green !important;
-					  
-	
-					
-			}
+			  [data-item_level_3="container"]:last-child {	
+			  
+					 border-bottom: none;
+			  }
+
+
+	 /*      раскраска пременных в коде    */ 		
 			.active { color: red !important;}
 			
 			 pre {
