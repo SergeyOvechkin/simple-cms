@@ -273,8 +273,10 @@ var StateMap = {
 							
 							this.rootLink.stateProperties.CURRENT_SECTION = this.parent.groupParent.parent.groupParent.parent.props.data.getProp();
 							this.rootLink.eventProps["emiter-change-section"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);	
+							 this.rootLink.router.setRout(historyURL);
 						}
-				       // this.rootLink.router.setRout(historyURL);
+						this.rootLink.router.setRout(historyURL);
+				       //
 						
 						//console.log(this.rootLink.state["left_menu"].getAll({title: "", simbol: "", post_group: {title: "", data: ""}   }));
 						
