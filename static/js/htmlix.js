@@ -358,14 +358,24 @@ function HTMLixRouter(state, routes) {
   return stateWithRoutes;
 }
 
-function EventEmiter(eventName, prop, listeners, listenersEventMethods) {
-  this.listeners = listeners;
-  this.listenersEventMethods = listenersEventMethods;
-  this.event = new Event(eventName);
-  this.type = eventName;
-  this.prop = prop;
-}
+function EventEmiter(eventName, prop, listeners, listenersEventMethods, behavior, rootLink){
 
+		this.listeners = listeners;
+	this.listenersEventMethods =  listenersEventMethods;
+
+		this.event  = new Event(eventName);
+	this.type = eventName;
+	this.prop = prop;
+	this.behavior = null;
+	this.rootLink = null;
+	if(behavior != undefined){
+		this.behavior = behavior.bind(this);
+		this.rootLink = rootLink;
+	}
+
+
+}
+//
 EventEmiter.prototype.addListener = function (htmlLinkToListener, eventMethod, eventName, nameListener) {
   htmlLinkToListener.addEventListener(eventName, eventMethod);
   this.listeners[nameListener] = htmlLinkToListener;
@@ -385,10 +395,20 @@ EventEmiter.prototype.removeListener = function (htmlLinkToListener) {
   delete this.listeners[index];
 };
 
-EventEmiter.prototype.emit = function () {
-  for (key in this.listeners) {
-    this.listeners[key].dispatchEvent(this.event);
-  }
+EventEmiter.prototype.emit = function(){
+	
+	    if(this.behavior != null){
+			
+			var isEmit = this.behavior();
+			
+			if(isEmit == false)return;
+		}
+
+		for(key in  this.listeners){
+
+				this.listeners[key].dispatchEvent(this.event);
+
+			}
 };
 
 EventEmiter.prototype.setEventProp = function (prop) {
@@ -1155,9 +1175,10 @@ function PropEventEmiter(htmlLink, propType, propName, eventMethod, pathToCompon
 
   this.emiterKey = "";
   this.emiter = "";
+  this.eventMethod = eventMethod.bind(this);
   this.emiterKey = "key" + Math.floor(Math.random() * 89999 + 10000);
   this.emiter = this.rootLink.eventProps[this.type];
-  this.rootLink.eventProps[this.type].addListener(htmlLink, eventMethod.bind(this), this.type, this.emiterKey);
+  this.rootLink.eventProps[this.type].addListener(htmlLink, this.eventMethod, this.type, this.emiterKey);
 }
 
 PropEventEmiter.prototype = Object.create(PropSubtype.prototype);
@@ -1179,6 +1200,29 @@ PropEventEmiter.prototype.setProp = function () {
 PropEventEmiter.prototype.removeProp = function () {
   return false;
 };
+PropEventEmiter.prototype.disableEvent= function(){
+	
+
+		if(this[this.type+'-disable'] != undefined){
+
+			return;
+		}
+
+		this[this.type+'-disable'] = true;
+
+				this.emiter.removeListener(this.htmlLink);
+
+}
+PropEventEmiter.prototype.enableEvent = function(){
+
+		if(this[this.type+'-disable'] == undefined){
+
+			return;
+		}
+		delete this[this.type+'-disable'];
+
+		this.emiter.addListener(this.htmlLink, this.eventMethod, this.type, this.emiterKey);
+}
 /*PropEventEmiter.prototype.component = function(){
 
 	return this.rootLink.state[this.pathToCоmponent];
@@ -1487,11 +1531,21 @@ function HTMLixState(StateMap) {
   this.stateMethods = {};
   this.stateProperties = {};
 
-  if (StateMap.eventEmiters != undefined) {
-    for (var key in StateMap.eventEmiters) {
-      this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {});
-    }
-  }
+   if(StateMap.eventEmiters != undefined){
+
+	   for (var key in StateMap.eventEmiters){
+             		   
+             if(StateMap.eventEmiters[key].behavior != undefined){
+				 
+				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {}, StateMap.eventEmiters[key].behavior, this);
+				 
+			 }else{
+				 
+				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {} );
+				 
+			 }
+		 }
+	}
 
   for (var key in StateMap) {
     if (key == "stateSettings") {
