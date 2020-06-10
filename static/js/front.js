@@ -1,9 +1,9 @@
 
 const SITE_NAME = "simple-cms"; // имя репозитория на гитхаб
-const HOME_PAGE_NAME = "Home";
-const CONTACTS_PAGE_NAME = "Контакты";
+const HOME_PAGE_NAME = "Home"; //название главной страници
+const CONTACTS_PAGE_NAME = "Контакты"; //название страници с контактами
 
-var NAV_TYPE = "left-menu"; //top-menu
+var NAV_TYPE = "left-menu"; //top-menu -тип навигации
 var converter = new showdown.Converter(); //конвертация markdown формата
 
 var StateMap = {
@@ -18,7 +18,6 @@ var StateMap = {
 			//включает тип навигации left-menu
 			click_left_menu: function(){
 				
-				//this.rootLink.stateProperties.NAVIGATION_TYPE = "left-menu";
 				this.rootLink.eventProps["emiter-navigation-type"].setEventProp("left-menu");
 				this.rootLink.eventProps["emiter-change-section"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);
 				this.rootLink.eventProps["emiter-load-categories"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);
@@ -26,8 +25,6 @@ var StateMap = {
 			///включает тип навигации top-menu
 			click_top_menu: function(){
 				
-				//if(window.innerWidth < 600)return;
-				//this.rootLink.stateProperties.NAVIGATION_TYPE = "top-menu";
 				this.rootLink.eventProps["emiter-navigation-type"].setEventProp("top-menu");
 			},
 			///обновляем список разделов меню присланных с сервера при первой загрузке
@@ -133,8 +130,7 @@ var StateMap = {
 				}
 			},
 			//слушаем событие загрузки категоий чтобы создать список для секций меню top-menu 
-			///которое мы вызываем при первой загрузке сайта
-			
+			///которое мы вызываем при первой загрузке сайта			
 			listen_load_cat: function(){
 				    
 					///если список уже создан выходим из функции, чтобы не создавать его повторно
@@ -356,30 +352,22 @@ var StateMap = {
 			
 				    //console.log(array);	
 			        this.parent.props.group_items.setProp({componentName: "menu_level_2", group: group_array});
-				},
-								
-			}
-			
+				},								
+			}			
 	},
 	//компонент для отображения домашней страници
 	home: {
 			container: "home",
 			props: [],
-			methods: {
-				
-				
-			}
-			
+			methods: {				
+			}			
 	},
 	//компонент для отображения страници контактов
 	contacts: {
 			container: "contacts",
 			props: [],
-			methods: {
-				
-				
-			}
-			
+			methods: {				
+			}			
 		},
 stateMethods: {
 	
@@ -484,11 +472,13 @@ stateMethods: {
 		},	
 },		
 	stateProperties: {
-		CATEGORIES: "",
-		SECTIONS: "",
-		category_id: "",
-		//posts_id: "",
-		POST: "",
+		
+		CATEGORIES: CATEGORIES_JS, //из файла dbase/CATEGORIES.js
+		category_id: category_id_js, //из файла /dbase/category_id.js
+		SECTIONS: SECTIONS_JS, //из файла /dbase/SECTIONS.js
+		POST: {title: "title", text: "click on page..."},
+		NAVIGATION_TYPE: NAV_TYPE, //тип навигации 
+		CURRENT_SECTION: "", //текущая секция
 	},
     eventEmiters: {
 		
@@ -592,15 +582,7 @@ window.onload = function(){
 	var currentUrl = window.location.pathname;
 	
 	var urlArr = currentUrl.split("/");
-
-	var SERVER_DATA = {
-		CATEGORIES: CATEGORIES_JS,
-		category_id: category_id_js,
-		SECTIONS: SECTIONS_JS,
-		POST: {title: "title", text: "click on page..."},
-		NAVIGATION_TYPE: NAV_TYPE,
-		CURRENT_SECTION: "",
-	};
+	
 	var HM = "";
 
 	async function add1(){		
@@ -613,15 +595,14 @@ window.onload = function(){
 		}	
 		return resp4
 	}	
-	add1().then(obj => {
-
-		SERVER_DATA.POST = obj;
+	add1().then(post => {
 		
-		addSectionToRoutes(routes, SERVER_DATA.SECTIONS);
+		//SECTIONS_JS - из файла /dbase/SECTIONS.js
+		addSectionToRoutes(routes, SECTIONS_JS);
 			
 		HM = HTMLixRouter(StateMap, routes);
 		
-		HM.stateProperties = SERVER_DATA;
+		HM.stateProperties.POST = post;
 
 		console.log(HM);
 		
