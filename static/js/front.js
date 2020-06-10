@@ -86,7 +86,7 @@ var StateMap = {
 				
 			},
             //вызываем событие emiter-change-section которое слушаем в свойстве массива 
-			//и событие emiter-load-categories для обновления списка левого меню в компоненте left_menu 
+			//и событие emiter-load-categories для обновления списка левого меню в компоненте sections
 			click: function(){
 				event.preventDefault();
 				
@@ -437,6 +437,7 @@ stateMethods: {
 		//метод - событие, вызывается после дозагрузки шаблонов и создания соответствующих компонентов
 		///сдесь в зависимости от url переключаем события чтобы создать необходимое представление и отобразить нужные компоненты 
 		
+		
 		onLoadAll: function(){ 
 			
 			var currentUrl = window.location.pathname;
@@ -518,6 +519,8 @@ stateMethods: {
 	}	
 }
 ///перечень всех возможных роутов для данного приложения
+///сдесь поле  firs одинаковое для всех полей потому, что у нас всегда отдается index.html или admin.html, в котором есть шаблоны только для 
+//двух компонентов: "home", "menu" шаблоны для остальных компонентов мы  догружаем в fetch запросе: templatePath: "/"+SITE_NAME+"/static/template/template.html"
 var routes = {
 	
 	 ["/"]:  {  first: [ "home", "menu"],
