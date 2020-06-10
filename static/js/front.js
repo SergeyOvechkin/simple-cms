@@ -59,6 +59,7 @@ var StateMap = {
 		},			
 		container: "menu_item", ///контейнер компонента menu для каждого раздела сайта
 		props: [ 
+		     //data свойство содержит id секции в html разметке
 			"click", "class", "data", "title",
             ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["listen_navigation_type", "emiter-navigation-type", ""],			
 			["group_items", "group", "ul:first-of-type"], ["group_ul_class", "class", "ul:first-of-type"], 
