@@ -60,7 +60,7 @@ var StateMap = {
 								
 			}
 		},			
-		container: "menu_item",
+		container: "menu_item", ///контейнер компонента menu для каждого раздела сайта
 		props: [ 
 			"click", "class", "data", "title",
             ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["listen_navigation_type", "emiter-navigation-type", ""],			
@@ -345,10 +345,9 @@ var StateMap = {
 					
 				},
 				//слушем событие смены категорий и создаем соответствующий список в левом меню.
-				//метод работает только когда тип навигации = left-menu 
+				//метод работает только когда тип навигации = left-menu т. к. для top-menu он выключается в методе выше
 				listen_load_cat: function(){
 					//console.log(this);
-				   // if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
 					var sectionId = this.emiter.prop;
 					if(sectionId == undefined || sectionId == "" || sectionId == "home" || sectionId == "contacts")return;
 					
@@ -495,15 +494,15 @@ stateMethods: {
 		["emiter-load-categories"]: {prop: ""}, //событие для создания второго и  третьго уровня меню
 		["emiter-load-page"]: {prop: ""}, //событие дя отображения загруженого с сервера поста
 		["emiter-load-section"] : {prop: ""}, //событие для создания секций меню (1-го уровня)
-		["emiter-change-section"] : {
+		["emiter-change-section"] : { //событие для смены секции меню 
 			prop: "setionId",
 			behavior: function(){
 				
 				this.rootLink.stateProperties.CURRENT_SECTION = this.prop;				
 				return true;
 			}
-		}, //событие для смены секции меню 
-		["emiter-navigation-type"] : {
+		},
+		["emiter-navigation-type"] : {//событие для смены типа навигации
 			prop: "",
 			
 			behavior: function(){
@@ -514,7 +513,7 @@ stateMethods: {
 				return true;
 			}
 			
-		}, //событие для смены типа навигации
+		}, 
 		
 	}	
 }
