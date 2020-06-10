@@ -67,7 +67,7 @@ var StateMap = {
 			["listen_load_cat", "emiter-load-categories", ""]
 			],
 		methods: {
-			//наведение курсора на секцию при для top-menu навигации
+			//наведение курсора на секцию  для top-menu навигации
 			//удаляем класс чтобы отобразить дочерний список
 			hover_on: function(){
 				var sectionId = this.parent.props.data.getProp();
@@ -75,7 +75,7 @@ var StateMap = {
 				this.parent.props.group_ul_class.removeProp("hover-non");
 				
 			},
-			//удаление курсора с секции при для top-menu навигации
+			//удаление курсора с секции для top-menu навигации
 			//добавляем класс чтобы скрыть дочерний список
 			hover_out: function(){
 				var sectionId = this.parent.props.data.getProp();
@@ -200,15 +200,15 @@ var StateMap = {
 					
 					props.simbol_style.setProp("");
 					//props.click.enableEvent("click");
-					props.hover_out.disableEvent("mouseout");
-					props.hover_on.disableEvent("mouseover");
+					//props.hover_out.disableEvent("mouseout");
+					//props.hover_on.disableEvent("mouseover");
 					
 				}else{
 					
 					props.simbol_style.setProp("display: none;");
 					//props.click.disableEvent("click");
-					props.hover_out.enableEvent("mouseout");
-					props.hover_on.enableEvent("mouseover");
+					//props.hover_out.enableEvent("mouseout");
+					//props.hover_on.enableEvent("mouseover");
 				}
 				
 				
@@ -216,12 +216,14 @@ var StateMap = {
 			//удаляем класс чтобы отобразить дочернюю группу в режиме top-menu
 			hover_on: function(){
 					
+					if(this.rootLink.stateProperties.NAVIGATION_TYPE != "top-menu")return;
 					this.parent.props.post_group_class.removeProp("hover-non");
 				
 			},
 			//добавляем класс чтобы скрыть дочернюю группу в режиме top-menu
 			hover_out: function(){
 				
+				if(this.rootLink.stateProperties.NAVIGATION_TYPE != "top-menu")return;
 				this.parent.props.post_group_class.setProp("hover-non");
 				
 			},
@@ -237,20 +239,15 @@ var StateMap = {
 					//console.log(this.prop);
 					this.parent.props.post_group_style.setProp("display: none;");
 					this.parent.props.simbol.setProp("+");
-					this.prop = 1;
-					
+					this.prop = 1;				
 					
 				}else{
 					
 				     this.parent.props.post_group_style.setProp("display: '';");
-					 this.parent.props.simbol.setProp("-");
-					
+					 this.parent.props.simbol.setProp("-");				
 					this.prop = null;
 					
-				}
-				
-				
-				
+				}			
 				//console.log(this);
 			},
 			//метод вызываетсся при создании контейнера
@@ -423,10 +420,8 @@ stateMethods: {
 			
 			return json;		
 		},
-		//метод - событие, вызывается после дозагрузки шаблонов и создания соответствующих компонентов
-		///сдесь в зависимости от url переключаем события чтобы создать необходимое представление и отобразить нужные компоненты 
-		
-		
+		//метод - событие, вызывается после дозагрузки шаблонов и создания всех компонентов
+		///сдесь в зависимости от url переключаем события чтобы создать необходимое представление и отобразить нужные компоненты 		
 		onLoadAll: function(){ 
 			
 			var currentUrl = window.location.pathname;
@@ -467,9 +462,7 @@ stateMethods: {
 					this.router.setRout("/"+SITE_NAME+"/post/"+urlArr[3]+"/"+urlArr[4]);
 					
 					this.eventProps["emiter-load-page"].setEventProp(this.stateProperties.POST);
-				}
-
-			
+				}		
 		},	
 },		
 	stateProperties: {
@@ -510,7 +503,7 @@ stateMethods: {
 	}	
 }
 ///перечень всех возможных роутов для данного приложения
-///сдесь поле  firs одинаковое для всех полей потому, что у нас всегда отдается index.html или admin.html, в котором есть шаблоны только для 
+///сдесь поле  firs одинаковое для всех маршрутов потому, что у нас всегда отдается index.html или admin.html, в котором есть шаблоны только для 
 //двух компонентов: "home", "menu" шаблоны для остальных компонентов мы  догружаем в fetch запросе: templatePath: "/"+SITE_NAME+"/static/template/template.html"
 var routes = {
 	
