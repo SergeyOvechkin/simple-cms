@@ -120,3 +120,33 @@
 
 		</div><!-- row -->
 </div><!-- sections -->
+
+
+<!------ контейнер item_level_2_top для отображения пунктов меню второго уровня при навигации = top_menu-->
+<!-- также устанавливаем ему шаблон чтобы записать ссылку на виртуальный массив groupArray группы post_group -->
+
+						<li  class="nav-item" data-item_level_2_top="container">
+							<a  class="nav-link "  href="/api/category/:postId"
+							data-item_level_2_top-click="click"  							 
+							data-item_level_2_top-data="category" 
+							
+							>   <span data-item_level_2_top-title="text">
+							       пункт меню 1
+								</span>
+								
+							</a>
+							<ul data-item_level_2_top-post_group="group"  class="hover-non">
+							
+								<li style="display: none;" data-item_level_3="template">
+									<a href="#" 
+									data-item_level_3-click="click"
+									data-item_level_3-title="text"
+									data-item_level_3-class="class"
+									data-item_level_3-data="postId"
+									>Строка меню</a>
+							   </li>
+				
+							
+							</ul>
+						</li>
+

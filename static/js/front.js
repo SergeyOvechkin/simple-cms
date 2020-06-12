@@ -140,10 +140,10 @@ var StateMap = {
 					var sectionId = this.parent.props.data.getProp();
 					if(sectionId == undefined || sectionId == "" || sectionId == "home" || sectionId == "contacts")return;
 							
-					var group_array = this.rootLink.stateMethods.createItemLevel_2_data.call(this, sectionId);
+					var group_array = this.rootLink.stateMethods.createItemLevel_2_data.call(this, sectionId, "top_menu");
 			
 				    //console.log(array);	
-			        this.parent.props.group_items.setProp({componentName: "menu_level_2", group: group_array});
+			        this.parent.props.group_items.setProp({componentName: "menu_level_2_top", group: group_array});
 					
 					this.prop = 1;
 			},			
@@ -177,62 +177,23 @@ var StateMap = {
 	},
 	virtualArrayComponents: {
 			/*
-		menu_level_2 - компонент  меню - уровень 2
+		menu_level_2 - компонент  меню - уровень 2 для левого меню left_menu
 	*/
 	menu_level_2: {
 		
 		container: "item_level_2",
-		props: ["click", "title", "class", "data", "post_group", "post_group_style", "simbol",
-		 ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["post_group_class", "class", "[data-item_level_2-post_group='group']"],
-		["simbol_style", "style", '[data-item_level_2-simbol="text"]' ],
-		["listen_navigation_type", "emiter-navigation-type", ""],
+		share_props: 3,
+		props: ["title",  "data", "post_group", //разрешаем наследовать только первые три свойства	
+				"post_group_style", "simbol", "click", 
 		],
 		methods: {
 			
-			//слушаем событие переключения типа навигации (top-menu или left-menu) и отключаем, либо включаем необходимые обработчики стандартных событий,
-			//а также скрываем либо отображаем значек + или - на втором уровне навигации в левом меню
-			listen_navigation_type: function(){
-				
-				var nav_type = this.emiter.prop;
-				var props= this.parent.props;
-				
-				if(nav_type == "left-menu"){
-					
-					props.simbol_style.setProp("");
-					//props.click.enableEvent("click");
-					//props.hover_out.disableEvent("mouseout");
-					//props.hover_on.disableEvent("mouseover");
-					
-				}else{
-					
-					props.simbol_style.setProp("display: none;");
-					//props.click.disableEvent("click");
-					//props.hover_out.enableEvent("mouseout");
-					//props.hover_on.enableEvent("mouseover");
-				}
-				
-				
-			},
-			//удаляем класс чтобы отобразить дочернюю группу в режиме top-menu
-			hover_on: function(){
-					
-					if(this.rootLink.stateProperties.NAVIGATION_TYPE != "top-menu")return;
-					this.parent.props.post_group_class.removeProp("hover-non");
-				
-			},
-			//добавляем класс чтобы скрыть дочернюю группу в режиме top-menu
-			hover_out: function(){
-				
-				if(this.rootLink.stateProperties.NAVIGATION_TYPE != "top-menu")return;
-				this.parent.props.post_group_class.setProp("hover-non");
-				
-			},
 			//при клике по категории списка меню скрываем либо отбражаем дочерний список постов в режиме left-menu
 			click: function(){
 				
 				event.preventDefault();
 				
-				if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
+				//if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
 				
 				if(this.prop == null){
 					
@@ -243,7 +204,7 @@ var StateMap = {
 					
 				}else{
 					
-				     this.parent.props.post_group_style.setProp("display: '';");
+				     this.parent.props.post_group_style.setProp("");
 					 this.parent.props.simbol.setProp("-");				
 					this.prop = null;
 					
@@ -258,6 +219,39 @@ var StateMap = {
 					}				
 				}
 			}
+		},
+	///второй уровень навигации для верхнего меню top_menu	
+	menu_level_2_top: {
+		
+		container: "item_level_2_top",
+		container_extend: "menu_level_2", //"title",  "data", "post_group",  наследуем три свойства из контейнера компонента menu_level_2 
+		props: [ 
+		   "click",
+		   ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["post_group_class", "class", "ul:first-of-type"],
+		],
+		methods: {
+			
+			//удаляем класс чтобы отобразить дочернюю группу в режиме top-menu
+			hover_on: function(){
+					
+					if(this.rootLink.stateProperties.NAVIGATION_TYPE != "top-menu")return;
+					this.parent.props.post_group_class.removeProp("hover-non");
+				
+			},
+			//добавляем класс чтобы скрыть дочернюю группу в режиме top-menu
+			hover_out: function(){
+				
+				if(this.rootLink.stateProperties.NAVIGATION_TYPE != "top-menu")return;
+				this.parent.props.post_group_class.setProp("hover-non");
+				
+			},
+			//при клике по категории списка меню 
+			click: function(){
+				
+				event.preventDefault();
+					
+			},
+		  }
 		},		
 		/*
 		 menu_level_3 - компонент - виртуальный массив для отображения списка постов в меню
@@ -282,21 +276,16 @@ var StateMap = {
 						//в режиме top меню также переключает секцию, чтобы сменить класс у активной секции
 						if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu"){
 							
-							//this.rootLink.stateProperties.CURRENT_SECTION = this.parent.groupParent.parent.groupParent.parent.props.data.getProp();
 							this.rootLink.eventProps["emiter-change-section"].setEventProp(this.parent.groupParent.parent.groupParent.parent.props.data.getProp());	
 							 this.rootLink.router.setRout(historyURL);
 							 
 						}else{
 							
 							this.rootLink.router.setRout(historyURL);
-						}
-
-						//console.log(this.rootLink.state["left_menu"].getAll({title: "", simbol: "", post_group: {title: "", data: ""}   }));
-											
+						}				
 						this.rootLink.stateMethods.fetchAll(path).then((json)=>{  
 						
-						     this.rootLink.eventProps["emiter-load-page"].setEventProp(json);  
-							 
+						     this.rootLink.eventProps["emiter-load-page"].setEventProp(json);  							 
 						}); 
 				},				
 			
@@ -365,7 +354,7 @@ var StateMap = {
 stateMethods: {
 	
 	//метод формирует массив с объектами для списка меню второго и терьего уровня, примнимает в качестве аргумента id секции для которой создается список
-	createItemLevel_2_data: function(sectionId){
+	createItemLevel_2_data: function(sectionId, menu_type){
 					
 				var sections = this.rootLink.stateProperties.SECTIONS[sectionId].section_categories;
 				
@@ -383,7 +372,16 @@ stateMethods: {
 				
 				for(var key in categ){
 					//создаем объект со свойствами для второго уровня меню
-					var level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [], simbol: "-", post_group_style: "display: ''"};
+					var level_2 = "";
+					
+					if(menu_type == "top_menu"){
+						
+						level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: []};
+					}else{
+						
+						level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [], simbol: "-", post_group_style: "display: ''"};
+					}
+					
 					
 					if(cat_id[categ[ key ].id] != undefined){
 						
