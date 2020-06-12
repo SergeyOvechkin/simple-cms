@@ -234,14 +234,14 @@ var StateMap = {
 			//удаляем класс чтобы отобразить дочернюю группу в режиме top-menu
 			hover_on: function(){
 					
-					if(this.rootLink.stateProperties.NAVIGATION_TYPE != "top-menu")return;
+				
 					this.parent.props.post_group_class.removeProp("hover-non");
 				
 			},
 			//добавляем класс чтобы скрыть дочернюю группу в режиме top-menu
 			hover_out: function(){
 				
-				if(this.rootLink.stateProperties.NAVIGATION_TYPE != "top-menu")return;
+			
 				this.parent.props.post_group_class.setProp("hover-non");
 				
 			},
