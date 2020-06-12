@@ -4,7 +4,45 @@ function HTMLixArray(node, containerHTML, rootLink, pathToComponent, selector) {
   this.htmlLink = node, this.data = [], this.rootLink = rootLink, this.pathToComponent = pathToComponent, this.type = "array", this.templateData = containerHTML.cloneNode(true),
   /*this.id = null, */
   this.index = null, this.renderType = "array", this.selector = selector;
-  if (node == "virtual-array") this.renderType = "virtual-array";
+  if (node == "virtual-array") this.renderType = "virtual-array"; ///container_extend
+
+  if (this.renderType == "virtual-array") {
+    var thisArrDesc = this.rootLink.description.virtualArrayComponents[this.pathToComponent];
+    var parentContainerName = thisArrDesc.container_extend;
+  } else {
+    var thisArrDesc = this.rootLink.description[this.pathToComponent];
+    if (thisArrDesc == undefined) thisArrDesc = this.rootLink.description.fetchComponents[this.pathToComponent];
+    var parentContainerName = thisArrDesc.container_extend;
+  }
+
+  if (parentContainerName != undefined) {
+    ///описание наследуемого компонента		   
+    var parCont = this.rootLink.description[parentContainerName];
+
+    if (parCont == undefined && this.rootLink.description.virtualArrayComponents != undefined) {
+      parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
+    } else if (parCont == undefined && this.rootLink.description.fetchComponents != undefined) {
+      parCont = this.rootLink.description.fetchComponents[parentContainerName];
+    }
+
+    if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+    var shareProps = parCont.props;
+
+    if (parCont.share_props != undefined) {
+      shareProps = shareProps.slice(0, parCont.share_props);
+    }
+
+    for (var u = 0; u < shareProps.length; u++) {
+      var keyProp = shareProps[u];
+      if (_typeof(keyProp) == "object") keyProp = shareProps[u][0];
+
+      if (parCont.methods[keyProp] != undefined) {
+        thisArrDesc.methods[keyProp] = parCont.methods[keyProp];
+      }
+    }
+
+    thisArrDesc.props = shareProps.concat(thisArrDesc.props);
+  }
 }
 
 HTMLixArray.prototype.add = function (props, insertLocation) {
@@ -69,6 +107,8 @@ HTMLixArray.prototype.getAll = function (map_Object) {
 HTMLixArray.prototype.order = function (newOrderArr) {
   this.rootLink.changeOrder(this.pathToComponent, newOrderArr);
 };
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function Container(htmlLink, containerName, props, methods, index, pathToContainer, rootLink, isRunonCreatedContainer, newProps) {
   this.htmlLink = htmlLink;
   this.rootLink = rootLink;
@@ -78,7 +118,44 @@ function Container(htmlLink, containerName, props, methods, index, pathToContain
   this.name = containerName;
   this.type = "container";
   this.renderType = "container-outer";
-  if (pathToContainer != containerName) this.renderType = "container-inner";
+  if (pathToContainer != containerName) this.renderType = "container-inner"; ///container_extend
+
+  if (this.renderType == "container-outer") {
+    var thisCont = this.rootLink.description[this.pathToCоmponent];
+    if (thisCont == undefined) thisCont = this.rootLink.description.fetchComponents[this.pathToCоmponent]; // console.log("1");
+
+    var parentContainerName = thisCont.container_extend;
+
+    if (parentContainerName != undefined) {
+      ///описание наследуемого компонента		   
+      var parCont = this.rootLink.description[parentContainerName];
+
+      if (parCont == undefined && this.rootLink.description.virtualArrayComponents != undefined) {
+        parCont = this.rootLink.description.virtualArrayComponents[parentContainerName];
+      } else if (parCont == undefined && this.rootLink.description.fetchComponents != undefined) {
+        parCont = this.rootLink.description.fetchComponents[parentContainerName];
+      }
+
+      if (parCont == undefined) console.log("error неправильно указано имя компонента наследуемого контейнера в container_extend");
+      var shareProps = parCont.props;
+
+      if (parCont.share_props != undefined) {
+        shareProps = shareProps.slice(0, parCont.share_props);
+      }
+
+      for (var u = 0; u < shareProps.length; u++) {
+        var keyProp = shareProps[u];
+        if (_typeof(keyProp) == "object") keyProp = shareProps[u][0];
+
+        if (parCont.methods[keyProp] != undefined) {
+          methods[keyProp] = parCont.methods[keyProp];
+        }
+      }
+
+      props = shareProps.concat(props);
+    }
+  }
+
   if (props == undefined) props = [];
 
   for (var i2 = 0; i2 < props.length; i2++) {
@@ -298,6 +375,7 @@ function HTMLixRouter(state, routes) {
     htmlLink: {},
     component: {},
     matchRout: findComponent,
+    countError: 0,
     findRouters: function findRouters(nameArrComp) {
       if (nameArrComp == undefined) {
         nameArrComp = this.matchRout(this.routes);
@@ -314,7 +392,14 @@ function HTMLixRouter(state, routes) {
         if (this.component[key2] == undefined) {
           var component = this.rootLink.state[key2];
           this.component[key2] = component;
-         
+
+          if (component == undefined) {
+            var messPart = "warn не удалось найти компонент " + key2 + " в описании приложения;";
+            if (this.countError > 0) messPart = "router error - не удается найти компонент " + key2 + " в описании приложения, проверьте правильность написания ключей в параметре routes для HTMLixRouter";
+            console.log(messPart);
+            this.countError = this.countError + 1;
+          } //console.log(key);
+
         }
 
         if (this.htmlLink[key] == undefined || this.htmlLink[key] == null) this.htmlLink[key] = document.querySelector("[data-" + key + "]"); //console.log(this.htmlLink[key]);
@@ -358,24 +443,21 @@ function HTMLixRouter(state, routes) {
   return stateWithRoutes;
 }
 
-function EventEmiter(eventName, prop, listeners, listenersEventMethods, behavior, rootLink){
+function EventEmiter(eventName, prop, listeners, listenersEventMethods, behavior, rootLink) {
+  this.listeners = listeners;
+  this.listenersEventMethods = listenersEventMethods;
+  this.event = new Event(eventName);
+  this.type = eventName;
+  this.prop = prop;
+  this.behavior = null;
+  this.rootLink = null;
 
-		this.listeners = listeners;
-	this.listenersEventMethods =  listenersEventMethods;
-
-		this.event  = new Event(eventName);
-	this.type = eventName;
-	this.prop = prop;
-	this.behavior = null;
-	this.rootLink = null;
-	if(behavior != undefined){
-		this.behavior = behavior.bind(this);
-		this.rootLink = rootLink;
-	}
-
-
+  if (behavior != undefined) {
+    this.behavior = behavior.bind(this);
+    this.rootLink = rootLink;
+  }
 }
-//
+
 EventEmiter.prototype.addListener = function (htmlLinkToListener, eventMethod, eventName, nameListener) {
   htmlLinkToListener.addEventListener(eventName, eventMethod);
   this.listeners[nameListener] = htmlLinkToListener;
@@ -395,20 +477,15 @@ EventEmiter.prototype.removeListener = function (htmlLinkToListener) {
   delete this.listeners[index];
 };
 
-EventEmiter.prototype.emit = function(){
-	
-	    if(this.behavior != null){
-			
-			var isEmit = this.behavior();
-			
-			if(isEmit == false)return;
-		}
+EventEmiter.prototype.emit = function () {
+  if (this.behavior != null) {
+    var isEmit = this.behavior();
+    if (isEmit == false) return;
+  }
 
-		for(key in  this.listeners){
-
-				this.listeners[key].dispatchEvent(this.event);
-
-			}
+  for (key in this.listeners) {
+    this.listeners[key].dispatchEvent(this.event);
+  }
 };
 
 EventEmiter.prototype.setEventProp = function (prop) {
@@ -1200,29 +1277,24 @@ PropEventEmiter.prototype.setProp = function () {
 PropEventEmiter.prototype.removeProp = function () {
   return false;
 };
-PropEventEmiter.prototype.disableEvent= function(){
-	
 
-		if(this[this.type+'-disable'] != undefined){
+PropEventEmiter.prototype.disableEvent = function () {
+  if (this[this.type + '-disable'] != undefined) {
+    return;
+  }
 
-			return;
-		}
+  this[this.type + '-disable'] = true;
+  this.emiter.removeListener(this.htmlLink);
+};
 
-		this[this.type+'-disable'] = true;
+PropEventEmiter.prototype.enableEvent = function () {
+  if (this[this.type + '-disable'] == undefined) {
+    return;
+  }
 
-				this.emiter.removeListener(this.htmlLink);
-
-}
-PropEventEmiter.prototype.enableEvent = function(){
-
-		if(this[this.type+'-disable'] == undefined){
-
-			return;
-		}
-		delete this[this.type+'-disable'];
-
-		this.emiter.addListener(this.htmlLink, this.eventMethod, this.type, this.emiterKey);
-}
+  delete this[this.type + '-disable'];
+  this.emiter.addListener(this.htmlLink, this.eventMethod, this.type, this.emiterKey);
+};
 /*PropEventEmiter.prototype.component = function(){
 
 	return this.rootLink.state[this.pathToCоmponent];
@@ -1531,21 +1603,15 @@ function HTMLixState(StateMap) {
   this.stateMethods = {};
   this.stateProperties = {};
 
-   if(StateMap.eventEmiters != undefined){
-
-	   for (var key in StateMap.eventEmiters){
-             		   
-             if(StateMap.eventEmiters[key].behavior != undefined){
-				 
-				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {}, StateMap.eventEmiters[key].behavior, this);
-				 
-			 }else{
-				 
-				 this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {} );
-				 
-			 }
-		 }
-	}
+  if (StateMap.eventEmiters != undefined) {
+    for (var key in StateMap.eventEmiters) {
+      if (StateMap.eventEmiters[key].behavior != undefined) {
+        this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {}, StateMap.eventEmiters[key].behavior, this);
+      } else {
+        this.eventProps[key] = new EventEmiter(key, StateMap.eventEmiters[key].prop, {}, {});
+      }
+    }
+  }
 
   for (var key in StateMap) {
     if (key == "stateSettings") {

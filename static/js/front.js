@@ -159,7 +159,7 @@ var StateMap = {
 		props: ["description", "title", ["listen_load_page", "emiter-load-page", ""]],
 		methods: {
 			
-			//слушает событие загрузки поста с сервера которое мы вызываем в компоненте left_menu_level_2 и методе onLoadAll при первой загрузке,  и отображает пост
+			//слушает событие загрузки поста с сервера которое мы вызываем в компоненте menu_level_3 и методе onLoadAll при первой загрузке,  и отображает пост
 			listen_load_page: function(){
 				
 				var post = this.emiter.getEventProp();
@@ -251,18 +251,13 @@ var StateMap = {
 				//console.log(this);
 			},
 			//метод вызываетсся при создании контейнера
-			oncCreatedContainer(){
-				
+			oncCreatedContainer(){			
 					if(this.props.post_group.groupArray == undefined){
-					
 
-					
 					//this.props.post_group.groupArray = this.rootLink.state["left_menu_level_2"];
-					}
-				
+					}				
 				}
 			}
-
 		},		
 		/*
 		 menu_level_3 - компонент - виртуальный массив для отображения списка постов в меню
@@ -457,7 +452,7 @@ stateMethods: {
 				///вызываем события изменения типа навигации
 				this.eventProps["emiter-navigation-type"].setEventProp(this.stateProperties.NAVIGATION_TYPE);
 				
-				///вызываем событие отображени поста 
+				///вызываем событие отображения поста 
 				if(urlArr[2] == "post"){
 					this.router.setRout("/"+SITE_NAME+"/post/"+urlArr[3]+"/"+urlArr[4]);
 					
@@ -601,8 +596,6 @@ window.onload = function(){
 		console.log(HM);
 		
 	});
-	
-
 }
 
 
