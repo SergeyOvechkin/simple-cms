@@ -13,8 +13,23 @@ var StateMap = {
 	*/
 	menu:{
 		selector: "ul:first-of-type",
-		arrayProps: ["click_left_menu", "click_top_menu", ["listen_load_section", "emiter-load-section", ""], ["listen_change_section_in_arr", "emiter-change-section", ""]],
+		arrayProps: ["mobail_toggler", "mobail_toggler_style", "click_left_menu", "click_top_menu", ["listen_load_section", "emiter-load-section", ""], ["listen_change_section_in_arr", "emiter-change-section", ""]],
 		arrayMethods: {
+			mobail_toggler: function(){
+				
+				if(this.prop == null){
+					
+					this.parent.props.mobail_toggler_style.setProp("display: none;");
+					this.prop = 1;
+					
+				}else{
+					
+					this.parent.props.mobail_toggler_style.setProp("");
+					this.prop = null;
+					
+				}
+				
+			},
 			//включает тип навигации left-menu
 			click_left_menu: function(){
 				
@@ -64,9 +79,21 @@ var StateMap = {
             ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["listen_navigation_type", "emiter-navigation-type", ""],			
 			["group_items", "group", "ul:first-of-type"], ["group_ul_class", "class", "ul:first-of-type"], 
 			["listen_change_section_in_cont", "emiter-change-section", ""], 
-			["listen_load_cat", "emiter-load-categories", ""]
+			["listen_load_cat", "emiter-load-categories", ""],
+			["listen_width_display", "emiter-width-display", ""],
 			],
 		methods: {
+			listen_width_display: function(){
+				//console.log(this.emiter.prop)
+				if(this.emiter.prop == "mobail"){
+					this.parent.props.hover_on.disableEvent("mouseover");
+					this.parent.props.hover_out.disableEvent("mouseout");
+				}else{
+					
+					this.parent.props.hover_on.enableEvent("mouseover");
+					this.parent.props.hover_out.enableEvent("mouseout");
+				}							
+			},
 			//наведение курсора на секцию  для top-menu навигации
 			//удаляем класс чтобы отобразить дочерний список
 			hover_on: function(){
@@ -97,7 +124,7 @@ var StateMap = {
 										
 					return;
 				}else{					
-					if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
+					//if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
 					this.rootLink.eventProps["emiter-load-categories"].setEventProp(sect_id);
 				}
 			},
@@ -125,9 +152,17 @@ var StateMap = {
 				if(this.parent.props.data.getProp() == this.emiter.prop){
 					
 					this.parent.props.class.setProp("active");
+					if(this.rootLink.eventProps["emiter-width-display"].prop == "mobail"){
+						this.parent.props.group_ul_class.removeProp("hover-non");
+						
+					}
+					
 					
 				}else{
 					this.parent.props.class.removeProp("active");
+					if(this.rootLink.eventProps["emiter-width-display"].prop == "mobail"){
+						this.parent.props.group_ul_class.setProp("hover-non");
+					}
 				}
 			},
 			//слушаем событие загрузки категоий чтобы создать список для секций меню top-menu 
@@ -228,9 +263,21 @@ var StateMap = {
 		props: [ 
 		   "click",
 		   ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["post_group_class", "class", "ul:first-of-type"],
+		   ["listen_width_display", "emiter-width-display", ""],
+		   ["listen_change_level_2_item", "emiter-change-level_2_item", ""],
 		],
 		methods: {
-			
+			listen_width_display: function(){
+				//console.log(this.emiter.prop)
+				if(this.emiter.prop == "mobail"){
+					this.parent.props.hover_on.disableEvent("mouseover");
+					this.parent.props.hover_out.disableEvent("mouseout");
+				}else{
+					
+					this.parent.props.hover_on.enableEvent("mouseover");
+					this.parent.props.hover_out.enableEvent("mouseout");
+				}							
+			},
 			//удаляем класс чтобы отобразить дочернюю группу в режиме top-menu
 			hover_on: function(){
 					
@@ -249,8 +296,24 @@ var StateMap = {
 			click: function(){
 				
 				event.preventDefault();
-					
+				var level_2_id = this.parent.props.data.getProp();
+				
+				this.rootLink.eventProps["emiter-change-level_2_item"].setEventProp(level_2_id);	
 			},
+			listen_change_level_2_item: function(){
+				
+				var level_2_id = this.emiter.prop;
+				
+				this.parent.props.post_group_class.setProp("hover-non");
+				
+				if(level_2_id == this.parent.props.data.getProp()){
+									
+					this.parent.props.post_group_class.removeProp("hover-non");
+				}
+				
+				
+			},
+			
 		  }
 		},		
 		/*
@@ -448,7 +511,16 @@ stateMethods: {
 				this.eventProps["emiter-change-section"].setEventProp(section);	
 				
 				///вызываем события изменения типа навигации
-				this.eventProps["emiter-navigation-type"].setEventProp(this.stateProperties.NAVIGATION_TYPE);
+				if(window.innerWidth < 600){
+					
+					this.eventProps["emiter-navigation-type"].setEventProp("top-menu");
+					this.eventProps["emiter-width-display"].emit();
+					
+				}else{
+					
+					this.eventProps["emiter-navigation-type"].setEventProp(this.stateProperties.NAVIGATION_TYPE);
+				}
+				
 				
 				///вызываем событие отображения поста 
 				if(urlArr[2] == "post"){
@@ -472,6 +544,30 @@ stateMethods: {
 		["emiter-load-categories"]: {prop: ""}, //событие для создания второго и  третьго уровня меню
 		["emiter-load-page"]: {prop: ""}, //событие дя отображения загруженого с сервера поста
 		["emiter-load-section"] : {prop: ""}, //событие для создания секций меню (1-го уровня)
+		["emiter-change-level_2_item"]: {prop: ""},
+		["emiter-width-display"] : {		
+			prop: "desktop",
+			behavior: function(){ 
+			       
+				   if(window.innerWidth < 600 && this.prop == "desktop"){
+					   
+					   this.prop = "mobail";
+					   
+				   }else if(window.innerWidth > 600 && this.prop == "mobail"){
+					   
+					   this.prop = "desktop";
+					   
+				   }else{
+					   
+					   return false;
+				   }
+				
+				   return true;
+			
+			}
+			
+		}, //событие изменения мобильной версии сайта
+		
 		["emiter-change-section"] : { //событие для смены секции меню 
 			prop: "setionId",
 			behavior: function(){
@@ -485,7 +581,7 @@ stateMethods: {
 			
 			behavior: function(){
 				//если ширина экрана меньше 600 px событие не сработает
-				if(window.innerWidth < 600 && this.prop == "top-menu")return false;
+				if(window.innerWidth < 600 && this.prop == "left-menu")return false;
 				
 				this.rootLink.stateProperties.NAVIGATION_TYPE = this.prop;				
 				return true;
@@ -594,6 +690,17 @@ window.onload = function(){
 		console.log(HM);
 		
 	});
+	
+	window.onresize = function(){
+		
+		if(window.innerWidth < 600 && HM.stateProperties.NAVIGATION_TYPE == "left-menu"){
+			
+			HM.eventProps["emiter-navigation-type"].setEventProp("top-menu");
+			HM.eventProps["emiter-width-display"].emit();
+			
+		}
+		
+	}
 }
 
 

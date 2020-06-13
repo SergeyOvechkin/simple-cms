@@ -74,8 +74,73 @@
    padding: 7px 5px 7px 5px;
     positiont: relative; }
 	
+	
+ 
+/* мобильная версия верхнее меню */
+    .toggler-mobail-nav-type {
+		 
+		 display: none;
+	 }	 
 
+@media (max-width: 600px) {
+  [data-menu="array"] {
+    display: block;
+   /* width: 50%;*/ }
+    /*[data-menu="array"] .menu-toggler {
+      display: block;
+      padding: 5px 5px 5px 9px;
+      color: #007bff;
+      font-size: 20px;
+      line-height: 22px; }*/
+    [data-menu="array"] [data-menu_item="container"] {
+      padding: 5px 5px 5px 9px;
+      position: static;
+      /*display: none;*/ }
+      [data-menu="array"] [data-menu_item="container"] > ul {
+        position: static;
+        border: none !important; 
+		box-shadow: none; /* Параметры тени */
+		}
+      [data-menu="array"] [data-menu_item="container"] > ul:before {
+        content: "";
+        width: 0%;
+        height: 0px;
+        position: static;
+        top: 0px;
+        left: 0px; }
+    [data-menu="array"] [data-item_level_2_top="container"] {
+      padding: 5px 5px 5px 9px;
+      background-color: #eff5f7;
+      position: static;
+      display: block; }
+      [data-menu="array"] [data-item_level_2_top="container"] > ul {
+        position: static;
+        border: none !important; 
+		box-shadow: none; /* Параметры тени */
+		}
+      [data-menu="array"] [data-item_level_2_top="container"] > ul:before {
+        content: "";
+        width: 0px;
+        height: 0%;
+        position: static; }
+    [data-menu="array"] [data-item_level_3="container"] {
+	   	
+      padding: 5px 5px 5px 9px;
+      background-color: #b8d9e4; }
 
+     .toggler-nav-type {
+		 
+		 display: none;
+	 }
+     .toggler-mobail-nav-type {
+		 
+		 display: block;
+	 }
+ [data-menu="array"] [data-menu_item="container"] [data-item_level_2_top="container"] [data-item_level_3="container"] > a{
+	white-space: normal;
+	border-bottom: 1px dotted gray;
+}	 
+}
 
 
    /*      левое меню     */          
