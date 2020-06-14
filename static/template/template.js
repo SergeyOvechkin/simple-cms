@@ -1,4 +1,4 @@
-
+var template = `
 <!--------компонент для отображения домашней страници-------------->
 <div data-home="container" style="margin-top: 20px;"  class="card" >
   <div class="card-body">
@@ -150,3 +150,4 @@
 							</ul>
 						</li>
 
+`;

@@ -478,7 +478,9 @@ stateMethods: {
 		},
 		//метод - событие, вызывается после дозагрузки шаблонов и создания всех компонентов
 		///сдесь в зависимости от url переключаем события чтобы создать необходимое представление и отобразить нужные компоненты 		
-		onLoadAll: function(){ 
+		onLoadAll: function(){
+
+           // console.log("1");			
 			
 			var currentUrl = window.location.pathname;
 			var urlArr = currentUrl.split("/");
@@ -512,8 +514,6 @@ stateMethods: {
 				
 				///вызываем события изменения типа навигации
 				if(window.innerWidth < 600){
-					
-					this.eventProps["emiter-navigation-type"].setEventProp("top-menu");
 					this.eventProps["emiter-width-display"].emit();
 					
 				}else{
@@ -539,6 +539,12 @@ stateMethods: {
 		NAVIGATION_TYPE: NAV_TYPE, //тип навигации 
 		CURRENT_SECTION: "", //текущая секция
 	},
+	stateSettings: {
+		
+		///имя переменной из файла template.js где искать недостающие шаблоны
+		templateVar: template,
+		
+	},
     eventEmiters: {
 		
 		["emiter-load-categories"]: {prop: ""}, //событие для создания второго и  третьго уровня меню
@@ -550,6 +556,8 @@ stateMethods: {
 			behavior: function(){ 
 			       
 				   if(window.innerWidth < 600 && this.prop == "desktop"){
+					   
+					   this.rootLink.eventProps["emiter-navigation-type"].setEventProp("top-menu");
 					   
 					   this.prop = "mobail";
 					   
@@ -592,50 +600,40 @@ stateMethods: {
 	}	
 }
 ///перечень всех возможных роутов для данного приложения
-///сдесь поле  firs одинаковое для всех маршрутов потому, что у нас всегда отдается index.html или admin.html, в котором есть шаблоны только для 
-//двух компонентов: "home", "menu" шаблоны для остальных компонентов мы  догружаем в fetch запросе: templatePath: "/"+SITE_NAME+"/static/template/template.html"
+///при использовании 	stateSettings: { templateVar - поля first и templatePath можно не указывать т. к. компоненты загружаются из скрипта template.js
 var routes = {
 	
-	 ["/"]:  {  first: [ "home", "menu"],
+	 ["/"]:  {  
 	           routComponent: {
 			
 					router_main: "home",   //компоненты соответствующие данному роуту
 			
 				},
-		
-				templatePath: "/"+SITE_NAME+"/static/template/template.html" // папка для загрузки шаблонов
 	          },
 	
-	["/"+SITE_NAME+"/"]:  {  first: [ "home", "menu"],
+	["/"+SITE_NAME+"/"]:  {  
 	           routComponent: {
 			
 					router_main: "home",   //компоненты соответствующие данному роуту
 			
 				},
-		
-				templatePath: "/"+SITE_NAME+"/static/template/template.html" // папка для загрузки шаблонов
 	        },	
      ["/"+SITE_NAME+"/post/:categoryID/:postID/*"]	:{
-		 
-				first: ["home", "menu"],
+
 					routComponent: {
 			
 						router_main: "sections",   //компоненты соответствующие данному роуту
 			
 					},
-		
-				templatePath: "/"+SITE_NAME+"/static/template/template.html" // папка для загрузки шаблонов
 		 
 	 },			
-	["/"+SITE_NAME+"/contacts/*"]:  {  first: ["home", "menu"],
+	["/"+SITE_NAME+"/contacts/*"]:  {  
 	
 	           routComponent: {
 			
 					router_main: "contacts",   //компоненты соответствующие данному роуту
 			
 				},
-		
-				templatePath: "/"+SITE_NAME+"/static/template/template.html" // папка для загрузки шаблонов
 	        }			
 
 }
@@ -644,16 +642,13 @@ function addSectionToRoutes(routes, sections){
 	
 	for(var key in sections){
 		
-		routes["/"+SITE_NAME+"/"+key+"/*"] = {  
+		routes["/"+SITE_NAME+"/"+key+"/*"] = {  //
 	
-	           first: ["home", "menu"],
 	           routComponent: {
 			
 					router_main: "sections",   //компоненты соответствующие данному роуту
 			
 				},
-		
-				templatePath: "/"+SITE_NAME+"/static/template/template.html" // папка для загрузки шаблонов
 	        }
 	}
 		
@@ -689,18 +684,18 @@ window.onload = function(){
 
 		console.log(HM);
 		
+		///вызываем данный метод в ручную, т. к. это метод - событие срабатывает автоматически только после дозагрузки шаблонов в fetch запросе асинхронно,
+		//приобычной загрузке компонентов или при загрузке их из переменной stateSettings.templateVar (как в данном случае) он не вызовется автоматически
+		HM.stateMethods.onLoadAll.call(HM);
+		
 	});
 	
 	window.onresize = function(){
 		
-		if(window.innerWidth < 600 && HM.stateProperties.NAVIGATION_TYPE == "left-menu"){
-			
-			HM.eventProps["emiter-navigation-type"].setEventProp("top-menu");
 			HM.eventProps["emiter-width-display"].emit();
-			
-		}
-		
+
 	}
+
 }
 
 
