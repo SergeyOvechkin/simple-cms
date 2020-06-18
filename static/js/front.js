@@ -2,12 +2,10 @@
 const SITE_NAME = "simple-cms"; // имя репозитория на гитхаб
 const HOME_PAGE_NAME = "Home"; //название главной страници
 const CONTACTS_PAGE_NAME = "Контакты"; //название страници с контактами
-
 var NAV_TYPE = "left-menu"; //top-menu -тип навигации
 var converter = new showdown.Converter(); //конвертация markdown формата
 
-var StateMap = {
-    
+var StateMap = {   
 	/*
 	  menu - компонент меню для переключения разделов сайта
 	*/
@@ -25,10 +23,8 @@ var StateMap = {
 				}else{
 					
 					this.parent.props.mobail_toggler_style.setProp("");
-					this.prop = null;
-					
-				}
-				
+					this.prop = null;					
+				}				
 			},
 			//включает тип навигации left-menu
 			click_left_menu: function(){
@@ -81,19 +77,29 @@ var StateMap = {
 			["listen_change_section_in_cont", "emiter-change-section", ""], 
 			["listen_load_cat", "emiter-load-categories", ""],
 			["listen_width_display", "emiter-width-display", ""],
+			["toggle_hover", "aux"], //вспомогательный метод
 			],
 		methods: {
+			toggle_hover: function(action){//вспомогательный метод - включает или выключает события наведения курсора мыши										
+					this.props.hover_on[action+"Event"]("mouseover");
+					this.props.hover_out[action+"Event"]("mouseout");								
+			},
+			///слушаем изменение ширины экрана
 			listen_width_display: function(){
-				//console.log(this.emiter.prop)
-				if(this.emiter.prop == "mobail"){
-					this.parent.props.hover_on.disableEvent("mouseover");
-					this.parent.props.hover_out.disableEvent("mouseout");
+				if(this.emiter.prop == "mobail"){					
+					this.parent.methods.toggle_hover("disable");
 				}else{
-					
-					this.parent.props.hover_on.enableEvent("mouseover");
-					this.parent.props.hover_out.enableEvent("mouseout");
+					this.parent.methods.toggle_hover("enable");
 				}							
 			},
+			///слушаем изменение типа навигации и включаем либо выключаем соответствующие обработчики стандартных событий			
+			listen_navigation_type: function(){			
+				if(this.emiter.prop == "left-menu"){					
+					this.parent.methods.toggle_hover("disable");
+				}else{
+					this.parent.methods.toggle_hover("enable");
+				}					
+			},	
 			//наведение курсора на секцию  для top-menu навигации
 			//удаляем класс чтобы отобразить дочерний список
 			hover_on: function(){
@@ -115,37 +121,17 @@ var StateMap = {
 			click: function(){
 				event.preventDefault();
 				
-				var sect_id = this.parent.props.data.getProp();
-				
+				var sect_id = this.parent.props.data.getProp();			
 				//this.rootLink.stateProperties.CURRENT_SECTION = sect_id;
 				this.rootLink.eventProps["emiter-change-section"].setEventProp(sect_id);
 								
-				if(sect_id == "home" || sect_id == "contacts"){
-										
+				if(sect_id == "home" || sect_id == "contacts"){										
 					return;
 				}else{					
 					//if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
 					this.rootLink.eventProps["emiter-load-categories"].setEventProp(sect_id);
 				}
-			},
-            ///слушаем изменение типа навигации и включаем либо выключаем соответствующие обработчики стандартных событий			
-			listen_navigation_type: function(){
-				
-				var nav_type = this.emiter.prop;
-				var props= this.parent.props;
-				
-				if(nav_type == "left-menu"){
-									
-					props.hover_on.disableEvent("mouseover");
-					props.hover_out.disableEvent("mouseout");
-					
-				}else{
-					
-					props.hover_on.enableEvent("mouseover");
-					props.hover_out.enableEvent("mouseout");
-				}
-				
-			},				
+			},			
 			//слушаем событие смены раздела для снятия и добавления активного класса на соответствующих кнопках
 			listen_change_section_in_cont: function(){
 			
@@ -155,9 +141,7 @@ var StateMap = {
 					if(this.rootLink.eventProps["emiter-width-display"].prop == "mobail"){
 						this.parent.props.group_ul_class.removeProp("hover-non");
 						
-					}
-					
-					
+					}									
 				}else{
 					this.parent.props.class.removeProp("active");
 					if(this.rootLink.eventProps["emiter-width-display"].prop == "mobail"){
@@ -167,8 +151,7 @@ var StateMap = {
 			},
 			//слушаем событие загрузки категоий чтобы создать список для секций меню top-menu 
 			///которое мы вызываем при первой загрузке сайта			
-			listen_load_cat: function(){
-				    
+			listen_load_cat: function(){				    
 					///если список уже создан выходим из функции, чтобы не создавать его повторно
 				    if(this.prop != null)return;
 				
@@ -177,7 +160,6 @@ var StateMap = {
 							
 					var group_array = this.rootLink.stateMethods.createItemLevel_2_data.call(this, sectionId, "top_menu");
 			
-				    //console.log(array);	
 			        this.parent.props.group_items.setProp({componentName: "menu_level_2_top", group: group_array});
 					
 					this.prop = 1;
@@ -185,15 +167,12 @@ var StateMap = {
 		}		
 	},
 	/*
-	  page_single - компонент отображает текущий пост.
-	
+	  page_single - компонент отображает текущий пост.	
 	*/
-	page_single: {
-		
+	page_single: {		
 		container: "page_single",
 		props: ["description", "title", ["listen_load_page", "emiter-load-page", ""]],
-		methods: {
-			
+		methods: {		
 			//слушает событие загрузки поста с сервера которое мы вызываем в компоненте menu_level_3 и методе onLoadAll при первой загрузке,  и отображает пост
 			listen_load_page: function(){
 				
@@ -227,24 +206,16 @@ var StateMap = {
 			click: function(){
 				
 				event.preventDefault();
-				
-				//if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu")return;
-				
-				if(this.prop == null){
-					
-					//console.log(this.prop);
+
+				if(this.prop == null){				
 					this.parent.props.post_group_style.setProp("display: none;");
 					this.parent.props.simbol.setProp("+");
-					this.prop = 1;				
-					
-				}else{
-					
+					this.prop = 1;								
+				}else{					
 				     this.parent.props.post_group_style.setProp("");
 					 this.parent.props.simbol.setProp("-");				
-					this.prop = null;
-					
+					this.prop = null;					
 				}			
-				//console.log(this);
 			},
 			//метод вызываетсся при создании контейнера
 			oncCreatedContainer(){			
@@ -267,8 +238,8 @@ var StateMap = {
 		   ["listen_change_level_2_item", "emiter-change-level_2_item", ""],
 		],
 		methods: {
-			listen_width_display: function(){
-				//console.log(this.emiter.prop)
+			listen_width_display: function(){//преключаем мобильную и обычную версию top-menu
+	
 				if(this.emiter.prop == "mobail"){
 					this.parent.props.hover_on.disableEvent("mouseover");
 					this.parent.props.hover_out.disableEvent("mouseout");
@@ -280,40 +251,29 @@ var StateMap = {
 			},
 			//удаляем класс чтобы отобразить дочернюю группу в режиме top-menu
 			hover_on: function(){
-					
-				
-					this.parent.props.post_group_class.removeProp("hover-non");
-				
+							
+					this.parent.props.post_group_class.removeProp("hover-non");				
 			},
 			//добавляем класс чтобы скрыть дочернюю группу в режиме top-menu
 			hover_out: function(){
-				
-			
-				this.parent.props.post_group_class.setProp("hover-non");
-				
+						
+				this.parent.props.post_group_class.setProp("hover-non");				
 			},
-			//при клике по категории списка меню 
+			//при клике по категории списка меню мобильной версии
 			click: function(){
 				
 				event.preventDefault();
-				var level_2_id = this.parent.props.data.getProp();
 				
-				this.rootLink.eventProps["emiter-change-level_2_item"].setEventProp(level_2_id);	
-			},
-			listen_change_level_2_item: function(){
-				
-				var level_2_id = this.emiter.prop;
-				
-				this.parent.props.post_group_class.setProp("hover-non");
-				
-				if(level_2_id == this.parent.props.data.getProp()){
-									
-					this.parent.props.post_group_class.removeProp("hover-non");
-				}
-				
-				
-			},
-			
+				this.component().data.forEach(container=>{
+					
+					 container.props.post_group_class.setProp("hover-non");
+					
+					if(container.index == this.parent.index){
+						
+						container.props.post_group_class.removeProp("hover-non");
+					}					
+				});							
+			},		
 		  }
 		},		
 		/*
@@ -335,7 +295,6 @@ var StateMap = {
 						
 						var historyURL = "/"+SITE_NAME+"/post/"+category_id+"/"+post_id;
 		    	     	
-					    // console.log(this);
 						//в режиме top меню также переключает секцию, чтобы сменить класс у активной секции
 						if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu"){
 							
@@ -350,8 +309,7 @@ var StateMap = {
 						
 						     this.rootLink.eventProps["emiter-load-page"].setEventProp(json);  							 
 						}); 
-				},				
-			
+				},							
 			}			
 		}
 	},
@@ -382,8 +340,7 @@ var StateMap = {
 							props.left_coll_style.setProp("display: none;");
 							props.right_coll_class.setProp(["col-sm-12", "col-md-12"]);
 						}
-					
-					
+										
 				},
 				//слушем событие смены категорий и создаем соответствующий список в левом меню.
 				//метод работает только когда тип навигации = left-menu т. к. для top-menu он выключается в методе выше
@@ -427,8 +384,7 @@ stateMethods: {
 					
 					categ[ sections[y] ] = this.rootLink.stateProperties.CATEGORIES[ sections[y] ];
 					
-				}
-							
+				}							
 				var cat_id = this.rootLink.stateProperties.category_id;	
 
     		    var array = [];
@@ -443,9 +399,7 @@ stateMethods: {
 					}else{
 						
 						level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [], simbol: "-", post_group_style: "display: ''"};
-					}
-					
-					
+					}					
 					if(cat_id[categ[ key ].id] != undefined){
 						
 						for(var k=0; k < cat_id[categ[ key ].id].length; k++){
@@ -454,34 +408,26 @@ stateMethods: {
 						}
 					}
 				   array.push(level_2);
-
-			     }
-               
-             return array;			   
-		
+			     }               
+             return array;			   		
 	},	
 	//получает данные с сервера методом get
 	fetchAll: async function(url){
 			
 			var resp = await fetch(url);
 			
-			try{
-				
+			try{			
 				var json = await resp.json();
-            }
-			
+            }			
 			catch(err){				
 				console.log(err);
-			}
-			
+			}			
 			return json;		
 		},
 		//метод - событие, вызывается после дозагрузки шаблонов и создания всех компонентов
 		///сдесь в зависимости от url переключаем события чтобы создать необходимое представление и отобразить нужные компоненты 		
 		onLoadAll: function(){
 
-           // console.log("1");			
-			
 			var currentUrl = window.location.pathname;
 			var urlArr = currentUrl.split("/");
 			var section = "home";
@@ -519,9 +465,7 @@ stateMethods: {
 				}else{
 					
 					this.eventProps["emiter-navigation-type"].setEventProp(this.stateProperties.NAVIGATION_TYPE);
-				}
-				
-				
+				}				
 				///вызываем событие отображения поста 
 				if(urlArr[2] == "post"){
 					this.router.setRout("/"+SITE_NAME+"/post/"+urlArr[3]+"/"+urlArr[4]);
@@ -539,43 +483,34 @@ stateMethods: {
 		NAVIGATION_TYPE: NAV_TYPE, //тип навигации 
 		CURRENT_SECTION: "", //текущая секция
 	},
-	stateSettings: {
-		
+	stateSettings: {		
 		///имя переменной из файла template.js где искать недостающие шаблоны
-		templateVar: template,
-		
+		templateVar: template,		
 	},
     eventEmiters: {
 		
 		["emiter-load-categories"]: {prop: ""}, //событие для создания второго и  третьго уровня меню
 		["emiter-load-page"]: {prop: ""}, //событие дя отображения загруженого с сервера поста
 		["emiter-load-section"] : {prop: ""}, //событие для создания секций меню (1-го уровня)
-		["emiter-change-level_2_item"]: {prop: ""},
-		["emiter-width-display"] : {		
+		["emiter-width-display"] : {	//событие изменения мобильной версии сайта	
 			prop: "desktop",
 			behavior: function(){ 
 			       
 				   if(window.innerWidth < 600 && this.prop == "desktop"){
 					   
-					   this.rootLink.eventProps["emiter-navigation-type"].setEventProp("top-menu");
-					   
+					   this.rootLink.eventProps["emiter-navigation-type"].setEventProp("top-menu");					   
 					   this.prop = "mobail";
 					   
 				   }else if(window.innerWidth > 600 && this.prop == "mobail"){
 					   
 					   this.prop = "desktop";
 					   
-				   }else{
-					   
+				   }else{					   
 					   return false;
-				   }
-				
-				   return true;
-			
-			}
-			
-		}, //событие изменения мобильной версии сайта
-		
+				   }				
+				   return true;			
+			}			
+		}, 		
 		["emiter-change-section"] : { //событие для смены секции меню 
 			prop: "setionId",
 			behavior: function(){
@@ -593,49 +528,35 @@ stateMethods: {
 				
 				this.rootLink.stateProperties.NAVIGATION_TYPE = this.prop;				
 				return true;
-			}
-			
-		}, 
-		
+			}			
+		}, 		
 	}	
 }
 ///перечень всех возможных роутов для данного приложения
 ///при использовании 	stateSettings: { templateVar - поля first и templatePath можно не указывать т. к. компоненты загружаются из скрипта template.js
-var routes = {
-	
+var routes = {	
 	 ["/"]:  {  
-	           routComponent: {
-			
-					router_main: "home",   //компоненты соответствующие данному роуту
-			
+	           routComponent: {			
+					router_main: "home",   //компоненты соответствующие данному роуту			
 				},
-	          },
-	
+	        },	
 	["/"+SITE_NAME+"/"]:  {  
-	           routComponent: {
-			
-					router_main: "home",   //компоненты соответствующие данному роуту
-			
+	           routComponent: {			
+					router_main: "home",   //компоненты соответствующие данному роуту			
 				},
 	        },	
      ["/"+SITE_NAME+"/post/:categoryID/:postID/*"]	:{
 
-					routComponent: {
-			
-						router_main: "sections",   //компоненты соответствующие данному роуту
-			
-					},
-		 
+					routComponent: {			
+						router_main: "sections",   //компоненты соответствующие данному роуту			
+					},		 
 	 },			
 	["/"+SITE_NAME+"/contacts/*"]:  {  
 	
-	           routComponent: {
-			
-					router_main: "contacts",   //компоненты соответствующие данному роуту
-			
+	           routComponent: {			
+					router_main: "contacts",   //компоненты соответствующие данному роуту			
 				},
 	        }			
-
 }
 //добавляет созданные в админке секции к роутам
 function addSectionToRoutes(routes, sections){
@@ -650,13 +571,11 @@ function addSectionToRoutes(routes, sections){
 			
 				},
 	        }
-	}
-		
+	}		
 }
 // т. к. сервер не поддерживает php и node.js создаем страницу на клиенте, сперва загрузив все необходимые данные с сервера.
 window.onload = function(){
 	
-
 	var currentUrl = window.location.pathname;
 	
 	var urlArr = currentUrl.split("/");
@@ -682,20 +601,15 @@ window.onload = function(){
 		
 		HM.stateProperties.POST = post;
 
-		console.log(HM);
-		
-		///вызываем данный метод в ручную, т. к. это метод - событие срабатывает автоматически только после дозагрузки шаблонов в fetch запросе асинхронно,
+		console.log(HM);		
+		///вызываем данный метод в ручную, т. к.  метод - событие срабатывает автоматически только после дозагрузки шаблонов в fetch запросе асинхронно,
 		//приобычной загрузке компонентов или при загрузке их из переменной stateSettings.templateVar (как в данном случае) он не вызовется автоматически
-		HM.stateMethods.onLoadAll.call(HM);
-		
-	});
-	
+		HM.stateMethods.onLoadAll.call(HM);		
+	});	
 	window.onresize = function(){
 		
 			HM.eventProps["emiter-width-display"].emit();
-
 	}
-
 }
 
 
