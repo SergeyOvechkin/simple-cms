@@ -28,7 +28,7 @@ var StateMap = {
 			},
 			//переключает тип навигации
 			toggle_nav_type: function(){
-				console.log(1);
+				
 				if(this.prop != null){
 					
 					this.rootLink.eventProps["emiter-navigation-type"].setEventProp("left-menu");
@@ -302,12 +302,18 @@ var StateMap = {
 						var historyURL = "/"+SITE_NAME+"/post/"+category_id+"/"+post_id;
 		    	     	
 						//в режиме top меню также переключает секцию, чтобы сменить класс у активной секции
-						if(this.rootLink.stateProperties.NAVIGATION_TYPE != "left-menu"){
+						if(this.rootLink.eventProps["emiter-navigation-type"].prop != "left-menu"){
+							
+							if(this.rootLink.eventProps["emiter-width-display"].prop == "mobail"){
+								
+								this.rootLink.state["menu"].props.mobail_toggler.emitEvent("click");
+							}
 							
 							this.rootLink.eventProps["emiter-change-section"].setEventProp(this.parent.groupParent.parent.groupParent.parent.props.data.getProp());	
 							 this.rootLink.router.setRout(historyURL);
 							 
 						}else{
+	
 							
 							this.rootLink.router.setRout(historyURL);
 						}				
@@ -503,18 +509,20 @@ stateMethods: {
 			behavior: function(){ 
 			       
 				   if(window.innerWidth < 600 && this.prop == "desktop"){
-					   
+					  
 					   this.rootLink.eventProps["emiter-navigation-type"].setEventProp("top-menu");					   
 					   this.prop = "mobail";
+					   return true;	
 					   
 				   }else if(window.innerWidth > 600 && this.prop == "mobail"){
 					   
 					   this.prop = "desktop";
+					   return true;	
 					   
 				   }else{					   
 					   return false;
 				   }				
-				   return true;			
+				   		
 			}			
 		}, 		
 		["emiter-change-section"] : { //событие для смены секции меню 
