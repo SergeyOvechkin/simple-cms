@@ -17,7 +17,7 @@ var StateMap = {
 		container: "current_operation",
 		
 		props: [ "variant",
-		        //сдесь чтобы уменьшить количество data свойств в html разметке мы добавляем одно свойство в тег разметки, а в остальных свойствах в том-же теге ссылаемся на него с помощью селектора
+		        //здесь чтобы уменьшить количество data свойств в html разметке мы добавляем одно свойство в тег разметки, а в остальных свойствах в том-же теге ссылаемся на него с помощью селектора
 				"page_btn", ["page_btn_class", "class", 'a[data-current_operation-page_btn="click"]'],				
 				"category_btn",  ["category_btn_class", "class", "a[data-current_operation-category_btn='click']"],
 				"section_btn", ["section_btn_class", "class", "a[data-current_operation-section_btn='click']"],
@@ -53,11 +53,9 @@ var StateMap = {
 				this.parent.props.variant.setProp("section_editor");
 				this.rootLink.eventProps["emiter-class-btn"].setEventProp("section_btn_class");
 				
-				this.rootLink.state["section_editor"].props.style.setProp("");			
-				
+				this.rootLink.state["section_editor"].props.style.setProp("");							
 			},			
-		}
-		
+		}		
 	},
 	/*
 	 category_editor - компонент для создания, обновления и удаления категорий
@@ -70,8 +68,7 @@ var StateMap = {
 	 "submit", - свойство стипо click для отправки данных формы на сервер
 	 "category_group", ["category_group_style" - свойство для отображения списка категориий в поиске для обновления или удаления, а также свойство для скрытия данного списка при редактировании категории
 	 ["listen_load_sect" - обновляет select  список выбора секций при создании категории 
-	 ["listen_update_category" - загружает выбранную для обновления категорию в форму, а также отключает некоторые поля и воспоизводит событие клика по кнопке find_categ_btn 
-	
+	 ["listen_update_category" - загружает выбранную для обновления категорию в форму, а также отключает некоторые поля и воспоизводит событие клика по кнопке find_categ_btn 	
 	*/
 	category_editor: {
 		container: "category_editor",
@@ -142,11 +139,8 @@ var StateMap = {
 				
 				for(var key in sect){
 					sectArr.push({name: sect[key].section_title, value: sect[key].section_id});
-
 				}	
-				this.parent.props.group_sect.setProp(sectArr);
-				
-				
+				this.parent.props.group_sect.setProp(sectArr);							
 			},
 			//отправляет данные на сохранение при этом проведя валидацию
 			submit: function(){
@@ -158,8 +152,7 @@ var StateMap = {
 				if(title.trim() == ""){
 					alert("забыли указать название");
 					return;
-				}
-				
+				}				
 				var id = props.id.getProp();
 				if(!this.rootLink.stateMethods.testId(id))return;
 			    
@@ -167,9 +160,7 @@ var StateMap = {
 				if(section  == "" || section  == null || section  == undefined){
 					alert("выберите раздел");
 					return;					
-				}	
-					
-				
+				}					
 				var oldForm = document.forms["create_category"];
 			    var formData  = new FormData(oldForm);
 				
@@ -177,23 +168,17 @@ var StateMap = {
 					
 					formData.append("id", id);
 					formData.append("section", section);
-				}
-				
-				
-				var HM = this.rootLink;
-				
+				}				
+				var HM = this.rootLink;			
 				//обновляет список с найдеными категориями вызвав событие emiter-load-categories  после сохранения категории на сервере
 				function callb(json){
 								
 					console.log(json);					
-
-					
+				
 				    HM.stateMethods.fetchItems("/dbase/CATEGORIES.js", "text").then(resp_text=>{
-								
-                               
+								                        
 								HM.stateProperties.CATEGORIES = JSON.parse( resp_text.replace(regexpCATEGORIES, "") );
-								HM.eventProps["emiter-load-categories"].setEventProp(HM.stateProperties.CATEGORIES); 
-		
+								HM.eventProps["emiter-load-categories"].setEventProp(HM.stateProperties.CATEGORIES); 		
 					});
 					if(json.err){
 						
@@ -206,16 +191,10 @@ var StateMap = {
 					props.section_style.removeProp();
 					props.id_style.removeProp();
 					
-				}
-
-					
-					this.rootLink.stateMethods.send_POST("/create/category", formData, callb);
-					
-							
-				
+				}				
+					this.rootLink.stateMethods.send_POST("/create/category", formData, callb);				
 			},		
-		}
-		
+		}		
 	},
 	/*
 	 section_editor- компонент для создания, редактирования и удаления разделов
@@ -270,8 +249,7 @@ var StateMap = {
 
 						sectArr.push({id: sectOLd[key].section_id, title: sectOLd[key].section_title, data: "/section/", });
 					}
-					this.prop =1;
-					
+					this.prop =1;				
 					////
 					this.parent.props.section_group_style.setProp("display: '';");
 					this.parent.props.section_group.setProp(sectArr);
@@ -284,9 +262,7 @@ var StateMap = {
 					this.parent.props.section_group_style.setProp("display: none;");
 					
 					this.prop = null;
-				}
-				
-				
+				}				
 			},
 			//производим валидацию формы и отправляем данные на сервер 
 			submit: function(){
@@ -298,34 +274,26 @@ var StateMap = {
 				if(title.trim() == ""){
 					alert("забыли указать название");
 					return;
-				}
-				
+				}			
 				var id = props.id.getProp();
 				if(!this.rootLink.stateMethods.testId(id))return;
-				
-
 				
 				var oldForm = document.forms["create_section"];
 			    var formData  = new FormData(oldForm);
 				if(!formData.has("id")){
 					
-					formData.append("id", id);
-		
+					formData.append("id", id);		
 				}
-				var HM = this.rootLink;
-				
+				var HM = this.rootLink;				
 				//вызываем событик emiter-load-sections чтобы обновить список в поиске секций
 				function callb(json){
 					
 					console.log(json);	
 				    HM.stateMethods.fetchItems("/dbase/SECTIONS.js", "text").then(resp_text=>{
-						
-						
+												
 						HM.stateProperties.SECTIONS = JSON.parse( resp_text.replace(regexpSECTIONS, "") );
-						HM.eventProps["emiter-load-sections"].setEventProp(HM.stateProperties.SECTIONS); 
-		
+						HM.eventProps["emiter-load-sections"].setEventProp(HM.stateProperties.SECTIONS); 		
 					}); 
-
 					if(json.err){
 						
 						alert(json.err);
@@ -335,15 +303,11 @@ var StateMap = {
 				
 					props.title.setProp("");
 					props.id.setProp("");
-					props.id_style.removeProp();
-					
+					props.id_style.removeProp();					
 				}
 				this.rootLink.stateMethods.send_POST("/create/section", formData, callb);
-
-
 			},		
-		}
-		
+		}		
 	},
 	/*
 	  editor компонент для создания, удаления и редактирования постов
@@ -389,7 +353,6 @@ var StateMap = {
 				for(var key in categ){
 					
 					catArr.push({name: categ[key].name, value: categ[key].id});
-
 				}
 				this.parent.props.group_categ.setProp(catArr);
 			},
@@ -416,9 +379,7 @@ var StateMap = {
 						
 						post_group.setProp(postsArr);
 						
-					});
-				
-				
+					});				
 			},
 			//загружает данные обновляемого поста в форму, скрывает поле для выбора категории и кликает по кнопке find_by_cat_btn
 			listen_update_post: function(){
@@ -427,14 +388,12 @@ var StateMap = {
 				this.parent.props.title.setProp(this.emiter.prop.title);
 				this.parent.props.input.setProp(this.emiter.prop.text);				
 				this.parent.props.save_btn.prop = this.emiter.prop.id;
-				this.parent.props.category_click_style.setProp("disabled");
-				
+				this.parent.props.category_click_style.setProp("disabled");				
 			},
 			//вызываем событие emiter-find-posts при клике по select form чтобы изменить список найденных постов по категории
 			category_click: function(){
 				
-				    this.rootLink.eventProps["emiter-find-posts"].emit();
-				
+				    this.rootLink.eventProps["emiter-find-posts"].emit();			
 			},
 			//кнопка поиска по категории при первом клике отображает список найденных постов, при втором форму для редактирования поста
 			find_by_cat_btn: function(){
@@ -443,10 +402,7 @@ var StateMap = {
 				props.title.setProp("");
 				props.input.setProp("");	
 				props.save_btn.prop = null;
-				props.category_click_style.removeProp("");
-				
-				
-				
+				props.category_click_style.removeProp("");				
 				
 				if(this.prop == null){
 					
@@ -458,9 +414,7 @@ var StateMap = {
 					props.post_group_style.setProp("");
 					this.prop =1;
 
-
 					this.rootLink.eventProps["emiter-find-posts"].emit();
-
 				}else{
 					
 					props.title_style.setProp("");
@@ -469,9 +423,7 @@ var StateMap = {
 					props.convent_btn_style.setProp("");
 					props.find_by_cat_btn_text.setProp("Искать по категории");
 					this.prop = null;
-				}
-				
-				
+				}				
 			},
 			///кнопка при первом клике отображает предварительную html разметку, при втором форму для редактирования поста
 			convent_btn: function(){
@@ -481,9 +433,7 @@ var StateMap = {
 					
 						var code = props.input.getProp();
 				
-						var html   = converter.makeHtml(code);
-						
-						
+						var html   = converter.makeHtml(code);					
 				
 				            props.output_html.setProp(html);
 							
@@ -494,8 +444,7 @@ var StateMap = {
 							props.convent_btn_text.setProp("Вернуться к редактированию");
 							props.find_by_cat_btn_style.setProp("display: none;");
 							
-							this.prop = 1;
-					
+							this.prop = 1;					
 				}else{
 					props.output_style.setProp("display: none;")
 					props.input_style.setProp("display: ;")
@@ -503,11 +452,9 @@ var StateMap = {
 					props.find_by_cat_btn_style.setProp("display: '';");
 					this.prop = null;
 				}
-
 			},
 			//валидация данных и отправка на сервер
-			save_btn: function(){
-				
+			save_btn: function(){				
 				
 				event.preventDefault();
 				
@@ -517,20 +464,17 @@ var StateMap = {
 				if(title.trim() == ""){
 					alert("забыли указать название");
 					return;
-				}
-				
+				}				
 				var postText = props.input.getProp();
 				if(postText  == ""){
 					alert("запись не должна быть пустой");
 					return;					
 				}	
-
 				var category = props.category.getProp();
 				if(category  == "" || category  == null || category  == undefined){
 					alert("выберите категорию");
 					return;					
-				}				
-				
+				}								
 				var oldForm = document.forms["create_post"];
 			    var formData  = new FormData(oldForm);
 				
@@ -538,8 +482,7 @@ var StateMap = {
 					
 					formData.append("category", category);
 		
-				}
-							
+				}							
 				function callb(json){
 					
 					console.log(json);
@@ -560,12 +503,8 @@ var StateMap = {
 				}else{
 					
 					 this.rootLink.stateMethods.send_POST("/create/post", formData, callb);
-				}
-				
-
-				
-			}
-			
+				}				
+			}			
 		}		
 	},
 	virtualArrayComponents: {
@@ -574,11 +513,7 @@ var StateMap = {
 			
 			container: "select_item",
 			props: ["name", "value"],
-			methods: {
-				
-				
-			}
-		
+			methods: { }	
 		},
 		find_arr: { //массив с найдеными постами, категориями и секциями в поиске
 			
@@ -607,21 +542,17 @@ var StateMap = {
 						    delete context.rootLink.stateProperties.CATEGORIES[id];
 							context.rootLink.eventProps["emiter-load-categories"].setEventProp(context.rootLink.stateProperties.CATEGORIES); 
 				
-						}
-						
+						}					
 						if(url1 == "/section/"){
 							delete context.rootLink.stateProperties.SECTIONS[id];
 							context.rootLink.eventProps["emiter-load-sections"].setEventProp(context.rootLink.stateProperties.SECTIONS);
 						}
-
-						
+					
 					}else{
 						
 						console.log(data.err);
 					}
-				}); 
-					
-					
+				}); 					
 				},
 				update: function(){
 				
@@ -644,36 +575,27 @@ var StateMap = {
 						
 								console.log(data.err);
 							}
-						}); 					
-				
+						}); 									
 					}else if(url1 == "/category/"){
-							
-						             
+													             
 							this.rootLink.eventProps["emiter-update-category"].setEventProp(this.rootLink.stateProperties.CATEGORIES[id]);
 							
 					}else if(url1 == "/section/"){
-							
-							          
-							this.rootLink.eventProps["emiter-update-section"].setEventProp(this.rootLink.stateProperties.SECTIONS[id]);
-							
-					}
-				
+													          
+							this.rootLink.eventProps["emiter-update-section"].setEventProp(this.rootLink.stateProperties.SECTIONS[id]);							
+					}				
 				}			
-		}
-		
-	   },
-		
+		}	
+	   },		
 	},
-	eventEmiters: {
-		
+	eventEmiters: {		
 		["emiter-load-categories"]:{ prop: ""},
 		["emiter-load-sections"]:{ prop: ""},
-		["emiter-class-btn"]: {prop: ""},
+		["emiter-class-btn"]: {prop: ""},///события клика по кнопке для главного меню
 		["emiter-find-posts"]: {prop: ""},
 		["emiter-update-post"]: {prop: ''},
 		["emiter-update-category"]: {prop: ''},
-		["emiter-update-section"]: {prop: ''},
-		
+		["emiter-update-section"]: {prop: ''},		
 	},
 	stateMethods: {
 		
@@ -702,12 +624,10 @@ var StateMap = {
 		//функция отправляет данные методом post на сервер
         send_POST: function(url, formDATA, callb){
 			
-					fetch(url, {
-						
+					fetch(url, {					
 						method: 'POST',
 						body: formDATA
-					})
-					
+					})				
 					.then((response) => {
 						if(response.ok) {
 							return response.json();
@@ -716,15 +636,12 @@ var StateMap = {
 						throw new Error('Network response was not ok');
 					})
 					.then((json) => {
-
 						callb(json);
-
 					})
 					.catch((error) => {
 							console.log(error);
 							alert(error);
 					});	
-	
 		},	
 		//валидация id 
 		testId: function(id){
@@ -743,27 +660,40 @@ var StateMap = {
 					return false;						
 				}
 			    return true;
-		}
-
-		
+		}		
 	},
 	stateProperties: {
 		
 		CATEGORIES: CATEGORIES_JS,
-		SECTIONS: SECTIONS_JS,
-		
+		SECTIONS: SECTIONS_JS,		
 	}
 }
-
 window.onload = function(){
-	
-	
+		
 	var HM = new HTMLixState(StateMap);
 	HM.eventProps["emiter-load-categories"].setEventProp(HM.stateProperties.CATEGORIES);
 	HM.eventProps["emiter-load-sections"].setEventProp(HM.stateProperties.SECTIONS);
 		
 	console.log(HM);
-	//console.log(CATEGORIES_JS);
-	//console.log(SECTIONS_JS);
-	//console.log(category_id_js);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
