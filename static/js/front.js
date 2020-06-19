@@ -11,7 +11,7 @@ var StateMap = {
 	*/
 	menu:{
 		selector: "ul:first-of-type",
-		arrayProps: ["mobail_toggler", "mobail_toggler_style", "click_left_menu", "click_top_menu", ["listen_load_section", "emiter-load-section", ""], ["listen_change_section_in_arr", "emiter-change-section", ""]],
+		arrayProps: ["mobail_toggler", "mobail_toggler_style", "toggle_nav_type", ["listen_load_section", "emiter-load-section", ""], ["listen_change_section_in_arr", "emiter-change-section", ""]],
 		arrayMethods: {
 			mobail_toggler: function(){
 				
@@ -26,17 +26,23 @@ var StateMap = {
 					this.prop = null;					
 				}				
 			},
-			//включает тип навигации left-menu
-			click_left_menu: function(){
+			//переключает тип навигации
+			toggle_nav_type: function(){
+				console.log(1);
+				if(this.prop != null){
+					
+					this.rootLink.eventProps["emiter-navigation-type"].setEventProp("left-menu");
+					this.rootLink.eventProps["emiter-change-section"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);
+					this.rootLink.eventProps["emiter-load-categories"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);				
+					this.prop = null;
+					
+				}else{
+					
+					this.rootLink.eventProps["emiter-navigation-type"].setEventProp("top-menu");
+					this.prop = 1;
+				}
 				
-				this.rootLink.eventProps["emiter-navigation-type"].setEventProp("left-menu");
-				this.rootLink.eventProps["emiter-change-section"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);
-				this.rootLink.eventProps["emiter-load-categories"].setEventProp(this.rootLink.stateProperties.CURRENT_SECTION);
-			},
-			///включает тип навигации top-menu
-			click_top_menu: function(){
-				
-				this.rootLink.eventProps["emiter-navigation-type"].setEventProp("top-menu");
+
 			},
 			///обновляем список разделов меню присланных с сервера при первой загрузке
 			listen_load_section: function(){
