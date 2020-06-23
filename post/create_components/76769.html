@@ -386,7 +386,7 @@
 				
 					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Создание виртуального массива</h1>
 	
-					<p data-page_single-description="html" style="margin-bottom: 15px;"><p>Виртуальный массив это массив в котором нет ссылки на html тег.
+					<div data-page_single-description="html" style="margin-bottom: 15px;"><p>Виртуальный массив это массив в котором нет ссылки на html тег.
 Он нужен для создания контейнеров не сгрупированных в одном html элементе а разбросанных по разным свойствам <code>group</code> разных контейнеров.</p>
 <p>Например у нас есть три контейнера и в каждом есть свойство с типом group</p>
 <pre><code class="html language-html"><span class="tag">&lt;div</span> data-<span class="data-main-attr">pages</span><span class="data-attr"></span>=array&gt;
@@ -478,7 +478,7 @@
 <p>Таким образом с помощью свойства с типом <code>group</code> мы сгрупировали в трех контейнерах "page" массива "pages" различное количество контейнеров "item" из массива 'items'</p>
 <p>Заметьте что index контейнера в массиве отличается от индекса контейнера в группе groupId
 Теперь если мы захотим удалить контейнер из группы, с помощью метода .removeFromGroup(groupID) то он также удалится из виртуального массива.</p>
-<p><strong>Важно</strong> размещать контейнеры в html разметке непосредственно в теге с типом <code>group</code> избегая каких либо промежуточных тегов, т.к. при инициализации приложение будет искать только непосредственных потомков (<code>this.htmlLink.children</code>) с типом <code>container</code>, И если их обернуть в другой тег, то оно их просто не найдет. </p></p>			
+<p><strong>Важно</strong> размещать контейнеры в html разметке непосредственно в теге с типом <code>group</code> избегая каких либо промежуточных тегов, т.к. при инициализации приложение будет искать только непосредственных потомков (<code>this.htmlLink.children</code>) с типом <code>container</code>, И если их обернуть в другой тег, то оно их просто не найдет. </p></div>			
 					
 				</div><!-- end page_single -->
 			</div>	<!-- end router_page -->  			

@@ -386,7 +386,7 @@
 				
 					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Навигация</h1>
 	
-					<p data-page_single-description="html" style="margin-bottom: 15px;"><ul>
+					<div data-page_single-description="html" style="margin-bottom: 15px;"><ul>
 <li><p>Навигация по свойствам внутри одного общего контейнера осуществляется с помощью <code>this.parent</code> - где this - 
 указывает на свойство, в обработчике события которого мы находимся, далее <code>parent</code> - это родительский контейнер. </p></li>
 <li><p><code>this.parent.props.name_prop</code> - так можно попасть из одного свойства в общем контейнере в другое, где props это все свойства какого либо контейнера.</p></li>
@@ -397,7 +397,7 @@
 <li><p>Компонентом может быть как массив так и самостоятельный контейнер, не помещенный в массив, поэтому вызов this.component() в контейнере не помещенном в массив вернет this, а в свойстве контейнера this.parent;</p></li>
 <li><p>Доступ к пользовательским событиям из любой точки осуществляется с помощью <code>this.rootLink.eventProps["emter-имя-события"]</code> далее getEventProp() или setEventProp(new_prop)</p></li>
 <li><p>Доступ к пользовательскому событию из метода подписчика осуществляется так: <code>this.emiter</code> далее getEventProp или setEventProp</p></li>
-</ul></p>			
+</ul></div>			
 					
 				</div><!-- end page_single -->
 			</div>	<!-- end router_page -->  			

@@ -386,14 +386,14 @@
 				
 					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Методы массива HTMLixArray</h1>
 	
-					<p data-page_single-description="html" style="margin-bottom: 15px;"><ul>
+					<div data-page_single-description="html" style="margin-bottom: 15px;"><ul>
 <li><p><code>.add(props, insertLocation)</code> - создает новый контейнер со свойствами props в указанной позиции "insertLocation" в массиве, если не указать позицию то создаст контейнер в конце массива;</p></li>
 <li><p><code>.removeIndex(indexArray, widthChild)</code> - удаляет несколько контейнеров из массива, indexArray - массив с индексами контейнеров для удаления, widthChild - если передать параметром whithChild=true удаляет также дочерние контейнеры, находящиеся в свойствах с типами: "group" и "render-variant";</p></li>
 <li><p><code>.removeAll( widthChild)</code> - удаляет все контейнеры из массива,  widthChild - если передать параметром whithChild=true удаляет также дочерние контейнеры, находящиеся в свойствах с типами: "group" и "render-variant";</p></li>
 <li><p><code>.reuseAll(arrayWithObjects)</code> - переиспользует уже существующие в массиве контейнеры, меняя их props совпавшие с ключами объектов из массива arrayWithObjects, если новых объектов меньше чем контейнеров то удаляет лишние контейнеры, если больше то добавляет. Бывает полезен для того чтобы не очищать постоянно массив, и не добавлять новые контейнеры, там где этого не требуется;</p></li>
 <li><p><code>.getAll(map_Object)</code> - возвращает массив объектов ключами которых являются свойства контейнеров, а значениями данные полученные из метода getProp(), для каждого свойства, map_Object - список только необходимых свойств, если не передать получит все свойства. Работает на основе метода контейнера getAllProps;</p></li>
 <li><p><code>.order(newOrderArr)</code> - изменяет порядок контейнеров в массиве и html разметке на новый, newOrderArr- массив со 'старыми' индексами контейнеров в новом порядке, например [3,2,0,1];</p></li>
-</ul></p>			
+</ul></div>			
 					
 				</div><!-- end page_single -->
 			</div>	<!-- end router_page -->  			

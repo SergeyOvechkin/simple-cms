@@ -386,13 +386,13 @@
 				
 					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Методы контейнера</h1>
 	
-					<p data-page_single-description="html" style="margin-bottom: 15px;"><ul>
+					<div data-page_single-description="html" style="margin-bottom: 15px;"><ul>
 <li><p><code>this.component()</code> - возвращает компонент для данного контейнера если он в массиве то вернет массив (pages), если контейнер сам является компонентом то вернет this;</p></li>
 <li><p><code>this.remove(withChild)</code> - удаляет контейнер, если передать параметром whithChild=true удаляет также дочерние контейнеры, находящиеся в свойствах с типами: "group" и "render-variant", можно удалить только контейнер находящийся в массиве (renderType="contaiter-inner");</p></li>
 <li><p><code>this.setAllProps(mapObject)</code> - проверяет обект <code>mapObject</code> на наличие совпадающих ключей со свойствами контейнера и устанавливает их значение для всех совпавших;</p></li>
 <li><p><code>.getAllProps(mapObject)</code> - возвращает данные со всех свойств названия которых совпали с названиями ключей в объекте mapObject путем вызова метода getProp(obg) на каждом совпавшем свойстве,
 например mapObject={key1: "", key2: {ke1: ""} } вызовет key1.getProp(), key2.getProp({ke1: ""}). Таким образом можно получить развернутый объект с ключами которого будут имена свойств а значениями - данные этих свойств. Если не передать в метод mapObject то создаст объект со всеми свойствами из данного контейнера.</p></li>
-</ul></p>			
+</ul></div>			
 					
 				</div><!-- end page_single -->
 			</div>	<!-- end router_page -->  			

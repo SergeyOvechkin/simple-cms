@@ -89,9 +89,9 @@ var template = `
 				
 					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Название страници</h1>
 	
-					<p data-page_single-description="html" style="margin-bottom: 15px;">
+					<div data-page_single-description="html" style="margin-bottom: 15px;">
 								Описание страници
-					</p>			
+					</div>			
 					
 				</div><!-- end page_single -->
 			</div>	<!-- end router_page -->  			
