@@ -14,7 +14,7 @@ var StateMap = {
                   click: function(){
 					  
 					  
-					  var html = document.querySelector('[data-router_main]').innerHTML;
+					  var html = document.querySelector('.container-fluid').innerHTML;
 					  
 					  var path = window.location.pathname.split("/");
 					  
