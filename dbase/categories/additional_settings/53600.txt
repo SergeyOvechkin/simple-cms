@@ -1,0 +1,4 @@
+{
+  "title": "Сокращенный доступ к свойствам и методам",
+  "text": "\r\n\r\nДля всех компонентов и свойств: \r\n\r\n* `this.$()` - сокращенный доступ к корневому экземпляру приложения\r\n* `this.$$(\"emiter-name\")` - сокращенный доступ к пользовательским событиям\r\n\r\n\r\n* `this.$$(\"emiter-name\").set(\"prop\")` - сокращенное название setEventProp\r\n* `this.$$(\"emiter-name\").get(\"prop\")` - сокращенное название getEventProp\r\n\r\n\r\nТолько для свойств:\r\n* `this.props(\"propName\")` - сокращенный доступ к свойству в том-же контейнере\r\n\r\n<a href=\"https://github.com/SergeyOvechkin/tests/blob/master/test-shortcode/test.js\">Пример использования</a>\r\n"
+}
