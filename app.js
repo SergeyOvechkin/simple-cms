@@ -406,6 +406,50 @@ const server = http.createServer((req, res) => {
 					}
 					res.writeHead(200, { 'content-type': 'application/json' });
 			         res.end(JSON.stringify({mess: "секция "+section_id+ " удалена"}) );	
+  }else if( parsUrl.dir.split("/")[1] == "post" ){	
+				
+				const form = formidable({ multiples: true });
+				
+				  var section_id =   req.url.split("/")[2]; 
+				  var post_id =   req.url.split("/")[3]; 
+				  
+				  		try {
+			                  fs.statSync("./post/"+section_id); //проверяем существование папки с категорией
+		                }
+		                 catch (err) {
+				            if (err.code === 'ENOENT') {
+						           fs.mkdirSync("./post/"+section_id); //создаем если нет
+				              }  
+                         }
+
+                      form.parse(req, (err, fields, files) => {
+		
+						if(err){
+							sendError(err, req, res, "не сохранить страницу");
+							return;
+						}
+		
+						    var name = "./post/"+section_id+"/"+post_id+".html";
+		
+							var content = fields.content;
+
+                             var page = mainTempl_1+content+mainTempl_2;
+							try {
+								
+							 fs.writeFileSync(name, page); ///записываем пост в статический файл
+							}
+							catch (err) {
+								
+								console.log("err неудалось создать статический файл");
+								
+							}
+							 res.writeHead(200, { 'content-type': 'application/json' });
+							 res.end(JSON.stringify({mess: "страница сохранена"}) );
+                             							
+						});
+						
+						
+						
   }
   else {	 
                 console.log(req.url+"not found");
@@ -447,3 +491,33 @@ function readFile(req, res, nameFile){
 server.listen(3000, () => {
   console.log('Server listening on http://localhost:3000/ ...');
 });
+
+
+
+
+var mainTempl_1 = `<!DOCTYPE html>
+ <html lang="ru">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://sergeyovechkin.github.io/simple-cms/static/css/bootstrap.min.css">
+		 <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+		<link rel="stylesheet" href="https://sergeyovechkin.github.io/simple-cms/static/css/main.css">
+    </head>
+<body>
+<div class="container-fluid"> `;
+
+
+var mainTempl_2 =` </div><!-- container-fluid -->	
+
+	<script src="https://sergeyovechkin.github.io/simple-cms/dbase/CATEGORIES.js"></script>
+	<script src="https://sergeyovechkin.github.io/simple-cms/dbase/SECTIONS.js"></script>
+	<script src="https://sergeyovechkin.github.io/simple-cms/dbase/category_id.js"></script>
+	
+	<script src="https://sergeyovechkin.github.io/simple-cms/static/template/template.js"></script>
+	
+	<script src="https://sergeyovechkin.github.io/simple-cms/static/js/htmlix.js"></script>
+	<script src="https://sergeyovechkin.github.io/simple-cms/static/js/front.js"></script>
+		<script src="https://sergeyovechkin.github.io/simple-cms/static/js/tagWraper.js"></script>
+</body>
+ </html>`;

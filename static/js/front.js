@@ -5,7 +5,50 @@ const CONTACTS_PAGE_NAME = "Контакты"; //название страниц
 var NAV_TYPE = "left-menu"; //top-menu -тип навигации
 var converter = new showdown.Converter(); //конвертация markdown формата
 
-var StateMap = {   
+var StateMap = { 
+    save_page: {
+		    container: "save_page",
+			props: [["click", "click", ""]],
+			methods: {	
+                  
+                  click: function(){
+					  
+					  
+					  var html = document.querySelector('.container-fluid').innerHTML;
+					  
+					  var path = window.location.pathname.split("/");
+					  
+					  var newPath = "/"+path[2]+"/"+path[3]+"/"+path[4];
+					  console.log(newPath);
+					//  console.log(html);
+					  var formData  = new FormData();
+					  formData.append("content", html);
+					       
+			
+					fetch(newPath, {					
+						method: 'POST',
+						body: formData
+					})				
+					.then((response) => {
+						if(response.ok) {
+							return response.json();
+						}	
+						//console.log(response);
+						throw new Error('Network response was not ok');
+					})
+					.then((json) => {
+						console.log(json);
+					})
+					.catch((error) => {
+							console.log(error);
+							alert(error);
+					});	
+	
+					  
+				  }				  
+			}	
+				
+	},  
 	/*
 	  menu - компонент меню для переключения разделов сайта
 	*/
