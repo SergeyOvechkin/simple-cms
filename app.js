@@ -505,10 +505,49 @@ var mainTempl_1 = `<!DOCTYPE html>
 		<link rel="stylesheet" href="https://sergeyovechkin.github.io/simple-cms/static/css/main.css">
     </head>
 <body>
-<div class="container-fluid"> `;
+<div class="container-fluid">
+<nav data-menu="array" class="navbar navbar-expand-sm navbar-light bg-light">
+
+		<div data-menu-mobail_toggler="click" class="toggler-mobail-nav-type mr-auto" style="background-color: #ebf5ff; width: 100%;">
+		  <a href="#" style="font-size: 25px; margin-left: 7px; "> = </a>
+		</div>		
+		
+		<ul data-menu-mobail_toggler_style="style" class="navbar-nav mr-auto" >
+		
+												
+			 <li class="nav-item" data-menu_item="container">
+					<a  data-menu_item-title="text" data-menu_item-click="click" data-menu_item-class="class" data-menu_item-data="home"  class="nav-link" href="/">Home</a>
+					<ul class="hover-non">
+					
+					</ul>
+			  </li>
+			  
+			   <li class="nav-item" data-menu_item="container">
+					<a data-menu_item-title="text" data-menu_item-click="click" data-menu_item-class="class" data-menu_item-data="contacts" class="nav-link" href="/contacts">Контакты</a>
+					<ul class="hover-non">
+					
+					</ul>
+			   </li>
+			   							
+		</ul>
+		 <li class="nav-item toggler-nav-type" style="margin-top: 16px; margin-left: 7px; margin-right: 15px;">
+			<label class="switch">
+				<input data-menu-toggle_nav_type="click"  type="checkbox">
+				<span class="slider round"></span>
+			</label>
+		</li>		
+</nav>
 
 
-var mainTempl_2 =` </div><!-- container-fluid -->	
+
+<div data-router_main="router" >`;
+
+
+var mainTempl_2 =` </div>  <!-- router_main -->
+
+
+
+</div><!-- container-fluid -->	
 
 	<script src="https://sergeyovechkin.github.io/simple-cms/dbase/CATEGORIES.js"></script>
 	<script src="https://sergeyovechkin.github.io/simple-cms/dbase/SECTIONS.js"></script>
