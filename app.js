@@ -1,15 +1,18 @@
-const SITE_NAME = "simple-cms"; // имя сайта на гитхаб
+//поиск строки по шаблону в js файлах папки dbase
+var regexpCategory_id =/\s*var\s+category_id_js\s+=\s+/;
+var regexpCATEGORIES =/\s*var\s+CATEGORIES_JS\s+=\s+/;
+var regexpSECTIONS =/\s*var\s+SECTIONS_JS\s+=\s+/;
 
 
+
+var settings =  require('./modules/settings');
 const http = require('http');
 const formidable = require('formidable');
 const fs_extra = require('fs-extra');
 const fs = require("fs");
 const path = require("path");
 
-var regexpCategory_id =/\s*var\s+category_id_js\s+=\s+/;
-var regexpCATEGORIES =/\s*var\s+CATEGORIES_JS\s+=\s+/;
-var regexpSECTIONS =/\s*var\s+SECTIONS_JS\s+=\s+/;
+var SITE_NAME =  settings.site_name; // имя сайта на гитхаб
 
  
 const server = http.createServer((req, res) => {
@@ -218,7 +221,7 @@ const server = http.createServer((req, res) => {
             readFile(req, res, "./index.html");
   }
 //отдаем представление index на рабочем сервере 
-  else if (parsUrl.dir.split("/")[1] == SITE_NAME && parsUrl.dir.split("/")[2] != "dbase" && parsUrl.dir.split("/")[2] != "static" ){	  
+  else if (req.url.split("/")[1] /*parsUrl.dir.split("/")[1]*/ == SITE_NAME && req.url.split("/")[2] /*parsUrl.dir.split("/")[2]*/ != "dbase" && req.url.split("/")[2] /*parsUrl.dir.split("/")[2]*/ != "static" ){	  
  
          readFile(req, res, "./index.html");		
   }
@@ -405,8 +408,9 @@ const server = http.createServer((req, res) => {
 
 					}
 					res.writeHead(200, { 'content-type': 'application/json' });
-			         res.end(JSON.stringify({mess: "секция "+section_id+ " удалена"}) );	
-  }else if( parsUrl.dir.split("/")[1] == "post" ){	
+			         res.end(JSON.stringify({mess: "секция "+section_id+ " удалена"}) );
+					 
+  }else if( parsUrl.dir.split("/")[1] == "post" && req.method.toLowerCase() === 'post' ){	
 				
 				const form = formidable({ multiples: true });
 				
@@ -433,7 +437,7 @@ const server = http.createServer((req, res) => {
 		
 							var content = fields.content;
 
-                             var page = mainTempl_1+content+mainTempl_2;
+                             var page = settings.templ_head+content+settings.templ_footer;
 							try {
 								
 							 fs.writeFileSync(name, page); ///записываем пост в статический файл
@@ -493,36 +497,3 @@ server.listen(3000, () => {
 });
 
 
-
-
-var mainTempl_1 = `<!DOCTYPE html>
- <html lang="ru">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://sergeyovechkin.github.io/simple-cms/static/css/bootstrap.min.css">
-		 <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
-		<link rel="stylesheet" href="https://sergeyovechkin.github.io/simple-cms/static/css/main.css">
-    </head>
-<body>
-<button data-save_page="container" style="display: none;">Save page</button>
-<div class="container-fluid">`;
-
-
-var mainTempl_2 =` 
-
-
-
-</div><!-- container-fluid -->	
-
-	<script src="https://sergeyovechkin.github.io/simple-cms/dbase/CATEGORIES.js"></script>
-	<script src="https://sergeyovechkin.github.io/simple-cms/dbase/SECTIONS.js"></script>
-	<script src="https://sergeyovechkin.github.io/simple-cms/dbase/category_id.js"></script>
-	
-	<script src="https://sergeyovechkin.github.io/simple-cms/static/template/template.js"></script>
-	
-	<script src="https://sergeyovechkin.github.io/simple-cms/static/js/htmlix.js"></script>
-	<script src="https://sergeyovechkin.github.io/simple-cms/static/js/front.js"></script>
-		<script src="https://sergeyovechkin.github.io/simple-cms/static/js/tagWraper.js"></script>
-</body>
- </html>`;

@@ -6,49 +6,7 @@ var NAV_TYPE = "left-menu"; //top-menu -тип навигации
 var converter = new showdown.Converter(); //конвертация markdown формата
 
 var StateMap = { 
-    save_page: {
-		    container: "save_page",
-			props: [["click", "click", ""]],
-			methods: {	
-                  
-                  click: function(){
-					  
-					  
-					  var html = document.querySelector('.container-fluid').innerHTML;
-					  
-					  var path = window.location.pathname.split("/");
-					  
-					  var newPath = "/"+path[2]+"/"+path[3]+"/"+path[4];
-					  console.log(newPath);
-					//  console.log(html);
-					  var formData  = new FormData();
-					  formData.append("content", html);
-					       
-			
-					fetch(newPath, {					
-						method: 'POST',
-						body: formData
-					})				
-					.then((response) => {
-						if(response.ok) {
-							return response.json();
-						}	
-						//console.log(response);
-						throw new Error('Network response was not ok');
-					})
-					.then((json) => {
-						console.log(json);
-					})
-					.catch((error) => {
-							console.log(error);
-							alert(error);
-					});	
-	
-					  
-				  }				  
-			}	
-				
-	},  
+
 	/*
 	  menu - компонент меню для переключения разделов сайта
 	*/
@@ -527,8 +485,41 @@ stateMethods: {
 					
 					this.eventProps["emiter-load-page"].setEventProp(this.stateProperties.POST);
 				}		
-		},	
-},		
+		},
+        save_page: function(){
+					  
+					  var html = document.querySelector('.container-fluid').innerHTML;
+					  
+					  var path = window.location.pathname.split("/");
+					  
+					  if(path[2] != "post")return;
+					  
+					  var newPath = "/"+path[2]+"/"+path[3]+"/"+path[4];
+					//  console.log(newPath);
+					//  console.log(html);
+					  var formData  = new FormData();
+					  formData.append("content", html);
+					fetch(newPath, {					
+						method: 'POST',
+						body: formData
+					})				
+					.then((response) => {
+						if(response.ok) {
+							return response.json();
+						}	
+						//console.log(response);
+						throw new Error('Network response was not ok');
+					})
+					.then((json) => {
+						console.log(json);
+					})
+					.catch((error) => {
+							console.log(error);
+							alert(error);
+					});		
+			
+	        },	
+     },	
 	stateProperties: {
 		
 		CATEGORIES: CATEGORIES_JS, //из файла dbase/CATEGORIES.js
@@ -661,12 +652,22 @@ window.onload = function(){
 		console.log(HM);		
 		///вызываем данный метод в ручную, т. к.  метод - событие срабатывает автоматически только после дозагрузки шаблонов в fetch запросе асинхронно,
 		//приобычной загрузке компонентов или при загрузке их из переменной stateSettings.templateVar (как в данном случае) он не вызовется автоматически
-		HM.stateMethods.onLoadAll.call(HM);		
+		HM.stateMethods.onLoadAll.call(HM);
+
+			//сохраняет статическую страницу в папке post
+			if(window.location.href.search('http://localhost:3000') == 0){
+		
+					HM.stateMethods.save_page();
+			}
+
+		
 	});	
 	window.onresize = function(){
 		
 			HM.eventProps["emiter-width-display"].emit();
 	}
+
+	
 }
 
 
