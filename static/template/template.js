@@ -84,10 +84,10 @@ var template = `
 			
 				<div class="body" data-page_single="container" >
 				
-					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Название страници</h1>
+					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Htmlix api</h1>
 	
 					<div data-page_single-description="html" style="margin-bottom: 15px;">
-								Описание страници
+								...
 					</div>			
 					
 				</div><!-- end page_single -->
