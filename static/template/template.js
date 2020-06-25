@@ -68,6 +68,7 @@ var template = `
 									data-item_level_3-title="text"
 									data-item_level_3-class="class"
 									data-item_level_3-data="postId"
+									data-item_level_3-href="href"
 									>Строка меню</a>
 							</li>
 				
@@ -121,6 +122,7 @@ var template = `
 									data-item_level_3-title="text"
 									data-item_level_3-class="class"
 									data-item_level_3-data="postId"
+									data-item_level_3-href="href"
 									>Строка меню</a>
 							   </li>
 				

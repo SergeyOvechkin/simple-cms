@@ -8,6 +8,7 @@ var mainTempl_1 = `<!DOCTYPE html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="htmlix, создание spa на htmlix, htmlix уроки, htmlix api, javascript">
 		<link rel="stylesheet" href="${HOST_NAME+"/"}${SITE_NAME ? SITE_NAME+"/" : ""}static/css/bootstrap.min.css">
 		 <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
 		<link rel="stylesheet" href="${HOST_NAME+"/"}${SITE_NAME ? SITE_NAME+"/" : ""}static/css/main.css">

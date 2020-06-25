@@ -1,6 +1,6 @@
 
 const SITE_NAME = "simple-cms"; // имя репозитория на гитхаб
-const HOME_PAGE_NAME = "Home"; //название главной страници
+const HOME_PAGE_NAME = "Htmlix"; //название главной страници
 const CONTACTS_PAGE_NAME = "Контакты"; //название страници с контактами
 var NAV_TYPE = "left-menu"; //top-menu -тип навигации
 var converter = new showdown.Converter(); //конвертация markdown формата
@@ -50,13 +50,13 @@ var StateMap = {
 								
 				var sections = this.emiter.getEventProp();
 				
-				var sectionNew = [{title: HOME_PAGE_NAME, data: "home"}];
+				var sectionNew = [{title: HOME_PAGE_NAME, data: "home", href: "/"+SITE_NAME+"/"+HOME_PAGE_NAME+"/#"}];
 				
 				for(var key in sections){
 					
-					sectionNew.push({title: sections[key].section_title, data: sections[key].section_id});
+					sectionNew.push({title: sections[key].section_title, data: sections[key].section_id, href: "/"+SITE_NAME+"/"+sections[key].section_id+"/#"});
 				}
-				sectionNew.push({title: CONTACTS_PAGE_NAME, data: "contacts"});
+				sectionNew.push({title: CONTACTS_PAGE_NAME, data: "contacts", href: "/"+SITE_NAME+"/contacts/#"});
 				
 				this.component().reuseAll(sectionNew);
 				
@@ -85,6 +85,7 @@ var StateMap = {
 			["listen_load_cat", "emiter-load-categories", ""],
 			["listen_width_display", "emiter-width-display", ""],
 			["toggle_hover", "aux"], //вспомогательный метод
+			["href", "href", "a:first-of-type" ],
 			],
 		methods: {
 			toggle_hover: function(action){//вспомогательный метод - включает или выключает события наведения курсора мыши										
@@ -192,6 +193,12 @@ var StateMap = {
 				this.parent.props.description.setProp(text);
 				
 				 colorTagsAndComents(); //tagWraper.js 
+				 	 window.scrollTo(0, 0);
+				 //сохраняет статическую страницу в папке post
+					if(window.location.href.search('http://localhost:3000') == 0){
+		
+					this.rootLink.stateMethods.save_page();
+				}
 				
 			}			
 		}		
@@ -203,8 +210,8 @@ var StateMap = {
 	menu_level_2: {
 		
 		container: "item_level_2",
-		share_props: 3,
-		props: ["title",  "data", "post_group", //разрешаем наследовать только первые три свойства	
+		share_props: 4,
+		props: ["title",  "data", "post_group", ["href", "href", "a:first-of-type"], //разрешаем наследовать только первые три свойства	
 				"post_group_style", "simbol", "click", 
 		],
 		methods: {
@@ -237,7 +244,7 @@ var StateMap = {
 	menu_level_2_top: {
 		
 		container: "item_level_2_top",
-		container_extend: "menu_level_2", //"title",  "data", "post_group",  наследуем три свойства из контейнера компонента menu_level_2 
+		container_extend: "menu_level_2", //"title",  "data", "post_group", href наследуем 4 свойства из контейнера компонента menu_level_2 
 		props: [ 
 		   "click",
 		   ["hover_on", "mouseover", ""], ["hover_out", "mouseout", ""], ["post_group_class", "class", "ul:first-of-type"],
@@ -289,12 +296,12 @@ var StateMap = {
 		menu_level_3: {
 		
 			container: "item_level_3", 
-			props: ["click", "title", "class", "data"],
+			props: ["click", "title", "class", "data", "href", ["main_title", "title", "a:first-of-type"]],
 			methods: {
 				//метод меняет текущий роут, а также отправляет запрос с поиском соотв. поста на сервер, после загрузки поста вызывает событие emiter-load-page
 				//которое слушает компонент page_single 
 				click: function(){
-				
+				        event.preventDefault();
 						var post_id = this.parent.props.data.getProp();
 						var category_id = this.parent.groupParent.parent.props.data.getProp();
 						
@@ -408,16 +415,19 @@ stateMethods: {
 					
 					if(menu_type == "top_menu"){
 						
-						level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: []};
+						level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [],  href: "/"+SITE_NAME+"/"+sectionId+"/"+categ[key].id+"/#"};
 					}else{
 						
-						level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [], simbol: "-", post_group_style: "display: ''"};
+						level_2 = {title: categ[ key ].name, data: categ[ key ].id, post_group: [], simbol: "-", post_group_style: "display: ''", href: "/"+SITE_NAME+"/"+sectionId+"/"+categ[key].id+"/#"};
 					}					
 					if(cat_id[categ[ key ].id] != undefined){
 						
 						for(var k=0; k < cat_id[categ[ key ].id].length; k++){
 						    ///создаем объект со свойствами для третьего уровня меню
-							level_2.post_group.push({title: cat_id[categ[ key ].id][k].title, data: cat_id[categ[key].id][k].post_id });
+							level_2.post_group.push({title: cat_id[categ[ key ].id][k].title, 
+							                         main_title: cat_id[categ[ key ].id][k].title+" htmlix",
+							                         data: cat_id[categ[key].id][k].post_id, 
+													 href: "/"+SITE_NAME+"/post/"+categ[key].id+"/"+cat_id[categ[key].id][k].post_id });
 						}
 					}
 				   array.push(level_2);
@@ -653,13 +663,6 @@ window.onload = function(){
 		///вызываем данный метод в ручную, т. к.  метод - событие срабатывает автоматически только после дозагрузки шаблонов в fetch запросе асинхронно,
 		//приобычной загрузке компонентов или при загрузке их из переменной stateSettings.templateVar (как в данном случае) он не вызовется автоматически
 		HM.stateMethods.onLoadAll.call(HM);
-
-			//сохраняет статическую страницу в папке post
-			if(window.location.href.search('http://localhost:3000') == 0){
-		
-					HM.stateMethods.save_page();
-			}
-
 		
 	});	
 	window.onresize = function(){
