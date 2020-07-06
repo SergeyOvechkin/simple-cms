@@ -391,8 +391,8 @@
 					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Контекст в stateMethods методах</h1>
 	
 					<div data-page_single-description="html" style="margin-bottom: 15px;"><p>По умолчанию <code>this</code> в <code>stateMethods</code> методах указывает на <code>rootLink</code>,</p>
-<p>Если необходимо, его можно переопределить с помощью функции call(this) или apply(this, arguments)</p>
-<p>Переопределить контекст можно только объектами htmlix: HTMLixState, HTMLixArray, Container, все виды Prop и EventEmiter, если переопределить другим объектом контекст не поменяется.</p></div>			
+<p>Если необходимо, его можно переопределить с помощью функции call(this) </p>
+<p>Переопределить контекст - this можно только объектами htmlix: HTMLixState, HTMLixArray, Container, все виды Prop и EventEmiter, (проверяется наличие полей htmlLink, rootLink, description или state) если переопределить другим объектом контекст не поменяется.</p></div>			
 					
 				</div><!-- end page_single -->
 			</div>	<!-- end router_page -->  			
