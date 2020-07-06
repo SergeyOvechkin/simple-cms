@@ -172,6 +172,8 @@
 									<a href="/simple-cms/post/additional_settings/62" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="62" data-item_level_3-href="href" title="Загрузка шаблонов из .js файла - templateVar htmlix">Загрузка шаблонов из .js файла - templateVar</a>
 							   </li><li style="" data-item_level_3="container">
 									<a href="/simple-cms/post/additional_settings/53600" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="53600" data-item_level_3-href="href" title="Сокращенный доступ к свойствам и методам htmlix">Сокращенный доступ к свойствам и методам</a>
+							   </li><li style="" data-item_level_3="container">
+									<a href="/simple-cms/post/additional_settings/79539" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="79539" data-item_level_3-href="href" title="Контекст в stateMethods методах htmlix">Контекст в stateMethods методах</a>
 							   </li></ul>
 						</li></ul>
 			   </li>
@@ -374,6 +376,8 @@
 									<a href="/simple-cms/post/additional_settings/62" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="62" data-item_level_3-href="href" title="Загрузка шаблонов из .js файла - templateVar htmlix">Загрузка шаблонов из .js файла - templateVar</a>
 							</li><li style="" data-item_level_3="container">
 									<a href="/simple-cms/post/additional_settings/53600" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="53600" data-item_level_3-href="href" title="Сокращенный доступ к свойствам и методам htmlix">Сокращенный доступ к свойствам и методам</a>
+							</li><li style="" data-item_level_3="container">
+									<a href="/simple-cms/post/additional_settings/79539" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="79539" data-item_level_3-href="href" title="Контекст в stateMethods методах htmlix">Контекст в stateMethods методах</a>
 							</li></ul>
 						</li></ul><!-- end categories="array" -->
 				</section>
@@ -384,62 +388,11 @@
 			
 				<div class="body" data-page_single="container">
 				
-					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Создание массива</h1>
+					<h1 data-page_single-title="text" class="mb20" style="margin-bottom: 20px;">Контекст в stateMethods методах</h1>
 	
-					<div data-page_single-description="html" style="margin-bottom: 15px;"><p>Теперь давайте поместим наш контейнер в массив а также добавим в контейнер кнопку удаления.</p>
-<pre><code class="html language-html"><span class="tag">&lt;div</span> data-<span class="data-main-attr">pages</span><span class="data-attr"></span>="array" style="border<span class="js-vars">:</span> 1px solid red; padding<span class="js-vars">:</span> 10px;"&gt;
-<span class="js-comments">
-&lt;!-- создали массив pages и поместили в него два одинаковых контейнера page --&gt;</span> 
-
-    <span class="tag">&lt;div</span> data-<span class="data-main-attr">page</span><span class="data-attr"></span>="container" style="border<span class="js-vars">:</span> 1px solid green"&gt; 
-
-        <span class="tag">&lt;p</span> data-<span class="data-main-attr">page</span>-<span class="data-attr">paragraf</span>="text" data-<span class="data-main-attr">page</span>-<span class="data-attr">my_class</span>="class"&gt;текст<span class="tag">&lt;p</span>&gt;
-        <span class="js-vars">&lt;button</span> data-<span class="data-main-attr">page</span>-<span class="data-attr">btn_click</span>="click"&gt;Кнопка<span class="js-vars">&lt;/button&gt;</span> 
-
-        <span class="js-vars">&lt;button</span> data-<span class="data-main-attr">page</span>-<span class="data-attr">remove</span>="click"&gt;Удалить<span class="js-vars">&lt;/button&gt;</span> 
-        <span class="js-comments"> &lt;!-- добавили кнопку удаления для контейнера page и поместили в нее свойство "remove" --&gt;</span>
-
-    <span class="tag">&lt;/div&gt;</span>
-    <span class="tag">&lt;div</span> data-<span class="data-main-attr">page</span><span class="data-attr"></span>="container" style="border<span class="js-vars">:</span> 1px solid green"&gt; 
-
-        <span class="tag">&lt;p</span> data-<span class="data-main-attr">page</span>-<span class="data-attr">paragraf</span>="text" data-<span class="data-main-attr">page</span>-<span class="data-attr">my_class</span>="class"&gt;текст<span class="tag">&lt;p</span>&gt;
-        <span class="js-vars">&lt;button</span> data-<span class="data-main-attr">page</span>-<span class="data-attr">btn_click</span>="click"&gt;Кнопка<span class="js-vars">&lt;/button&gt;</span> 
-
-        <span class="js-vars">&lt;button</span> data-<span class="data-main-attr">page</span>-<span class="data-attr">remove</span>="click"&gt;Удалить<span class="js-vars">&lt;/button&gt;</span>
-
-    <span class="tag">&lt;/div&gt;</span>
-
-<span class="tag">&lt;/div&gt;</span>        
-</code></pre>
-<p>Теперь изменим описание приложения:</p>
-<pre><code class="javascript language-javascript"><span class="js-vars">var</span> StateMap <span class="js-vars">=</span> {
-
-  pages<span class="js-vars">:</span> { <span class="js-comments">//теперь компонент называется pages </span>
-
-    container<span class="js-vars">:</span> "page", <span class="js-comments">//названия контейнеров не поменялись</span>
-
-
-    props<span class="js-vars">:</span> ["paragraf", "my_class", "btn_click", "remove"], <span class="js-comments">//добавили свойство "remove"</span>
-    methods<span class="js-vars">:</span> {                          
-
-        btn_click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){                       
-
-            <span class="js-vars-2">console</span>.log(this);                                                          
-            <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.paragraf.<span class="js-vars-2">setProp</span>("Новый текст");                              
-            <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.my_class.<span class="js-vars-2">setProp</span>("new_class");
-
-        },
-        remove<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){  <span class="js-comments">//обработчик события для свойства "remove"</span>
-
-            <span class="js-vars-2">this</span>.<span class="tag">parent</span>.remove(); <span class="js-comments">//получаем доступ к контейнеру из свойства, а затем удаляем контейнер </span>
-
-        }
-    }           
- }
-}
-</code></pre>
-<p>Итак после того как мы поместили контейнер в массив pages, компонент принял название массива, а названия для контейнеров остались прежними.
-Также теперь контейнер можно удалить т. к. он находится в массиве.</p></div>			
+					<div data-page_single-description="html" style="margin-bottom: 15px;"><p>По умолчанию <code>this</code> в <code>stateMethods</code> методах указывает на <code>rootLink</code>,</p>
+<p>Если необходимо, его можно переопределить с помощью функции call(this) или apply(this, arguments)</p>
+<p>Переопределить контекст можно только объектами htmlix: HTMLixState, HTMLixArray, Container, все виды Prop и EventEmiter, если переопределить другим объектом контекст не поменяется.</p></div>			
 					
 				</div><!-- end page_single -->
 			</div>	<!-- end router_page -->  			

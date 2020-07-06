@@ -1,0 +1,4 @@
+{
+  "title": "Контекст в stateMethods методах",
+  "text": "По умолчанию `this` в `stateMethods` методах указывает на `rootLink`,\r\n\r\nЕсли необходимо, его можно переопределить с помощью функции call(this) или apply(this, arguments)\r\n\r\nПереопределить контекст можно только объектами htmlix: HTMLixState, HTMLixArray, Container, все виды Prop и EventEmiter, если переопределить другим объектом контекст не поменяется.\r\n\r\n"
+}
