@@ -172,6 +172,8 @@
 									<a href="/simple-cms/post/additional_settings/62" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="62" data-item_level_3-href="href" title="Загрузка шаблонов из .js файла - templateVar htmlix">Загрузка шаблонов из .js файла - templateVar</a>
 							   </li><li style="" data-item_level_3="container">
 									<a href="/simple-cms/post/additional_settings/53600" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="53600" data-item_level_3-href="href" title="Сокращенный доступ к свойствам и методам htmlix">Сокращенный доступ к свойствам и методам</a>
+							   </li><li style="" data-item_level_3="container">
+									<a href="/simple-cms/post/additional_settings/79539" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="79539" data-item_level_3-href="href" title="Контекст в stateMethods методах htmlix">Контекст в stateMethods методах</a>
 							   </li></ul>
 						</li></ul>
 			   </li>
@@ -381,8 +383,9 @@ window.onload <span class="js-vars">=</span> <span class="js-vars-2">function</s
 </code></pre>
 <p>Недостаток данного подхода очевиден, что если потом мы где-нибудь еще будем получать данные для этого свойства? Например на основе localstorage они будут загружаться автоматически.</p>
 <p><b>2.</b> способ это создать метод в объекте stateMethods и вызывать его при изменении данных:</p>
-<pre><code class="javascript language-javascript">ststeMethods<span class="js-vars">:</span> {
+<pre><code class="javascript language-javascript">stateMethods<span class="js-vars">:</span> {
 
+           <span class="js-comments">//this в stateMethods методах указывает на rootLink</span>
          entryUser<span class="js-vars">:</span> <span class="js-vars-2">function</span>(text){
 
                 <span class="js-vars-2">this</span>.state["greeting"].props.user_name.<span class="js-vars-2">setProp</span>(text);
@@ -395,14 +398,14 @@ window.onload <span class="js-vars">=</span> <span class="js-vars-2">function</s
 window.onload <span class="js-vars">=</span> <span class="js-vars-2">function</span>(){
              <span class="js-vars">var</span> name <span class="js-vars">=</span> window.localStorage.getItem('user_name');
 
-             if(name)HM.stateMethods.entryUser.call.(HM, name); <span class="js-comments">///вызываем метод передав ему контекст= HM</span>
+             if(name)HM.stateMethods.entryUser(name); <span class="js-comments">///вызываем метод передав ему контекст= HM</span>
 }
 
 <span class="js-comments">//в форме</span>
 click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
                   event.preventDefault();
-          <span class="js-vars">var</span> text <span class="js-vars">=</span> <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.input.<span class="js-vars-2">getProp</span>();
-                  <span class="js-vars-2">this</span>.rootLink.stateMethods.entryUser.call.(this.rootLink, text); 
+                  <span class="js-vars">var</span> text <span class="js-vars">=</span> <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.input.<span class="js-vars-2">getProp</span>();
+                  <span class="js-vars-2">this</span>.rootLink.stateMethods.entryUser(text); 
 }
 </code></pre>
 <p>В данном случае нам удалось избежать дублирования кода, однако проблема в том что методы для работы со свойствами компонента находятся не внутри него а во внешних функциях. Что если перед тем как установить свойство его нужно как-то отформатировать, по разному для каждого компонента, или  нам нужно будет установить не одно свойство, а несколько, поэтому лучше когда компоненты сами работают со своими свойствами. </p>

@@ -172,6 +172,8 @@
 									<a href="/simple-cms/post/additional_settings/62" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="62" data-item_level_3-href="href" title="Загрузка шаблонов из .js файла - templateVar htmlix">Загрузка шаблонов из .js файла - templateVar</a>
 							   </li><li style="" data-item_level_3="container">
 									<a href="/simple-cms/post/additional_settings/53600" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="53600" data-item_level_3-href="href" title="Сокращенный доступ к свойствам и методам htmlix">Сокращенный доступ к свойствам и методам</a>
+							   </li><li style="" data-item_level_3="container">
+									<a href="/simple-cms/post/additional_settings/79539" data-item_level_3-click="click" data-item_level_3-title="text" data-item_level_3-class="class" data-item_level_3-data="79539" data-item_level_3-href="href" title="Контекст в stateMethods методах htmlix">Контекст в stateMethods методах</a>
 							   </li></ul>
 						</li></ul>
 			   </li>
@@ -292,7 +294,7 @@
 <p>Чтобы отдать нам это все сервер посылает два запроса к базе данных, в одном он находит все категории, во втором первые шесть карточек товара из таблицы, затем присоединяет к каждой карточке товара два поля из совпадающей по id категории товара, затем отдает нам представление  <code>/views/index.twig</code> передав в него массив с категориями - <code>categories</code> и массив с карточками товара <code>carts</code>.</p>
 <p>Далее в самом представлении <code>/views/index.twig</code> мы загружаем из папки <code>/twig_templates</code> шапку сайта и верхнее меню:</p>
 <p><code>{% include  '/twig_templates/header.twig' %}</code></p>
-<p>Далее создаем разметку для главной страницы и страницы категорий, в ней создаем список категорий из переданого с сервера массива <code>categories</code>:</p>
+<p>Далее создаем разметку для главной страницы и страницы категорий, в ней создаем список категорий из переданного с сервера массива <code>categories</code>:</p>
 <pre><code class="html language-html">&lt;section class="categories" &gt;
    <span class="tag">&lt;ul</span> class="nav flex-column" data-<span class="data-main-attr">categories</span><span class="data-attr"></span>="array"&gt;
      {% for category in categories %}
@@ -338,7 +340,7 @@
 <p>Также давайте сразу рассмотрим два адреса: <code>'/json'</code> и <code>/category/:idCategory/json</code> перейдя по этим адресам мы получим вместо представления массив с карточками товара в формате json, для первого адреса это первые шесть карточек, а для второго карточки соответствующей категории - <code>:idCategory</code>.</p>
 <p>Теперь разберем маршрут <code>"/cart/:idCart"</code> </p>
 <p>Здесь мы также загружаем все категории, затем одну карточку соответствующую <code>:idCart</code> затем также присоединяем ей два поля из таблицы категорий, затем отдаем представление <code>'/views/cart.twig'</code> передав в него карточку - cart и массив с категориями categories.</p>
-<p>Далее в представлении также подключаем '/twig_templates/header.twig'. Подключаем header, затем создаем список категорий из массива categories.</p>
+<p>Далее в представлении также подключаем <code>'/twig_templates/header.twig'</code>. Подключаем header, затем создаем список категорий из массива categories.</p>
 <p>Создаем разметку для карточки товара, в ней мы вставляем данные из объекта cart, а также подключаем один из двух вариантов шаблона из папки <code>/twig_templates/</code>: <code>cart_variant_option.twig</code> или <code>cart_variant_radio.twig</code> который мы выбрали при создании категории товара.</p>
 <pre><code><span class="tag">&lt;div</span> class="col-md-5"   data-<span class="data-main-attr">cart_single</span>-<span class="data-attr">variant_tmpl</span>="render-variant"&gt;
 
@@ -357,7 +359,7 @@
 <p>Итак мы достаточно знаем о сервере чтобы начать строить приложение пока что для трех роутов.</p>
 <p>Давайте сначала разберемся с роутами <code>"/"</code> и <code>"/category/:idCategory"</code>:</p>
 <p>Здесь страницу можно разделить на два компонента это категории и карточки товара, давайте создадим два компонента в описании приложения это: categories, carts:</p>
-<p>В html коде файла <code>/views/index.twig</code> они уже обозначены как data-carts="array" - компонент carts, <code>data-cart</code>="container" - контейнер cart компонента carts. <code>data-categories</code>="array" - компонент categories, <code>data-category</code>="container" - контейнер category компонента categories.</p>
+<p>В html коде файла <code>/views/index.twig</code> они уже обозначены как <code>data-carts</code>="array" - компонент carts, <code>data-cart</code>="container" - контейнер cart компонента carts. <code>data-categories</code>="array" - компонент categories, <code>data-category</code>="container" - контейнер category компонента categories.</p>
 <pre><code class="javascript language-javascript"><span class="js-vars">var</span> State <span class="js-vars">=</span> {
 
     categories<span class="js-vars">:</span> { <span class="js-comments">//компонент категории</span>
@@ -397,7 +399,7 @@
         }       
     },
 </code></pre>
-<p>Итак мы создали четыре свойства для каждого контейнера категории, и для свойства "click" метод который пока что ничего  не делает, только отменяет переход по ссылке и перезагрузку страницы. Давайте разберемся что нам нужно сделать при клике по категории:</p>
+<p>В коде выше мы добавили четыре свойства для каждого контейнера категории, и для свойства "click" метод который пока что ничего  не делает, только отменяет переход по ссылке и перезагрузку страницы. Давайте разберемся что нам нужно сделать при клике по категории:</p>
 <ul>
 <li>1 - загрузить массив с карточками товара для дальнейшего использования, чтобы построить компонент carts на основании полученных данных.</li>
 <li>2 - удалить класс .active у предыдущей и установить у новой категории.</li>
@@ -407,17 +409,17 @@
 <p>Изменим описание приложения:</p>
 <pre><code class="javascript language-javascript"><span class="js-vars">var</span> State <span class="js-vars">=</span> {
 
-  categories<span class="js-vars">:</span> {
+ categories<span class="js-vars">:</span> {
     container<span class="js-vars">:</span> "category", 
-    <span class="js-comments">//добавили слушателя события "emiter-click-on-category"</span>
+    <span class="js-comments">//добавили слушатель события "emiter-click-on-category"</span>
     props<span class="js-vars">:</span> [ "data", "click", 'class', "title",  ['listner_click_on_category', "emiter-click-on-category", ""]],
     methods<span class="js-vars">:</span> {
-    click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
+      click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
 
        event.preventDefault();
        <span class="js-vars">var</span> categoryId <span class="js-vars">=</span> <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>();       
        <span class="js-comments">//вызываем событие "emiter-click-on-category"</span>
-           <span class="js-comments">// передав в него данные со свойства data контейнера по которому был клик</span>
+       <span class="js-comments">// передав в него данные со свойства data контейнера по которому был клик</span>
         <span class="js-vars-2">this</span>.rootLink.eventProps["emiter-click-on-category"].setEventProp(categoryId);
 
         <span class="js-comments">//создаем url на основе данных со свойства data контейнера,</span>
@@ -425,15 +427,15 @@
            <span class="js-comments">// второй чтобы сделать запрос для получения карточек товара на адрес /category/:idCategory/json</span>
 
            <span class="js-vars">var</span> historyUrl <span class="js-vars">=</span> "/category/"+categoryId;
-        <span class="js-vars">var</span> url <span class="js-vars">=</span> historyUrl+"/json";               
+           <span class="js-vars">var</span> url <span class="js-vars">=</span> historyUrl+"/json";               
 
-           <span class="js-vars-2">this</span>.rootLink.stateMethods.load_carts(url, this);
+           <span class="js-vars-2">this</span>.rootLink.stateMethods.load_carts(url);
 
     },
     listner_click_on_category<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){ 
-    <span class="js-comments">//в слушателе события клика по категории удаляем класс "active" со всех контейнеров</span>
-    <span class="js-comments">// затем устанавливаем его на контейнере данные свойства data которого совпадают</span>
-        <span class="js-comments">// с данными переданyыми в событие "emiter-click-on-category"</span>
+      <span class="js-comments">//в слушателе события клика по категории удаляем класс "active" со всех контейнеров</span>
+      <span class="js-comments">// затем устанавливаем его на контейнере данные свойства data которого совпадают</span>
+      <span class="js-comments">// с данными передаными в событие "emiter-click-on-category"</span>
 
         <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.class.<span class="js-vars-2">removeProp</span>("active");
 
@@ -441,20 +443,19 @@
           <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.class.<span class="js-vars-2">setProp</span>("active");
         }               
     },
-      }        
-    },
-</code></pre>
-<pre><code class="javascript language-javascript">    carts<span class="js-vars">:</span> {
+  }        
+ },
+ carts<span class="js-vars">:</span> {
     container<span class="js-vars">:</span> "cart",
     props<span class="js-vars">:</span> [ ],
     methods<span class="js-vars">:</span> {
 
     }       
-     },
-     stateProperties:{ <span class="js-comments">//объект для хранения общих переменных приложения        </span>
+  },
+  stateProperties:{ <span class="js-comments">//объект для хранения общих переменных приложения        </span>
     carts<span class="js-vars">:</span> [],      
-     },
-     stateMethods<span class="js-vars">:</span> {
+  },
+  stateMethods<span class="js-vars">:</span> {
     fetchCategoryCarts<span class="js-vars">:</span> <span class="js-vars-2">function</span>(url, callb){ 
     <span class="js-comments">// общий  метод для загрузки данных с какого либо адреса get запросм, </span>
        <span class="js-comments">//принимает в параметрах адрес - url и функцию обратного вызова callb,</span>
@@ -471,33 +472,42 @@
          <span class="js-vars-2">console</span>.log(error);
          });    
     }, 
-    load_carts<span class="js-vars">:</span>  <span class="js-vars-2">function</span>(url, context ){ 
+    load_carts<span class="js-vars">:</span>  <span class="js-vars-2">function</span>(url){ 
     <span class="js-comments">//метод вызывает fetchCategoryCarts передавая в него функцию обратного вызова </span>
-    <span class="js-comments">// в которой подставляем данные с сервера в переменную .carts</span>
+    <span class="js-comments">// в которой подставляем данные с сервера в переменную carts объекта stateProperties</span>
     <span class="js-comments">//в дальнейшем также будем вызывать событие "emiter-load-carts" которое мы еще не создали</span>
+    <span class="js-comments">//this в методах из объекта stateMethods указывает на rootLink</span>
 
-       context.rootLink.stateMethods.fetchCategoryCarts(url, <span class="js-vars-2">function</span>(data){
+       <span class="js-vars">var</span> context <span class="js-vars">=</span> this;
 
-           context.rootLink.stateProperties.carts <span class="js-vars">=</span> data;
+       <span class="js-vars-2">this</span>.stateMethods.fetchCategoryCarts(url, <span class="js-vars-2">function</span>(data){
+
+           context.stateProperties.carts <span class="js-vars">=</span> data;
 
            <span class="js-vars-2">console</span>.log(data)
-          <span class="js-comments">//context.rootLink.eventProps["emiter-load-carts"].setEventProp(data);                </span>
+          <span class="js-comments">//context.eventProps["emiter-load-carts"].setEventProp(data);                </span>
 
         });
     },
 
-     },
-     eventEmiters<span class="js-vars">:</span> {<span class="js-comments">//создали объект со всеми пользовательскими событиями</span>
+ },
+ eventEmiters<span class="js-vars">:</span> {<span class="js-comments">//создали объект со всеми пользовательскими событиями</span>
 
-           ["emiter-click-on-category"] <span class="js-vars">:</span> { <span class="js-comments">//добавили событие "emiter-click-on-category"                </span>
+     ["emiter-click-on-category"] <span class="js-vars">:</span> { <span class="js-comments">//добавили событие "emiter-click-on-category"                </span>
         prop<span class="js-vars">:</span> [],               
-       },
-      }        
+     },
+  }        
+}
+window.onload <span class="js-vars">=</span> <span class="js-vars-2">function</span>(){
+    <span class="js-comments">///создаем экземпляр  HTMLix</span>
+
+    <span class="js-vars">var</span> HM <span class="js-vars">=</span> <span class="js-vars">new</span> HTMLixState(State);
+    <span class="js-vars-2">console</span>.log(HM);
 }
 </code></pre>
-<p>Итак теперь при клике по категории у нас меняется класс текущей категории с помощью события "emiter-click-on-category", а также загружаются данные с сервера с помощью метода <code>load_carts</code> объекта stateMethods, которые мы сохраняем в свойстве carts объекта stateProperties и выводим пока что в консоль.</p>
-<p>Далее давайте добавим свойства контейнера <code>cart</code> компонента <code>carts</code> : 
-'title', "title<em>category",  "cost", "click", "src</em>img", "data"</p>
+<p>Теперь при клике по категории у нас меняется класс текущей категории с помощью события "emiter-click-on-category", а также загружаются данные с сервера с помощью метода <code>load_carts</code> объекта stateMethods, которые мы сохраняем в свойстве carts объекта stateProperties и выводим пока что в консоль.</p>
+<p>При клике по другому пункту меню, либо по карточке товара, появляется ошибка, что не может найти какое-либо свойство, пока что не обращаем на них внимание, это связано стем что мы не создали роутер и htmlix не знает где искать для них шаблоны.</p>
+<p>Далее давайте добавим свойства контейнера <code>cart</code> компонента <code>carts</code> : </p>
 <ul>
 <li><code>"data"</code> - данные которые содержат '/cart/:idCart' ( "/cart/{{cart._id}}" ), </li>
 <li><code>"title_category"</code>- название категории {{cart.titleCategory}},</li>
@@ -506,7 +516,7 @@
 <li><code>"src_img"</code> - адрес картинки карточки "/static/upload/{{cart.image}}",</li>
 <li><code>"click"</code> - обработчик события клика по карточке товара,</li>
 </ul>
-<p>а также создадим дополнительное свойство массива <code>carts</code> - <code>'listener_load_carts'</code> которое будет слушать событие "emiter-load-carts" - загрузки карточек товара, мы его будем вызывать в методе <code>load_carts</code> объекта stateMethods.</p>
+<p>а также создадим дополнительное свойство массива <em>carts</em> - <code>'listener_load_carts'</code> которое будет слушать событие "emiter-load-carts" - загрузки карточек товара, мы его будем вызывать в методе <code>load_carts</code> объекта stateMethods.</p>
 <p>Теперь добавим все свойства к нашему компоненту <code>carts</code>:</p>
 <pre><code class="javascript language-javascript"> carts<span class="js-vars">:</span> {
     <span class="js-comments">//добавили свойство listener_load_carts для массива carts</span>
@@ -551,19 +561,21 @@
       }     
  },
 </code></pre>
-<p>Также не забудем раскоментировать вызов события "emiter-load-carts" в методе <code>load_carts</code> и добавить новое событие в объект eventEmiters:</p>
-<pre><code class="javascript language-javascript">load_carts<span class="js-vars">:</span>  <span class="js-vars-2">function</span>(url, context ){ 
+<p>Также не забудем раскомментировать вызов события "emiter-load-carts" в методе <code>load_carts</code> и добавить новое событие в объект eventEmiters:</p>
+<pre><code class="javascript language-javascript">load_carts<span class="js-vars">:</span>  <span class="js-vars-2">function</span>(url, context ){
 
-       context.rootLink.stateMethods.fetchCategoryCarts(url, <span class="js-vars-2">function</span>(data){                
-           context.rootLink.stateProperties.carts <span class="js-vars">=</span> data;
+       <span class="js-vars">var</span> context <span class="js-vars">=</span> this;
 
-            <span class="js-vars-2">console</span>.log(data)
-            context.rootLink.eventProps["emiter-load-carts"].setEventProp(data);                
+       <span class="js-vars-2">this</span>.stateMethods.fetchCategoryCarts(url, <span class="js-vars-2">function</span>(data){
+
+           context.stateProperties.carts <span class="js-vars">=</span> data;
+           context.eventProps["emiter-load-carts"].setEventProp(data);                
+
+        });             
         <span class="js-comments">//раскомментировали вызов события "emiter-load-carts" </span>
         <span class="js-comments">//теперь мы передаем в него массив carts полученный с сервера,</span>
                 <span class="js-comments">// в обработчике события их можно будет получить вызвав <span class="js-vars-2">this</span>.emiter.prop     </span>
-        });
-    },
+},
 
    <span class="js-comments">///*********************************************</span>
    eventEmiters<span class="js-vars">:</span> {
@@ -576,24 +588,23 @@
 </code></pre>
 <p>Ну вот теперь при клике по категории у нас загружаются данные с сервера и отображаются в компоненте carts, однако при клике по карточке товара пока что ничего не происходит, кроме вывода в консоль адреса просматриваемой карточки <code>/cart/:idCart</code> </p>
 <p>Далее создадим компонент карточку товара <code>cart_single</code>, но прежде чем ее создать разберемся как работает htmlix:</p>
-<p>Итак при загрузке страници с адреса "/" либо "/category/:idCategory", сервер присылает нам html код двух компонентов, точнее трех, еще "menu", но его мы пока что не используем, мы используем html код для компонентов carts и categories, на основе этого кода htmlix создает шаблоны для компонентов, но шаблон для компонента <code>cart_single</code> нам не передается по данным адресам, т.к. его там нет. Как же нам его "догрузить" ? Дела обстоят следующим образом, мы создаем компонент <code>cart_single</code> в описании приложения и помещаяем его в специальный объект <code>"fetchComponents"</code> а в настройках <code>stateSettings.templatePath</code> 
-указываем адрес по которому загружать шаблоны для данного компонента, да и всех остальных, которые еще появятся. Таким образом приложение сначала создаст компоненты которые прислал сервер вместе с html, а затем после отправки второго запроса
-по адресу stateSettings.templatePath создаст остальные компоненты, находящиеся в объекте fetchComponents.</p>
-<p>Так бы мы сделали если бы вход в приложения у нас всегда бы был с адресов,  "/" либо "/category/:idCategory", а что если мы потом первую загрузку приложения произведем с адреса <code>"/cart/:idCart"</code> ? Приложение выдаст ошибку, что не может найти шаблон для массива carts, так как теперь его не будет по этому адресу и нам нужно помещать теперь carts в объект <code>"fetchComponents"</code> a <code>single_cart</code> наоборот оттуда достать, т.к. он должен инициализироваться первым вместе с компонентом categories, что же делать?</p>
+<p>Итак при загрузке страницы с адреса "/" либо "/category/:idCategory", сервер присылает нам html код двух компонентов, точнее трех, еще "menu", но его мы пока что не используем, мы используем html код для компонентов carts и categories, на основе этого кода htmlix создает шаблоны для компонентов, но шаблон для компонента <code>cart_single</code> нам не передается по данным адресам, т.к. его там нет. Как же нам его "догрузить" ?  </p>
+<p>Мы создадим компонент <code>cart_single</code> в описании приложения и поместим его в специальный объект <code>"fetchComponents"</code> а в настройках <code>stateSettings.templatePath</code> укажем адрес по которому загружать шаблоны для данного компонента, да и всех остальных, которые еще появятся. Таким образом приложение сначала создаст компоненты которые прислал сервер вместе с html, а затем после отправки второго запроса по адресу stateSettings.templatePath создаст остальные компоненты, находящиеся в объекте fetchComponents.</p>
+<p>Так бы мы сделали если бы первый вход в приложения у нас всегда был с адресов,  "/" либо "/category/:idCategory", а что если мы потом первую загрузку приложения произведем с адреса <code>"/cart/:idCart"</code> ? Приложение выдаст ошибку, что не может найти шаблон для массива carts, так как теперь его не будет по этому адресу и нам нужно помещать теперь carts в объект <code>"fetchComponents"</code> a <code>single_cart</code> наоборот оттуда достать, т.к. он должен инициализироваться первым вместе с компонентом categories, что же делать?</p>
 <p>Для решения этой задачи мы будем использовать <code>HTMLixRouter()</code>, он перед тем как создать экземпляр приложения, после загрузки страницы проверяет какой сейчас адрес url и сравнивает его с теми которые мы ему укажем, и затем сам помещает те для которых нет шаблона в первой загрузке, в объект <code>"fetchComponents"</code>, после чего инициализирует приложение, таким образом мы избежим создания, нескольких вариантов описания приложения для разных url и соответственно дублирования кода.</p>
 <p>Итак у нас пока что есть три адреса "/" ,"/category/:idCategory" и "/cart/:idCart", три основных компонента carts, categories и <code>cart_single</code>. На первых двух адресах у нас первыми должны инициализироваться компоненты carts и categories, а на адресе  "/cart/:idCart" -   categories и cart_single. </p>
 <p>Итак создадим для них объект routes и поместим его отдельно он писания приложения State в переменную :</p>
 <pre><code class="javascript language-javascript"><span class="js-vars">var</span> routes <span class="js-vars">=</span> {
 
-    ["/"]<span class="js-vars">:</span> {        
-        first<span class="js-vars">:</span> ["categories", 'carts'],  <span class="js-comments">/// компоненты которые есть в html файле указываются в этом массиве, остальные будут загружены с шаблона, в fetch запросе асинхронно</span>
+  ["/"]<span class="js-vars">:</span> {        
+        first<span class="js-vars">:</span> ["categories", 'carts'],  <span class="js-comments">/// компоненты которые есть в html файле на данном маршруте указываются в этом массиве, остальные будут загружены с шаблона, в fetch запросе асинхронно</span>
 
     routComponent<span class="js-vars">:</span> { 
                 router_carts<span class="js-vars">:</span> "carts", <span class="js-comments">//компонент соответствующий данному роуту</span>
            }, 
         templatePath<span class="js-vars">:</span> "/static/templates/index.html" <span class="js-comments">// папка для загрузки шаблонов</span>
-     },            
-     ["/category/:idCategory"]<span class="js-vars">:</span> {  <span class="js-comments">//знак `:` говорит что это параметр, и с ним сравненние не требуется, проверяется только его наличие, еще есть знак `*` в конце слова например если у нас category1, category2, и т.д то ставим звездочку в конце category*.</span>
+  },            
+ ["/category/:idCategory"]<span class="js-vars">:</span> {  <span class="js-comments">//знак `:` говорит что это параметр, и с ним сравнение не требуется, проверяется только его наличие.</span>
 
      first<span class="js-vars">:</span> ["categories", 'carts', "menu", "home_page"], 
 
@@ -602,7 +613,7 @@
         }, 
       templatePath<span class="js-vars">:</span> "/static/templates/index.html" 
     },  
-     ["/cart/:idCart"]<span class="js-vars">:</span> { 
+["/cart/:idCart"]<span class="js-vars">:</span> { 
 
       first<span class="js-vars">:</span> ["categories", 'cart_single'], 
 
@@ -610,28 +621,34 @@
            router_carts<span class="js-vars">:</span> "cart_single",         
        },
        templatePath<span class="js-vars">:</span> "/static/templates/index.html"
-      },
+ },
 }
 </code></pre>
 <p>Итак мы создали три маршрута для роутера, здесь <code>router_carts</code> это div элемент в котором будут отображаться  "carts" на первых двух адресах, а на третьем "cart_single", в html (в файлах <code>/views/index.twig</code> и <code>'/views/cart.twig'</code>) он указан как <code>data-router_carts="router"</code>. </p>
 <p>Далее добавим в описание приложения <code>cart_single</code> вместе со следующими свойствами:</p>
 <ul>
-<li><code>"variant_tmpl"</code> - свойство с типом "render-variant" для отображения дополнительного варианта шаблона (cart<em>variant</em>option.twig или cart<em>variant</em>radio.twig в зависимости от категории) в html коде data-cart<em>single-variant</em>tmpl-"render-variant",</li>
-<li><code>'title'</code> - Название карточки товара 'data-cart_single-title="text"', </li>
+<li><code>"variant_tmpl"</code> - свойство с типом "render-variant" для отображения дополнительного варианта шаблона (<code>cart_variant_option.twig</code> или <code>cart_variant_radio.twig</code> в зависимости от категории) в html коде <code>data-cart_single-variant_tmpl</code>="render-variant",</li>
+<li><code>'title'</code> - Название карточки товара <code>data-cart_single-title</code>="text", </li>
 <li><code>"title_category"</code> название категории,</li>
-<li><code>"manufacture"</code> - призводитель,</li>
+<li><code>"manufacture"</code> - производитель,</li>
 <li><code>"cost"</code> - стоимость,</li>
 <li><code>"description"</code> - описание,</li>
 <li><code>"cost_btn"</code> стоимость в кнопке,</li>
-<li><code>"src_img"</code> картинка data-cart<em>single-src</em>img="srс", </li>
+<li><code>"src_img"</code> картинка <code>data-cart_single-src_img</code>="srс", </li>
 <li><code>"data"</code> - данные с id категории для формирования url - data-cart_single-data="{{ cart.category }}",</li>
-<li><code>"click_category"</code> - событие клика по категории в карточке товара,</li>
+<li><code>"click"</code> - событие клика по категории в карточке товара,</li>
 <li><code>"listner_click_on_cart"</code>  слушатель пользовательского события - "emiter-click-on-cart", </li>
 </ul>
 <pre><code>cart_single<span class="js-vars">:</span> {
    container<span class="js-vars">:</span> "cart_single",
-   <span class="js-comments">//пока что закомментируем "variant_tmpl" т.к. мы еще не создали варианты шаблонов для карточки</span>
-   props<span class="js-vars">:</span> ['title', "title_category", "manufacture", "cost", "description", "cost_btn", "src_img", ["listner_click_on_cart", "emiter-click-on-cart", ""], "click_category", "data"],
+
+   <span class="js-comments">//пока что закомментируем свойства с вариантами компонентов, т.к. мы еще не создали сами компоненты.</span>
+   props<span class="js-vars">:</span> [
+                /*"variant_tmpl"*/, 'title', "title_category", "manufacture", "cost", "description", 
+                "cost_btn", "src_img", ["listner_click_on_cart", "emiter-click-on-cart", ""], 
+                "click", "data"
+               ],
+
    methods<span class="js-vars">:</span> {
 
     listner_click_on_cart<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
@@ -652,14 +669,14 @@
            description<span class="js-vars">:</span>  cart.description,
            cost_btn<span class="js-vars">:</span> cart.cost,
            manufacture<span class="js-vars">:</span> cart.manufacture,
-          <span class="js-comments">// variant_tmpl<span class="js-vars">:</span> cart.variant_tmpl, пока что закоментируем установку варианта шаблона, т.к. мы еще не создали компоненты для них.</span>
+          <span class="js-comments">// variant_tmpl<span class="js-vars">:</span> cart.variant_tmpl, пока что закомментируем установку варианта шаблона, т.к. мы еще не создали компоненты для них.</span>
 
          }
 
         <span class="js-vars-2">this</span>.<span class="tag">parent</span>.setAllProps(props);
              <span class="js-comments">//устанавливаем новые значения сразу для всех свойств, с помощью метода setAllProps(props);                 </span>
     },
-    click_category<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
+    click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
        event.preventDefault(); 
            <span class="js-comments">//данный метод создадим чуть позже, пока что просто выводим id категории в консоль</span>
            <span class="js-vars-2">console</span>.log(this.<span class="tag">parent</span>.props.data)                
@@ -696,7 +713,7 @@
 <pre><code class="javascript language-javascript">click<span class="js-vars">:</span> <span class="js-vars-2">function</span>() {
 
     <span class="js-comments">//метод setRout принимает url и сравнивает его с картой которую мы создали в объекте routes</span>
-    <span class="js-comments">//и на соответствующем адресе меняет компонент в div теге с `data-router_carts="router"` отображая carts или single_cart</span>
+    <span class="js-comments">//устанавливает компонент carts  в div теге  `data-router_carts="router"` </span>
      /* ............ конец метода ............*/
      <span class="js-vars-2">this</span>.rootLink.router.setRout(historyUrl);    
 }
@@ -773,58 +790,55 @@
          }
 </code></pre>
 <p>Теперь при клике на карточку товара, в разных категориях товара у нас будет разный шаблон, а в свойстве variant_tmpl один из двух компонентов  <code>cart_variant_radio</code> - ноутбуки и телевизоры <code>cart_variant_option</code> - фотоаппараты.</p>
-<p>Далее давайте добавим код в метод <code>click_category</code> компонента - контейнера <code>cart_single</code> чтобы при клике по категории из нутри карточки товара у нас также менялась активная категория и изменялся отображаемый в роутере компонент, просто скопируем код из метода click контейнера category - компонента categories.</p>
-<pre><code>click_category<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
+<p>Далее давайте добавим код в метод <code>click</code> компонента - контейнера <code>cart_single</code> чтобы при клике по категории изнутри карточки товара у нас также менялась активная категория и изменялся отображаемый в роутере компонент, однако чтобы не дублировать код, так как он будет такой-же как и в компоненте <code>category</code> мы унаследуем из него данный метод, а старый удалим.</p>
+<pre><code> cart_single<span class="js-vars">:</span> {
+   container<span class="js-vars">:</span> "cart_single",
 
-       event.preventDefault();              
-        <span class="js-vars-2">this</span>.rootLink.eventProps["emiter-click-on-category"].setEventProp(this.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>());
+   props<span class="js-vars">:</span> [
+      "variant_tmpl", 'title', "title_category", "manufacture", "cost", "description", "cost_btn", 
+       "src_img", ["listner_click_on_cart", "emiter-click-on-cart", ""], "data", <span class="js-comments">//"click", </span>
+        ["click", "extend", "category", "props"]<span class="js-comments">///наследуем свойство из компонента "category"</span>
+   ],
 
-           <span class="js-vars">var</span> historyUrl <span class="js-vars">=</span> "/category/"+this.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>();
-        <span class="js-vars">var</span> url <span class="js-vars">=</span> historyUrl+"/json";               
-
-           <span class="js-vars-2">this</span>.rootLink.stateMethods.load_carts(url, this);
-       <span class="js-vars-2">this</span>.rootLink.router.setRout(historyUrl);                                
-},
+/* закомментировали метод
+    click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
+       event.preventDefault(); 
+        <span class="js-vars-2">console</span>.log(this.<span class="tag">parent</span>.props.data)                
+     } */ 
 </code></pre>
-<p>Итак метод работает но плохо то что мы продублировали код давайте перенесем весь код в метод <code>click_on_category</code> в объект с общими методами для всего приложения stateMethods, и предадим в него context параметром, а вторым url который хотим сменить:</p>
-<pre><code>click_on_category<span class="js-vars">:</span> <span class="js-vars-2">function</span>(context, event){
-
-    event.preventDefault();             
-
-    <span class="js-vars">var</span> historyUrl <span class="js-vars">=</span> "/category/"+context.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>();
-    <span class="js-vars">var</span> url <span class="js-vars">=</span> historyUrl+"/json";
-
-    context.rootLink.eventProps["emiter-click-on-category"].setEventProp(context.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>());
-
-    context.rootLink.router.setRout(historyUrl);
-                <span class="js-vars-2">console</span>.log(url);
-    context.rootLink.stateMethods.load_carts(url, context);
-
-},
-</code></pre>
-<p>А в методе <code>click_category</code> компонента - контейнера <code>cart_single</code> и методе <code>click</code> контейнера category компонента categories вызовем общий метод: </p>
-<pre><code>/* */ <span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
-
-     <span class="js-vars-2">this</span>.rootLink.stateMethods.click_on_category(this, event);
-}     
-</code></pre>
-<p>Итак мы создали первую часть прототипа интернет магазина для трех адресов url, в следующем уроке создадим остальное, полный скрипт приложения до этой точки приведен ниже, на этом пока что все.</p>
+<p>Итак мы создали первую часть прототипа интернет магазина для трех адресов url, полный скрипт приложения до этой точки приведен ниже, на этом пока что все.</p>
 <pre><code><span class="js-vars">var</span> State <span class="js-vars">=</span> {
 
-  categories<span class="js-vars">:</span> {
+ categories<span class="js-vars">:</span> {
     container<span class="js-vars">:</span> "category", 
-    <span class="js-comments">//добавили слушателя события "emiter-click-on-category"</span>
+    <span class="js-comments">//добавили слушатель события "emiter-click-on-category"</span>
     props<span class="js-vars">:</span> [ "data", "click", 'class', "title",  ['listner_click_on_category', "emiter-click-on-category", ""]],
     methods<span class="js-vars">:</span> {
-    click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
+      click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
 
-            <span class="js-vars-2">this</span>.rootLink.stateMethods.click_on_category(this, event);
+       event.preventDefault();
+       <span class="js-vars">var</span> categoryId <span class="js-vars">=</span> <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>();       
+       <span class="js-comments">//вызываем событие "emiter-click-on-category"</span>
+       <span class="js-comments">// передав в него данные со свойства data контейнера по которому был клик</span>
+        <span class="js-vars-2">this</span>.rootLink.eventProps["emiter-click-on-category"].setEventProp(categoryId);
+
+        <span class="js-comments">//создаем url на основе данных со свойства data контейнера,</span>
+        <span class="js-comments">//один для истории - historyUrl понадобится нам в дальнейшем,</span>
+           <span class="js-comments">// второй чтобы сделать запрос для получения карточек товара на адрес /category/:idCategory/json</span>
+
+           <span class="js-vars">var</span> historyUrl <span class="js-vars">=</span> "/category/"+categoryId;
+           <span class="js-vars">var</span> url <span class="js-vars">=</span> historyUrl+"/json";               
+
+           <span class="js-vars-2">this</span>.rootLink.stateMethods.load_carts(url);
+
+           <span class="js-comments">//меняем компонент в div теге  `data-router_carts="router"` - на carts </span>
+           <span class="js-vars-2">this</span>.rootLink.router.setRout(historyUrl);    
 
     },
     listner_click_on_category<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){ 
-    <span class="js-comments">//в слушателе события клика по категории удаляем класс "active" со всех контейнеров</span>
-    <span class="js-comments">// затем устанавливаем его на контейнере данные свойства data которого совпадают</span>
-        <span class="js-comments">// с данными переданyыми в событие "emiter-click-on-category"</span>
+      <span class="js-comments">//в слушателе события клика по категории удаляем класс "active" со всех контейнеров</span>
+      <span class="js-comments">// затем устанавливаем его на контейнере данные свойства data которого совпадают</span>
+      <span class="js-comments">// с данными передаными в событие "emiter-click-on-category"</span>
 
         <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.class.<span class="js-vars-2">removeProp</span>("active");
 
@@ -832,57 +846,69 @@
           <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.class.<span class="js-vars-2">setProp</span>("active");
         }               
     },
-      }        
+  }        
+ },
+ carts<span class="js-vars">:</span> {
+    <span class="js-comments">//добавили свойство listener_load_carts для массива carts</span>
+     arrayProps<span class="js-vars">:</span> [ ['listener_load_carts', "emiter-load-carts", ""] ],
+     arrayMethods<span class="js-vars">:</span> {         
+       listener_load_carts<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){ <span class="js-comments">//слушаем событие "emiter-load-carts"</span>
+
+         <span class="js-vars-2">this</span>.<span class="tag">parent</span>.removeAll(); <span class="js-comments">//очищаем массив</span>
+
+         <span class="js-vars">var</span> carts <span class="js-vars">=</span> <span class="js-vars-2">this</span>.emiter.prop;
+
+        for(<span class="js-vars">var</span> i=0; i&lt;carts.length; i++){
+         <span class="js-comments">//в цикле перебираем полученный массив с карточками товара </span>
+
+           <span class="js-vars">var</span> cart <span class="js-vars">=</span> carts[i];
+
+           <span class="js-vars">var</span> props <span class="js-vars">=</span> { <span class="js-comments">//создаем объект со всеми свойствами для контейнера cart</span>
+
+            title<span class="js-vars">:</span> cart.title,
+            title_category<span class="js-vars">:</span> cart.titleCategory,
+            cost<span class="js-vars">:</span> cart.cost,
+            src_img<span class="js-vars">:</span> '/static/upload/'+cart.image,
+            data<span class="js-vars">:</span> "/cart/"+cart._id
+           }
+
+            <span class="js-vars-2">this</span>.<span class="tag">parent</span>.add(props); 
+                <span class="js-comments">//добавляем новый контейнер передав в него начальные данные для свойств</span>
+        }
+     }
     },
-    carts<span class="js-vars">:</span> {
-        <span class="js-comments">//добавили свойство для компонента - массива carts</span>
-        arrayProps<span class="js-vars">:</span> [ ['listener_load_carts', "emiter-load-carts", ""] ],
-        arrayMethods<span class="js-vars">:</span> { 
+    container<span class="js-vars">:</span> "cart",
+    <span class="js-comments">//добавили все свойства для контейнера cart</span>
+    props<span class="js-vars">:</span> ['title', "title_category",  "cost", "click", "src_img", "data"  ],
+    methods<span class="js-vars">:</span> {
+         click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){ <span class="js-comments">//метод для обработки кликов по карточке товара, </span>
 
-          listener_load_carts<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){ <span class="js-comments">//слушаем событие "emiter-load-carts"</span>
+           event.preventDefault();                
+           <span class="js-vars">var</span> url <span class="js-vars">=</span> <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>(); <span class="js-comments">//в свойстве data контейнера cart у нас url крточки товара.</span>
+           <span class="js-vars-2">console</span>.log(url);
 
-                    <span class="js-vars-2">this</span>.<span class="tag">parent</span>.removeAll(); <span class="js-comments">//очищаем массив</span>
 
-                    for(<span class="js-vars">var</span> i=0; i&lt;this.emiter.prop.length; i++){
-                    <span class="js-comments">//в цикле перебераем полученый массив с карточками товара   </span>
+           <span class="js-comments">//добавили вызов события  "emiter-click-on-cart"  которое мы слушаем в компоненте single_cart </span>
+           <span class="js-comments">//передаем в него индекс контейнера по которому кликнули</span>
+           <span class="js-vars-2">this</span>.rootLink.eventProps["emiter-click-on-cart"].setEventProp(this.<span class="tag">parent</span>.index);
 
-                        <span class="js-vars">var</span> prop <span class="js-vars">=</span> <span class="js-vars-2">this</span>.emiter.prop[i];
+            <span class="js-comments">//вызываем метод setRout передав в него новый url,</span>
+            <span class="js-comments">// чтобы роутер поменял компонент carts на cart_single в div элементе с data-<span class="data-main-attr">router_carts</span><span class="data-attr"></span>="router"  </span>
+           <span class="js-vars-2">this</span>.rootLink.router.setRout(url);  
 
-                        <span class="js-vars">var</span> props <span class="js-vars">=</span> { <span class="js-comments">//создаем объект со всеми свойствами для контейнера cart</span>
 
-                            title<span class="js-vars">:</span> prop.title,
-                            title_category<span class="js-vars">:</span> prop.titleCategory,
-                            cost<span class="js-vars">:</span> prop.cost,
-                            src_img<span class="js-vars">:</span> '/static/upload/'+prop.image,
-                            data<span class="js-vars">:</span> "/cart/"+prop._id
-                        }
-
-                        <span class="js-vars-2">this</span>.<span class="tag">parent</span>.add(props); <span class="js-comments">//добавляем новый контейнер передав в него начальные данные для свойств</span>
-                    }
-            }
-        },
-        container<span class="js-vars">:</span> "cart",
-        <span class="js-comments">//добавили все свойства для контейнера cart</span>
-        props<span class="js-vars">:</span> ['title', "title_category",  "cost", "click", "src_img", "data"  ],
-        methods<span class="js-vars">:</span> {
-                click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){ <span class="js-comments">//метод для обработки кликов по карточке товара, </span>
-                                    <span class="js-comments">//пока что просто выводит url карточки в консоль</span>
-
-                    event.preventDefault();
-
-                    <span class="js-vars">var</span> url <span class="js-vars">=</span> <span class="js-vars-2">this</span>.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>();
-
-                    <span class="js-vars-2">console</span>.log(url);
-
-                    <span class="js-vars-2">this</span>.rootLink.router.setRout(url);
-                    <span class="js-vars-2">this</span>.rootLink.eventProps["emiter-click-on-cart"].setEventProp(this.<span class="tag">parent</span>.index);
-
-            }
-        }       
-     },
-cart_single<span class="js-vars">:</span> {
+        }
+    }     
+ },
+ cart_single<span class="js-vars">:</span> {
    container<span class="js-vars">:</span> "cart_single",
-   props<span class="js-vars">:</span> ["variant_tmpl",'title', "title_category", "manufacture", "cost", "description", "cost_btn", "src_img", ["listner_click_on_cart", "emiter-click-on-cart", ""], "click_category", "data"],
+
+   props<span class="js-vars">:</span> [
+      "variant_tmpl", 'title', "title_category", "manufacture", "cost", "description", "cost_btn", 
+       "src_img", ["listner_click_on_cart", "emiter-click-on-cart", ""], "data", <span class="js-comments">//"click",</span>
+       ["click", "extend", "category", "props"]<span class="js-comments">///наследуем свойство из компонента "category"</span>
+   ],
+
    methods<span class="js-vars">:</span> {
 
     listner_click_on_cart<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
@@ -903,67 +929,53 @@ cart_single<span class="js-vars">:</span> {
            description<span class="js-vars">:</span>  cart.description,
            cost_btn<span class="js-vars">:</span> cart.cost,
            manufacture<span class="js-vars">:</span> cart.manufacture,
-          variant_tmpl<span class="js-vars">:</span> cart.variant_tmpl, <span class="js-comments">//пока что закоментируем установку варианта шаблона, т.к. мы еще не создали компоненты для них.</span>
+           variant_tmpl<span class="js-vars">:</span> cart.variant_tmpl,
 
          }
 
         <span class="js-vars-2">this</span>.<span class="tag">parent</span>.setAllProps(props);
              <span class="js-comments">//устанавливаем новые значения сразу для всех свойств, с помощью метода setAllProps(props);                 </span>
     },
-   click_category<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
-
-<span class="js-vars-2">this</span>.rootLink.stateMethods.click_on_category(this, event);
-
-    },    
-},
+   /*
+    click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
+          event.preventDefault(); 
+           <span class="js-vars-2">console</span>.log(this.<span class="tag">parent</span>.props.data)                
+     } */ 
+   },
 },
 cart_variant_option<span class="js-vars">:</span> {
-        container<span class="js-vars">:</span> "cart_variant_option", <span class="js-comments">// views/twig_templates/  data-<span class="data-main-attr">cart_variant_option</span><span class="data-attr"></span>="container"</span>
+     container<span class="js-vars">:</span> "cart_variant_option", <span class="js-comments">// views/twig_templates/  data-<span class="data-main-attr">cart_variant_option</span><span class="data-attr"></span>="container"</span>
 
-        props<span class="js-vars">:</span> ["click", "select"],  <span class="js-comments">//data-cart_variant_option-select="select" , data-<span class="data-main-attr">cart_variant_option</span>-<span class="data-attr">click</span>="click"</span>
-        methods<span class="js-vars">:</span> { 
-                click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
+     props<span class="js-vars">:</span> ["click", "select"],  <span class="js-comments">//data-cart_variant_option-select="select" , data-<span class="data-main-attr">cart_variant_option</span>-<span class="data-attr">click</span>="click"</span>
+     methods<span class="js-vars">:</span> { 
+          click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
 
-                    <span class="js-vars-2">console</span>.log(this.<span class="tag">parent</span>.props.select.<span class="js-vars-2">getProp</span>());
-                }
-        }
-
+                 <span class="js-vars-2">console</span>.log(this.<span class="tag">parent</span>.props.select.<span class="js-vars-2">getProp</span>());
+           }
+     }
 },
 cart_variant_radio<span class="js-vars">:</span> {
-        selector<span class="js-vars">:</span> "div:last-of-type",
-        container<span class="js-vars">:</span> "cart_variant_radio_cont",
-        props<span class="js-vars">:</span> ["click", "radio"],
-        methods<span class="js-vars">:</span> { 
+    selector<span class="js-vars">:</span> "div:last-of-type",
+    container<span class="js-vars">:</span> "cart_variant_radio_cont",
+    props<span class="js-vars">:</span> ["click", "radio"],
+    methods<span class="js-vars">:</span> { 
 
-                click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
+        click<span class="js-vars">:</span> <span class="js-vars-2">function</span>(){
 
-                    <span class="js-vars-2">console</span>.log(this.<span class="tag">parent</span>.index+" --- "+this.<span class="tag">parent</span>.props.radio.<span class="js-vars-2">getProp</span>());
-                }
-
+             <span class="js-vars-2">console</span>.log(this.<span class="tag">parent</span>.index+" --- "+this.<span class="tag">parent</span>.props.radio.<span class="js-vars-2">getProp</span>());
         }
 
-},
-     stateProperties:{ <span class="js-comments">//объект для хранения общих переменных приложения        </span>
+    }
+
+  },
+  stateProperties:{ <span class="js-comments">//объект для хранения общих переменных приложения        </span>
     carts<span class="js-vars">:</span> [],      
-     },
-     stateMethods<span class="js-vars">:</span> {
-       click_on_category<span class="js-vars">:</span> <span class="js-vars-2">function</span>(context, event){
-
-            event.preventDefault();             
-
-            <span class="js-vars">var</span> historyUrl <span class="js-vars">=</span> "/category/"+context.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>();
-            <span class="js-vars">var</span> url <span class="js-vars">=</span> historyUrl+"/json";
-
-            context.rootLink.eventProps["emiter-click-on-category"].setEventProp(context.<span class="tag">parent</span>.props.data.<span class="js-vars-2">getProp</span>());
-
-            context.rootLink.router.setRout(historyUrl);
-                <span class="js-vars-2">console</span>.log(url);
-            context.rootLink.stateMethods.load_carts(url, context);
-
-    },
+  },
+  stateMethods<span class="js-vars">:</span> {
     fetchCategoryCarts<span class="js-vars">:</span> <span class="js-vars-2">function</span>(url, callb){ 
     <span class="js-comments">// общий  метод для загрузки данных с какого либо адреса get запросм, </span>
-       <span class="js-comments">//принимает в параметрах адрес - url и функцию обратного вызова callb в которую он передаст полученые данные </span>
+       <span class="js-comments">//принимает в параметрах адрес - url и функцию обратного вызова callb,</span>
+      <span class="js-comments">// в которую он передаст полученные данные </span>
 
        fetch(url).then((response) =&gt; {
         if(response.ok) {
@@ -976,90 +988,86 @@ cart_variant_radio<span class="js-vars">:</span> {
          <span class="js-vars-2">console</span>.log(error);
          });    
     }, 
-    load_carts<span class="js-vars">:</span>  <span class="js-vars-2">function</span>(url, context ){ 
+    load_carts<span class="js-vars">:</span>  <span class="js-vars-2">function</span>(url){ 
     <span class="js-comments">//метод вызывает fetchCategoryCarts передавая в него функцию обратного вызова </span>
-    <span class="js-comments">// в которой подставляем данные с сервера в переменную .carts</span>
-    <span class="js-comments">//в дальнейшем также будем вызывать событие "emiter-load-carts" которое мы еще не создали</span>
+    <span class="js-comments">// в которой подставляем данные с сервера в переменную carts объекта stateProperties</span>
+    <span class="js-comments">//this в методах из объекта stateMethods указывает на rootLink</span>
 
-       context.rootLink.stateMethods.fetchCategoryCarts(url, <span class="js-vars-2">function</span>(data){
+       <span class="js-vars">var</span> context <span class="js-vars">=</span> this;
 
-           context.rootLink.stateProperties.carts <span class="js-vars">=</span> data;
+       <span class="js-vars-2">this</span>.stateMethods.fetchCategoryCarts(url, <span class="js-vars-2">function</span>(data){
 
-           <span class="js-vars-2">console</span>.log(data)
-          context.rootLink.eventProps["emiter-load-carts"].setEventProp(data);              
+           context.stateProperties.carts <span class="js-vars">=</span> data;
+
+           context.eventProps["emiter-load-carts"].setEventProp(data);                
 
         });
     },
 
-     },
-     eventEmiters<span class="js-vars">:</span> {<span class="js-comments">//создали объект со всеми пользовательскими событиями</span>
+ },
+ eventEmiters<span class="js-vars">:</span> {<span class="js-comments">//создали объект со всеми пользовательскими событиями</span>
 
-         ["emiter-click-on-cart"]<span class="js-vars">:</span> {
-
-            prop<span class="js-vars">:</span> "",
-        },       
-        ["emiter-click-on-category"] <span class="js-vars">:</span> { <span class="js-comments">//добавили событие "emiter-click-on-category"                </span>
+     ["emiter-click-on-category"] <span class="js-vars">:</span> { <span class="js-comments">//добавили событие "emiter-click-on-category"                </span>
         prop<span class="js-vars">:</span> [],               
-       },
-       ["emiter-load-carts"]<span class="js-vars">:</span> {
-
-            prop<span class="js-vars">:</span> "",
-        }
-      }        
+     },
+     ["emiter-load-carts"]<span class="js-vars">:</span> { 
+        prop<span class="js-vars">:</span> "",
+     },
+     ["emiter-click-on-cart"]<span class="js-vars">:</span> {
+        prop<span class="js-vars">:</span> "",
+     },  
+  }        
 }
 
 <span class="js-vars">var</span> routes <span class="js-vars">=</span> {
 
-    ["/"]<span class="js-vars">:</span> {        
-        first<span class="js-vars">:</span> ["categories", 'carts'],  <span class="js-comments">/// компоненты которые есть в html файле указываются в этом массиве, остальные будут загружены с шаблона, в fetch запросе асинхронно</span>
+ ["/"]<span class="js-vars">:</span> {        
+    first<span class="js-vars">:</span> ["categories", 'carts'],  <span class="js-comments">/// компоненты которые есть в html файле указываются в этом массиве, остальные будут загружены с шаблона, в fetch запросе асинхронно</span>
 
     routComponent<span class="js-vars">:</span> { 
-                router_carts<span class="js-vars">:</span> "carts", <span class="js-comments">//компонент соответствующий данному роуту</span>
-           }, 
-        templatePath<span class="js-vars">:</span> "/static/templates/index.html" <span class="js-comments">// папка для загрузки шаблонов</span>
-     },            
-     ["/category/:idCategory"]<span class="js-vars">:</span> {  <span class="js-comments">//знак `:` говорит что это параметр, и с ним сравненние не требуется, проверяется только его наличие, еще есть знак `*` в конце слова например если у нас category1, category2, и т.д то ставим звездочку в конце category*.</span>
+        router_carts<span class="js-vars">:</span> "carts", <span class="js-comments">//компонент соответствующий данному роуту</span>
+    }, 
+    templatePath<span class="js-vars">:</span> "/static/templates/index.html" <span class="js-comments">// папка для загрузки шаблонов</span>
+ },            
+ ["/category/:idCategory"]<span class="js-vars">:</span> {  <span class="js-comments">//знак `:` говорит что это параметр, и с ним сравненние не требуется, проверяется только его наличие</span>
 
-     first<span class="js-vars">:</span> ["categories", 'carts', "menu", "home_page"], 
+    first<span class="js-vars">:</span> ["categories", 'carts', "menu", "home_page"], 
 
-     routComponent<span class="js-vars">:</span> {           
-             router_carts<span class="js-vars">:</span> "carts",         
-        }, 
-      templatePath<span class="js-vars">:</span> "/static/templates/index.html" 
-    },  
-     ["/cart/:idCart"]<span class="js-vars">:</span> { 
+    routComponent<span class="js-vars">:</span> {           
+        router_carts<span class="js-vars">:</span> "carts",         
+    }, 
+    templatePath<span class="js-vars">:</span> "/static/templates/index.html" 
+ },  
+ ["/cart/:idCart"]<span class="js-vars">:</span> { 
 
-      first<span class="js-vars">:</span> ["categories", 'cart_single'], 
+    first<span class="js-vars">:</span> ["categories", 'cart_single'], 
 
-      routComponent<span class="js-vars">:</span> {
-           router_carts<span class="js-vars">:</span> "cart_single",         
-       },
-       templatePath<span class="js-vars">:</span> "/static/templates/index.html"
-      },
+    routComponent<span class="js-vars">:</span> {
+       router_carts<span class="js-vars">:</span> "cart_single",         
+     },
+     templatePath<span class="js-vars">:</span> "/static/templates/index.html"
+ },
 }
+window.onload <span class="js-vars">=</span> <span class="js-vars-2">function</span>(){
 
-    window.onload <span class="js-vars">=</span> <span class="js-vars-2">function</span>(){
-            <span class="js-comments">///создаем экземпляр  HTMLix</span>
-
-        <span class="js-vars">var</span> HM <span class="js-vars">=</span> HTMLixRouter(State, routes);
-
-
+    <span class="js-comments">///создаем экземпляр  HTMLix</span>
+    <span class="js-vars">var</span> HM <span class="js-vars">=</span> HTMLixRouter(State, routes);
 
         <span class="js-vars">var</span> url <span class="js-vars">=</span> window.location.pathname;
 
         if(window.location.pathname == "/"){
 
-            url <span class="js-vars">=</span> url+"json";
+        url <span class="js-vars">=</span> url+"json";
 
         }else{
 
-            url <span class="js-vars">=</span> url + "/json";
-        }
+         url <span class="js-vars">=</span> url + "/json";
+        }   
 
-        HM.stateMethods.fetchCategoryCarts(url, <span class="js-vars-2">function</span>(arr){  HM.stateProperties.carts <span class="js-vars">=</span> arr; });
-
-        <span class="js-vars-2">console</span>.log(HM);
-    }
+       <span class="js-comments">//отправляем запрос чтобы загрузить массив со всеми карточками товара при первой загрузке приложения    </span>
+      HM.stateMethods.fetchCategoryCarts(url, <span class="js-vars-2">function</span>(arr){  HM.stateProperties.carts <span class="js-vars">=</span> arr; });
+      <span class="js-vars-2">console</span>.log(HM);
+}
 </code></pre></div>			
 					
 				</div><!-- end page_single -->
