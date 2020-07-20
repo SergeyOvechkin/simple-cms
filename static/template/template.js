@@ -36,6 +36,9 @@ var template = `
 <!--------------------компонент для отображения контактов ----------->
 <div style="margin-top: 20px;" class="card" data-contacts="container">
   <div class="card-body">
+          Htmlix находится в стадии тестирования. Предложения по поводу улучшения кода, найденным ошибкам,
+		  а также сотрудничества и написания приложений на htmlix можно отправлять на адрес:
+		  
           ovechkin.sergey123@mail.ru
   </div>
 </div>
