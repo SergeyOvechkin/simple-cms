@@ -36,7 +36,7 @@ var template = `
 <!--------------------компонент для отображения контактов ----------->
 <div style="margin-top: 20px;" class="card" data-contacts="container">
   <div class="card-body">
-          maksaev.mikhail@inbox.ru
+          ovechkin.sergey123@mail.ru
   </div>
 </div>
 
