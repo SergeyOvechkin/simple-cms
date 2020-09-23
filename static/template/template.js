@@ -20,7 +20,7 @@ var template = `
 	
 	<p>Примеры приложений на Htmlix:</p> 
 	<ul>
-
+		<li><a href="https://github.com/SergeyOvechkin/collage_n/">Collage_n онлайн редактор для создания коллажей и спрайтов из картинок</a></li>
 		<li><a href="https://github.com/SergeyOvechkin/lesson_2.2/">Прототип SPA интернет магазина</a></li>		
 		<li><a href="https://github.com/SergeyOvechkin/tests/">tests - тестовые приложения для фреймворка</a></li>
 
@@ -36,8 +36,7 @@ var template = `
 <!--------------------компонент для отображения контактов ----------->
 <div style="margin-top: 20px;" class="card" data-contacts="container">
   <div class="card-body">
-           <p>Предложения по поводу улучшения кода, найденным ошибкам,
-		  а также сотрудничества и написания приложений на htmlix можно отправлять на адрес:</p>
+           <p>Контактная информация:</p>
 		  
           <p>ovechkin.sergey123@mail.ru</p>
   </div>
